@@ -106,7 +106,7 @@ x.slidesjs-slide
 #navmenu li a
 {
 float:left;
-width:150px;
+width:110px;
 height: 100%;
 text-decoration:none;
 color:white;
@@ -127,3 +127,5 @@ border-right:1px solid white;
 #slide3{background: url(Images/slide_2.jpg) no-repeat;}
 #slide4{background: url(Images/slide_3.jpg) no-repeat;}
 #slide5{background: url(Images/slide_4.jpg) no-repeat;}
+#slide6{background: url(Images/slide_1.jpg) no-repeat;}
+#slide7{background: url(Images/slide_3.jpg) no-repeat;}

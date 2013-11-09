@@ -45,7 +45,7 @@ h1,h2,h4,h5,h6 {
 		width: 100%;
 		height: 100%;
 		overflow: hidden;
-		margin: 100px auto;
+		margin: 0px auto;
 		position: relative;
 		background: url('Images/dot.gif') left 45px repeat-x;
 	}
@@ -84,15 +84,17 @@ h1,h2,h4,h5,h6 {
 				padding: 0;
 			}
 				.issues li.selected img {
-					-webkit-transform: scale(1.1,1.1);
-					-moz-transform: scale(1.1,1.1);
-				    -o-transform: scale(1.1,1.1);
-				    -ms-transform: scale(1.1,1.1);
-				    transform: scale(1.1,1.1);
+					-webkit-transform: scale(0.6,0.6);
+					-moz-transform: scale(0.6,0.6);
+				    -o-transform: scale(0.6,0.6);
+				    -ms-transform: scale(0.6,0.6);
+				    transform: scale(0.6,0.6);
 				}
 				.issues li img {
 					float: left;
-					margin: 10px 30px 10px 50px;
+					//*argin: 10px 30px 10px 50px;*/
+					width: 180px;
+					height: 180px;
 					background: transparent;
 					-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#00FFFFFF,endColorstr=#00FFFFFF)"; /* IE 8 */   
 					filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00FFFFFF,endColorstr=#00FFFFFF);/* IE 6 & 7 */      
@@ -102,21 +104,21 @@ h1,h2,h4,h5,h6 {
 					-o-transition: all 2s ease-in-out;
 					-ms-transition: all 2s ease-in-out; 
 					transition: all 2s ease-in-out;
-					-webkit-transform: scale(0.7,0.7);
-					-moz-transform: scale(0.7,0.7);
-				    -o-transform: scale(0.7,0.7);
-				    -ms-transform: scale(0.7,0.7);
-				    transform: scale(0.7,0.7);
+					-webkit-transform: scale(0.4,0.4);
+					-moz-transform: scale(0.4,0.4);
+				    -o-transform: scale(0.4,0.4);
+				    -ms-transform: scale(0.4,0.4);
+				    transform: scale(0.4,0.4);
 				}
 				.issues li h1 {
 					color: #ffcc00;
-					font-size: 48px;
-					margin: 20px 0;
+					font-size: 38px;
+					margin: 0;
 					text-shadow: #000 1px 1px 2px;
 				}
 				.issues li p {
 					font-size: 14px;
-					margin-right: 70px;
+					margin-right: 60px;
 					font-weight: normal;
 					line-height: 22px;
 					text-shadow: #000 1px 1px 2px;
@@ -131,11 +133,11 @@ h1,h2,h4,h5,h6 {
 		}
 			#grad_left {
 		        left: 0;
-		        background: url('Images/grad_left.png') repeat-y;
+		        /*background: url('Images/grad_left.png') repeat-y;*/
 			}
 			#grad_right {
 		        right: 0;
-		        background: url('Images/grad_right.png') repeat-y;
+		        /*background: url('Images/grad_right.png') repeat-y;*/
 			}
 		
 		#next,
@@ -163,7 +165,13 @@ h1,h2,h4,h5,h6 {
 				left: 0;
 				background-image: url('Images/prev.png');
 			}
-				#next.disabled,
-				#prev.disabled {
-					opacity: 0.2;
-				}
+#next.disabled,
+#prev.disabled {
+	opacity: 0.2;
+}
+
+p.indent
+{
+margin-left: 30px;
+margin-right: 60px;
+}
