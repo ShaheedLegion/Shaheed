@@ -1,0 +1,221 @@
+<!doctype html>
+<html>
+<head>
+  <style type="text/css">
+    /* Prevents slides from flashing */
+    #slides {
+      display:none;
+    }
+  </style>
+
+  <script src="js/jquery-latest.min.js"></script>
+
+  <link rel="stylesheet" href="style.css" media="screen" />
+  <script src="js/jquery.timelinr.mod.js"></script>
+	<script>
+		$(function(){
+			$().timelinr({
+				arrowKeys: 'true'
+			})
+		});
+	</script>
+  <script src="js/jquery.slides.min.mod.js"></script>
+
+  <script>
+    $(function(){
+      $("#slides").slidesjs({
+        width: 800,
+        height: 800,
+		navigation: {
+		effect: "fade"
+		},
+		pagination: {
+		effect: "fade"
+		},
+		effect: {
+			fade: {
+			speed: 1000
+			}
+		},
+		callback: {
+		  loaded: function(number) {
+			// Do something awesome!
+			// Passes start slide number
+			//setContainer(number);
+		  },
+		  start: function(number) {
+			// Do something awesome!
+			// Passes slide number at start of animation
+			//setContainer(number);
+		  },
+		  complete: function(number) {
+			// Do something awesome!
+			// Passes slide number at end of animation
+			setContainer(number, 1);
+		  }
+		}
+      });
+    });
+  </script>
+
+  <link rel="stylesheet" type="text/css" src="sa.css" href="sa.css" />
+</head>
+<body onload="createmenu()">
+		<ul class="hidden" id="navtitles">
+		<li>Programmer?</li>
+		<li>Game Designer?</li>
+		<li>Gamer?</li>
+		<li>Musician?</li>
+		<li>eBook Designer?</li>
+		<li>Parkour Traceur?</li>
+		<li>Biker?</li>
+		<li>Husband?</li>
+		<li>Father?</li>
+		<li>Christian?</li>
+		<li>Friend?</li>
+		</ul>
+	<div class="border-box">
+		<h1>Who is Shaheed Abdol?</h1>
+		<div class="contentpane">
+			<div id="slides" class="slidecontainer">		
+				<div id="slide1">
+					<h2>Programmer...</h2>
+					<div id="timeline1" class="timeline">
+						<ul id="dates1" class="dates">
+							<li><a href="#1986">1986</a></li>
+							<li><a href="#2001">2001</a></li>
+							<li><a href="#2002">2002</a></li>
+							<li><a href="#2004">2004</a></li>
+							<li><a href="#2007">2007</a></li>
+							<li><a href="#2013">2013</a></li>
+						</ul>
+						<ul id="issues1" class="issues">
+							<li id="1986">
+								<img src="images/1.png" width="256" height="256" />
+								<h1>1986</h1>
+								<p>Am I the sum of my parts? Am I just a programmer? I wanted to write code since the day I realised what a computer was capable of doing... I have never looked back. I might go so far as to say that I was born with code in my veins...</p>
+							</li>
+							<li id="2001">
+								<img src="images/2.png" width="256" height="256" />
+								<h1>2001</h1>
+								<p>I started in 2001, writing Java code - with no internet access, I had to "unzip" the jar files to make sense of everything... it was an arduous process, and I spent sleepless nights trying to digest the information ... </p>
+								<p>
+								At the time I had no formal background in coding, when I started I didn't even own a computer - relying on printouts my friends so that I could study the code and make the best of my time I could borrow with the school computers.
+								</p>
+					
+								<p>
+								Having quickly excelled, I mastered Java within a few months, going from Turtle, to AWT, to Applets I grew tired of the language and the limitations it imposed on developers, such as the SandBox model.
+								</p>
+							</li>
+							<li id="2002">
+								<img src="images/3.png" width="256" height="256" />
+								<h1>2002-2003</h1>
+								<p>
+								That's when I met C ... my life changed in ways I never thought possible, by 2002 I was a competent C programmer, having taught myself the basics using Java, and working hard to grasp the inner workings of the computer from studying what little code I could convince my friends to print for me... I managed to secure a computer and spent all the free time I could muster staring at the screen, making things happen, it was wonderful.
+								</p>
+							</li>
+							<li id="2004">
+								<img src="images/4.png" width="256" height="256" />
+								<h1>2004-2007</h1>
+								<p>
+								My journey through life has always kept code on my path, earning a bursary to the University of Stellenbosch, I managed to find a brand new course that allowed me to study code without restrictions - the Uni had internet access, and it was here that my thirst for hunger would be quenched ... or so I thought...
+								</p>
+					
+								<p>
+								At first all was good, I quickly found myself doing programming odd jobs for friends on campus, a hobby that would earn me my first programming job - developer for a Student Society, the US Otaku. During that time, I worked tirelessly to create an online presence for our team, and create interactive games and demos which would help to spread our message, things were going well and I was nominated as Vice Chair to the society ... Even as V.C I clung to my programming role, rarely seen at meetings, but always online... this was the life I had dreamed of...
+								</p>
+							</li>
+							<li id="2007">
+								<img src="images/5.png" width="256" height="256" />
+								<h1>2007-2013</h1>
+								<p>After 3.5 years of excelling at code, and code-related subjects, and sucking at other subjects, like Economics, Psychology, Philosophy ... I learned that I would forever be a code - nothing more, nothing less. This suited me fine, and allowed me to focus on one thing and one thing alone.</p>
+								<p>I quickly packed up my things and headed out into the world in search of my coding path in life. Life handed me a telecommute job as an understudy for one of the worlds greatest PHP developers, I sucked at PHP at the time, but I held my ground with all the tasks assigned to me, but it didn't feel right to me - working online, using web technologies... something was missing, and I decided to try my hand at something I felt more comfortable with.</p>
+								<p>I quickly landed a job with a Systems Integration firm who built custom BMS and SCADA systems using a mix of C/C++/Java/SQL/Python etc... I had arrived. Within the space of 5 years, I had managed to work my way up within the company, I was the Senior Programmer, and life was good.</p>
+							</li>
+							<li id="2013">
+								<img src="images/6.png" width="256" height="256" />
+								<h1>2013</h1>
+								<p>Until that fateful day when a disagreement with company policy would send my life down a different path...
+								I resigned my job, a few weeks before I was to be married. The wedding went smoothly, and I was doing web development to make ends meet. Life was still good, but it could be better.
+								</p>
+								<p>
+								I cast my net and one small company, a startup in the digital publishing arena asked me to help them become grounded in the new era of technological advances. It felt strange to me, being so far from my life's great love, but I accepted the challenge and have never looked back. Quickly being cast as a Digital Book Publisher, and the lone developer for the company, my life headed back in the direction of code and compiled languages. It was a challenge, but one I was happy to undertake. The story continues, let's see how it unfolds...
+								</p>
+							</li>
+						</ul>
+						<div id="grad_left"></div>
+						<div id="grad_right"></div>
+						<a href="#" id="next">+</a>
+						<a href="#" id="prev">-</a>
+					</div>
+				</div>
+				<div id="slide2">
+					<h2>Game Designer...</h2>
+					<div id="timeline2" class="timeline">
+						<ul id="dates2" class="dates">
+							<li><a href="#1986">1986</a></li>
+							<li><a href="#2001">2001</a></li>
+						</ul>
+						<ul id="issues2" class="issues">
+							<li id="1986">
+								<img src="images/1.png" width="256" height="256" />
+								<h1>1986</h1>
+								<p>Am I the sum of my parts? Am I just a programmer? I wanted to write code since the day I realised what a computer was capable of doing... I have never looked back. I might go so far as to say that I was born with code in my veins...</p>
+							</li>
+							<li id="2001">
+								<img src="images/2.png" width="256" height="256" />
+								<h1>2001</h1>
+								<p>I started in 2001, writing Java code - with no internet access, I had to "unzip" the jar files to make sense of everything... it was an arduous process, and I spent sleepless nights trying to digest the information ... </p>
+								<p>
+								At the time I had no formal background in coding, when I started I didn't even own a computer - relying on printouts my friends so that I could study the code and make the best of my time I could borrow with the school computers.
+								</p>
+					
+								<p>
+								Having quickly excelled, I mastered Java within a few months, going from Turtle, to AWT, to Applets I grew tired of the language and the limitations it imposed on developers, such as the SandBox model.
+								</p>
+							</li>
+						</ul>
+						<div id="grad_left"></div>
+						<div id="grad_right"></div>
+						<a href="#" id="next">+</a>
+						<a href="#" id="prev">-</a>
+					</div>
+					<p>Am I the sum of my parts? Am I just a game designer? I wanted to write code since the day I realised what a computer was capable of doing... I have never looked back.</p>
+				</div>
+				<div id="slide3">
+					<h2>Gamer...</h2>
+					<p>Am I the sum of my parts? Am I just a gamer? I wanted to write code since the day I realised what a computer was capable of doing... I have never looked back.</p>
+				</div>
+				<div id="slide4">
+					<h2>Musician...</h2>
+					<p>Am I the sum of my parts? Am I just a musician? I wanted to write code since the day I realised what a computer was capable of doing... I have never looked back.</p>
+				</div>
+				<div id="slide5">
+					<h2>eBook Designer...</h2>
+					<p>Am I the sum of my parts? Am I just a eBook designer? I wanted to write code since the day I realised what a computer was capable of doing... I have never looked back.</p>
+				</div>
+				<div id="slide6">
+					<h2>Parkour Traceur...</h2>
+					<p>Am I the sum of my parts? Am I just a Parkour traceur? I wanted to write code since the day I realised what a computer was capable of doing... I have never looked back.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+<script>
+function createmenu()
+{
+	var _linkelements = $("#navmenu").children();
+	var _listelements = $("#navtitles").children();	//this should be the same length as above
+	var _i;
+	for (_i = 0; _i < _linkelements.length; _i++)
+	{
+		var _child = _linkelements[_i];	//this should be an <a> tag
+		var _anchor = _child.firstChild;
+		_anchor.innerHTML = _listelements[_i].innerHTML;
+	}
+	
+	setContainer(1, 1);
+}
+</script>
+</body>
+</html>
