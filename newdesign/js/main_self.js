@@ -272,4 +272,14 @@ document.onmousemove = function(e)
 
 	_tman.mx = _x;
 	_tman.my = _y;
-} 
+}
+
+document.addEventListener('touchmove', 
+	function(e)
+	{
+		e.preventDefault();
+		var touch = e.touches[0];
+		_tman.mx = touch.pageX;
+		_tman.my = touch.pageY;
+	}
+, false);
