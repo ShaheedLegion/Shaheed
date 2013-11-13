@@ -219,12 +219,33 @@ TileManager.prototype.run = function()
 ;
 
 /****************************************************************/
+var _menushowing;
+$(document).ready(
+	function()
+	{
+		$('#toggle').click(
+			function()
+			{
+				if (!_menushowing)
+				{
+					showMenu();
+					_menushowing = 1;
+				}
+				else
+				{
+					hideMenu();
+					_menushowing = 0;
+				}
+				return false;
+			}
+		);
 
-window.onload = function()
-{
-  _tman = new TileManager ('exhibit', 4, 5);
-  _tman.init();
-}
+	  _tman = new TileManager ('exhibit', 4, 5);
+	  _tman.init();
+	  hideMenu();
+	  _menushowing = 0;
+	}
+);
 
 document.onmousemove = function(e)
 { 
@@ -234,8 +255,6 @@ document.onmousemove = function(e)
 	var _x = e.x ? e.x : e.clientX;
 	var _y = e.y ? e.y : e.clientY;
 
-
 	_tman.mx = _x;
 	_tman.my = _y;
-	
 } 
