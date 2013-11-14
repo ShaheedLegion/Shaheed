@@ -1,335 +1,114 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-  <style type="text/css">
-    /* Prevents slides from flashing */
-    #slides {
-      display:none;
-    }
-  </style>
+	<title>Shaheed Abdol - meet the man</title>
+	<meta name="description" content="Shaheed Abdol, Shaheed Abdol - Programmer, Personal Website for Shaheed Abdol"/>
+	<link rel="stylesheet" href="css/main.css" type="text/css" media="all" />
 
-  <script src="js/jquery-latest.min.js"></script>
+	<script src="js/jquery-latest.min.js" type="text/javascript"></script>
+	<script src="js/navigation.js" type="text/javascript"></script>
+	<script src="js/main_self.js" type="text/javascript"></script>
+<head>
 
-  <link rel="stylesheet" href="style.css" media="screen" />
-  <script src="js/jquery.timelinr.mod.js"></script>
-	<script>
-		$(function(){
-			$().timelinr({
-				arrowKeys: 'true'
-			})
-		});
-	</script>
-  <script src="js/jquery.slides.min.mod.js"></script>
+<body>
 
-  <script>
-    $(function(){
-      $("#slides").slidesjs({
-        width: 800,
-        height: 800,
-		navigation: {
-		effect: "fade"
-		},
-		pagination: {
-		effect: "fade"
-		},
-		effect: {
-			fade: {
-			speed: 1000
-			}
-		},
-		callback: {
-		  loaded: function(number) {
-			// Do something awesome!
-			// Passes start slide number
-			//setContainer(number);
-		  },
-		  start: function(number) {
-			// Do something awesome!
-			// Passes slide number at start of animation
-			//setContainer(number);
-		  },
-		  complete: function(number) {
-			// Do something awesome!
-			// Passes slide number at end of animation
-			setContainer(number, 1);
-		  }
-		}
-      });
-    });
-  </script>
+<div class="menubar" id="menubar">
+<object data="cube.html"></object>
 
-  <link rel="stylesheet" type="text/css" src="sa.css" href="sa.css" />
-</head>
-<body onload="createmenu()">
-		<ul class="hidden" id="navtitles">
-		<li>Programmer?</li>
-		<li>Game Designer?</li>
-		<li>Gamer?</li>
-		<li>Husband?</li>
-		<li>eBook Designer?</li>
-		<li>Traceur?</li>
-		<li>Biker?</li>
-		</ul>
-	<div class="border-box">
-		<div class="above"><h1>Who is Shaheed Abdol?</h1></div>
-		<object data="cube.html"></object>
-		<div class="contentpane">
-			<div id="slides" class="slidecontainer">		
-				<div id="slide1">
-					<h2>Programmer...</h2>
-					<div id="timeline1" class="timeline">
-						<ul id="dates1" class="dates">
-							<li><a href="#1986">1986</a></li>
-							<li><a href="#2001">2001</a></li>
-							<li><a href="#2002">2002</a></li>
-							<li><a href="#2004">2004</a></li>
-							<li><a href="#2007">2007</a></li>
-							<li><a href="#2013">2013</a></li>
-						</ul>
-						<ul id="issues1" class="issues">
-							<li id="1986">
-								<img src="Images/1.png"/>
-								<h1>1986</h1>
-								<p>Am I the sum of my parts? Am I just a programmer? I wanted to write code since the day I realised what a computer was capable of doing... I have never looked back. I might go so far as to say that I was born with code in my veins...</p>
-							</li>
-							<li id="2001">
-								<img src="Images/2.png"/>
-								<h1>2001</h1>
-								<p>I started in 2001, writing Java code - with no internet access, I had to "unzip" the jar files to make sense of everything... it was an arduous process, and I spent sleepless nights trying to digest the information ... </p>
-								<p>
-								At the time I had no formal background in coding, when I started I didn't even own a computer - relying on printouts my friends so that I could study the code and make the best of my time I could borrow with the school computers.
-								</p>
-					
-								<p>
-								Having quickly excelled, I mastered Java within a few months, going from Turtle, to AWT, to Applets I grew tired of the language and the limitations it imposed on developers, such as the SandBox model.
-								</p>
-							</li>
-							<li id="2002">
-								<img src="Images/3.png"/>
-								<h1>2002-2003</h1>
-								<p>
-								That's when I met C ... my life changed in ways I never thought possible, by 2002 I was a competent C programmer, having taught myself the basics using Java, and working hard to grasp the inner workings of the computer from studying what little code I could convince my friends to print for me... I managed to secure a computer and spent all the free time I could muster staring at the screen, making things happen, it was wonderful.
-								</p>
-							</li>
-							<li id="2004">
-								<img src="Images/4.png"/>
-								<h1>2004-2007</h1>
-								<p>
-								My journey through life has always kept code on my path, earning a bursary to the University of Stellenbosch, I managed to find a brand new course that allowed me to study code without restrictions - the Uni had internet access, and it was here that my thirst for hunger would be quenched ... or so I thought...
-								</p>
-					
-								<p>
-								At first all was good, I quickly found myself doing programming odd jobs for friends on campus, a hobby that would earn me my first programming job - developer for a Student Society, the US Otaku.
-								</p>
-								<p class="indent">
-								During that time, I worked tirelessly to create an online presence for our team, and create interactive games and demos which would help to spread our message, things were going well and I was nominated as Vice Chair to the society ... Even as V.C I clung to my programming role, rarely seen at meetings, but always online... this was the life I had dreamed of...
-								</p>
-							</li>
-							<li id="2007">
-								<img src="Images/5.png"/>
-								<h1>2007-2013</h1>
-								<p>After 3.5 years of excelling at code, and code-related subjects, and sucking at other subjects, like Economics, Psychology, Philosophy ... I learned that I would forever be a code - nothing more, nothing less. This suited me fine, and allowed me to focus on one thing and one thing alone.</p>
-								<p>I quickly packed up my things and headed out into the world in search of my coding path in life. Life handed me a telecommute job as an understudy for one of the worlds greatest PHP developers, I sucked at PHP at the time, but I held my ground with all the tasks assigned to me, but it didn't feel right to me - working online, using web technologies...</p>
-								<p class="indent">I quickly landed a job with a Systems Integration firm who built custom BMS and SCADA systems using a mix of C/C++/Java/SQL/Python etc... I had arrived. Within the space of 5 years, I had managed to work my way up within the company, I was the Senior Programmer, and life was good.</p>
-							</li>
-							<li id="2013">
-								<img src="Images/6.png"/>
-								<h1>2013</h1>
-								<p>Until that fateful day when a disagreement with company policy would send my life down a different path...
-								I resigned my job, a few weeks before I was to be married. The wedding went smoothly, and I was doing web development to make ends meet. Life was still good, but it could be better.
-								</p>
-								<p class="indent">
-								I cast my net and one small company, a startup in the digital publishing arena asked me to help them become grounded in the new era of technological advances. It felt strange to me, being so far from my life's great love, but I accepted the challenge and have never looked back. Quickly being cast as a Digital Book Publisher, and the lone developer for the company, my life headed back in the direction of code and compiled languages. It was a challenge, but one I was happy to undertake. The story continues, let's see how it unfolds...
-								</p>
-							</li>
-						</ul>
-					</div>
-				</div>
-				<div id="slide2">
-					<h2>Game Designer...</h2>
-					<div id="timeline2" class="timeline">
-						<ul id="dates2" class="dates">
-							<li><a href="#1986">1986</a></li>
-							<li><a href="#2001">2001</a></li>
-						</ul>
-						<ul id="issues2" class="issues">
-							<li id="1986">
-								<img src="Images/1.png"/>
-								<h1>1986</h1>
-								<p>Am I the sum of my parts? Am I just a Game Designer?</p>
-							</li>
-							<li id="2001">
-								<img src="Images/2.png"/>
-								<h1>2001</h1>
-								<p>I started in 2001, writing Java code - with no internet access, I remember thinking about games as abstract masterpieces ... all I had seen at the time were classics like Donkey Kong, MS Pacman and Mario Bros. I longed to create my own games.</p>
-								<p>
-								Drawing inspiration from the familiar, I spent hours creating little Applets which would each serve to strengthen my skills, until I had created dozens of little games - each better than the last.
-								</p>
-					
-								<p>
-								Having grown tired of Java, I quickly used my skills to develop games in Pascal, an later for Windows, learning technologies like DirectX and OpenGL along the way.
-								</p>
-							</li>
-						</ul>
-					</div>
-				</div>
-				<div id="slide3">
-					<h2>Gamer...</h2>
-					<div id="timeline3" class="timeline">
-						<ul id="dates3" class="dates">
-							<li><a href="#1986">1986</a></li>
-							<li><a href="#2000">2000</a></li>
-						</ul>
-						<ul id="issues3" class="issues">
-							<li id="1986">
-								<img src="Images/4.png"/>
-								<h1>1986</h1>
-								<p>Am I the sum of my parts? Am I just a gamer?</p>
-							</li>
-							<li id="2000">
-								<img src="Images/5.png"/>
-								<h1>2000</h1>
-								<p>I remember the way it felt to own my first video game, it was not so much a console as a hunking cartridge-based fun station... I can still remember playing Mario Bros. The rapture of "clocking" the game...</p>
-								<p>
-								A close family friend later donated a playstation (PS 10) console ... the hours I spent playing Syphon Filter - the only game I owned.
-								</p>
-								<p class="indent">
-								When I started my first job I quickly saved up money to purchase an XBox console, the fist of three - which I still enjoy to this day...
-								</p>
-							</li>
-						</ul>
-					</div>
-				</div>
-				<div id="slide4">
-					<h2>Husband...</h2>
-					<div id="timeline4" class="timeline">
-						<ul id="dates4" class="dates">
-							<li><a href="#2007">2007 - 2013</a></li>
-						</ul>
-						<ul id="issues4" class="issues">
-							<li id="2007">
-								<img src="Images/5.png"/>
-								<h1>2007 - 2013</h1>
-								<p>Am I just a husband?</p>
-								<p>
-								I will never forget the day I laid eyes on her... mid 2007, she was much younger than me, but I simply couldn't help myself, I've loved her for as long as I've known her...
-								</p>
-								<p>She was always the quiet one, it took quite a bit of coaxing on my part t get her to speak to me, but I relished the day we finally had our first, awkward, conversation</p>
-								<p class="indent">
-								We ended up dating for about 5 years, and were married in January of 2013, some of the happiest memories of my life... so far...
-								</p>
-							</li>
-						</ul>
-					</div>
-				</div>
-				<div id="slide5">
-					<h2>eBook Designer...</h2>
-					<div id="timeline5" class="timeline">
-						<ul id="dates5" class="dates">
-							<li><a href="#2013">2013</a></li>
-						</ul>
-						<ul id="issues5" class="issues">
-							<li id="2013">
-								<img src="Images/8.png"/>
-								<h1>2013</h1>
-								<p>Am I just a eBook Designer?</p>
-								<p>
-								I have been working with digital books since April of this year, it's an interesting field and the company for which I work is at the bleeding edge of digital book technology.
-								</p>
-								<p>I find myself with the good fortune of being able to convert an EPUB2 into an EPUB3 by hand, with all the knowledge I've gained oer the past couple of months my company is poised to take the digital publishing market by storm.</p>
-								<p class="indent">
-								I am a programmer by nature, so the work is a bit tedious, but the fun starts with the new features present in EPUB3 books - we are allowed to add interactivity via JavaScript ... let the good times roll!
-								</p>
-							</li>
-						</ul>
-					</div>
-				</div>
-				<div id="slide6">
-					<h2>Parkour Traceur...</h2>
-					<div id="timeline6" class="timeline">
-						<ul id="dates6" class="dates">
-							<li><a href="#2004">2004 - 2013</a></li>
-						</ul>
-						<ul id="issues6" class="issues">
-							<li id="2004">
-								<img src="Images/3.png"/>
-								<h1>2004 - 2013</h1>
-								<p>Am I just a Parkour Traceur?</p>
-								<p>
-								I remember the first true Parkour video I watched. A YouTube video of David Belle performing an insane stunt of some kind, the details escape me now, but the emotions will live with me forever...
-								</p>
-								<p>I immediately set out to copy the moves as best I could, having only YouTube videos to work from - and not knowing the name of the sport, I fared clumsily. I packed on injury after injury until I met a friend who helped me do the proper research to refine my technique.</p>
-								<p class="indent">
-								Not too long after that I joined up with other traceurs, people in and around Cape Town who were trying to improve their skills. We learned a lot from each other, and regular meetings still happen to this day...
-								</p>
-							</li>
-						</ul>
-					</div>
-				</div>
-				<div id="slide7">
-					<h2>Biker...</h2>
-					<div id="timeline7" class="timeline">
-						<ul id="dates7" class="dates">
-							<li><a href="#2007">2007</a></li>
-							<li><a href="#2010">2010</a></li>
-							<li><a href="#2012">2012</a></li>
-						</ul>
-						<ul id="issues7" class="issues">
-							<li id="2007">
-								<img src="Images/4.png"/>
-								<h1>2007</h1>
-								<p>Am I just a Biker?</p>
-								<p>
-								I remember the first motorcycle I ever owned, a 125cc Moto Mia - Mocca. A good friend of mine allowed me to purchase the bike from him on terms... with my meagre salary at the time it was all I could afford.
-								</p>
-								<p>I had wanted to be a "biker" for as long as I could remember, I was an avid cyclist for years - preparing myself for the joy of powered locomotion on two wheels.</p>
-								<p class="indent">
-								I still remember the first time I got onto a motorcycle, my friend had just handed over the keys to the bike, and was teaching me how to drive in a vacant parking lot... after 5 minutes I knew I would be doing this for a long time. The net day, without experience and without a license, I took the bike to work - in Bellville, over 20 kilometers from home... exciting times...
-								</p>
-							</li>
-							<li id="2010">
-								<img src="Images/1.png"/>
-								<h1>2010</h1>
-								<p>After several years of "cutting my teeth" on the roads, I bit the bullet and acquired my learner's license. At around the same time I decided to "upgrade" and purchased a 200cc Loncin Lx-200 2 motorcycle. What a beauty, nippy engine, easy on the turns, just a joy to drive.</p>
-								<p>
-								I remember going on long drives with that bike, she loved the open road as much as I did...
-								</p>
-								<p class="indent">
-								I had my fair share of mishaps, my chain broke a couple of times - far away from home... leaving me to push the bike as far as possible towards a garage or landmark, then calling for help... Or reaching the bike to discover that she didn't want to start for lack of petrol ... lot's of pushing to get her some juice... good times... 
-								</p>
-							</li>
-							<li id="2012">
-								<img src="Images/7.png"/>
-								<h1>2012</h1>
-								<p>I decided to upgrade again, this time I got my hands on a superbike - Suzuki RF600R, a 600cc beast which had way more power than I knew how to handle...</p>
-								<p>
-								I realised too late that I would struggle to get spare parts for her, but I loved my "Suzie", I hunted and drove and called around when I needed parts, eventually I would find the FR owners club - an online community of bikers with the same bike... I wish I had found them sooner.
-								</p>
-								<p class="indent">
-								These days my wife and I travel the open roads, with a super bike taking us wherever we want to go. There were some difficulties, but we are hitting our stride, and life is good. We have travelled to some crazy places - Langebaan, Piketberg, Paarl, Kommetjie, Partridge Point, the Cable Cars and we are planning a drive down to Hermanus soon - see you there.
-								</p>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</div>
+    <div class="exhibit" id="id1">
+		<a href="index.html">
+			<h4>Man</h4><span>Meet Shaheed Abdol, the man</span>
+		</a>
 		</div>
+    <div class="exhibit" id="id2">
+		<a href="husband.html">
+			<h4>Husband</h4><span>Meet Shaheed Abdol, the husband</span>
+		</a>
 	</div>
-<script>
-function createmenu()
-{
-	var _linkelements = $("#navmenu").children();
-	var _listelements = $("#navtitles").children();	//this should be the same length as above
-	var _i;
-	for (_i = 0; _i < _linkelements.length; _i++)
-	{
-		var _child = _linkelements[_i];	//this should be an <a> tag
-		var _anchor = _child.firstChild;
-		_anchor.innerHTML = _listelements[_i].innerHTML;
-	}
+    <div class="exhibit" id="id3">
+		<a href="programmer.html">
+			<h4>Programmer</h4><span>Meet Shaheed Abdol, the programmer</span>
+		</a>
+	</div>
+    <div class="exhibit" id="id4">
+		<a href="biker.html">
+			<h4>Biker</h4><span>Meet Shaheed Abdol, the biker</span>
+		</a>
+	</div>
+    <div class="exhibit" id="id5">
+		<a href="friend.html">
+			<h4>Friend</h4><span>Meet Shaheed Abdol, the friend</span>
+		</a>
+	</div>
+    <div class="exhibit" id="id6">
+		<a href="webdev.html">
+			<h4>Web designer</h4><span>Meet Shaheed Abdol, the web designer</span>
+		</a>
+	</div>
+	<div class="exhibit" id="id7">
+		<a href="ebook.html">
+			<h4>eBook designer</h4><span>Meet Shaheed Abdol, the eBook designer</span>
+		</a>
+	</div>
+	<div class="exhibit" id="id8">
+		<a href="traceur.html">
+			<h4>Traceur</h4><span>Meet Shaheed Abdol, the Traceur</span>
+		</a>
+	</div>
+	<div class="exhibit" id="id9">
+		<a href="christian.html">
+			<h4>Christian</h4><span>Meet Shaheed Abdol, the Christian</span>
+		</a>
+	</div>
+
+	<a href="#" id="toggle" class="menubutton">
+		<div class="menubutton" id="menubtn" data-role="button">
+		<div class="centermenu"><p>Menu</p></div>
+		</div>
+	</a>
+</div>
+
+
+
+<div class="bodycontent">
+	<h1>Who is Shaheed Abdol?</h1>
+	<h2>Meet the man</h2>
+	<p>
+	Shaheed Abdol is just another guy, born in 1986, who wanted to make something better of his life... He studied hard, played hard, worked hard and spends each day striving to outperform himself.
+	</p>
+	<hr/>	
+	<h2>The early years...</h2>
+
+	<h3>1986</h3>
+	<p>
+	Shaheed Abdol was born on the 26th January 1986, a healthy baby boy. He developed into a highly intelligent child, who mastered reading by the age of 5, and always stayed at an advanced reading level. He was a voracious reader, and quickly discovered his love for the sciences.
+	</p>
 	
-	setContainer(1, 1);
-}
-</script>
-</body>
+	<p>Within days problems cropped up, Shaheed suffered from asthma attacks and violent seizures. His parents rushed him to hospital, fearing for his life, but were relieved to find that the asthma was treatable, and the seizures were due to a rare type of epilepsy - which caused a type of brain hyperactivity. Shaheed was simply too young to handle all the sensory stimulus his brain was responding to and "shut down" for short periods of time, his parents were told to keep him occupied and to make sure he got enough sleep.</p>
+	
+	<p>With much love and nurturing the asthma abated, and the seizures became a rare occurrence in his life. He had found something to occupy his mind - reading.</p>
+	
+	<h3>The "tween" years</h3>
+	</p>
+	Primary School progressed normally, although his parents were offered the option to advance Shaheed's grade, twice, due to his advanced reading ability and quick comprehension. His parents turned down the offers, thinking about his psychological development, and wanting him to progress at a natural pace.
+	<p>
+	
+	<p>Shaheed found the love of books early in life, and by the age of 10 he had nearly consumed the entire local library. After his parents discovered his love of reading, they quickly acquired library cards for all the libraries in town, and within 2 years Shaheed had exhausted the supply of books on which he could reasonably lay his hands. That's when his family, most notably his uncle Carriem, stepped in to provide him with a steady stream of reading materials - books, manuscripts, magazines, anything to feed his hungry mind.</p>
+
+	<h3>The late '90s</h3>
+	<p class="quote">
+	"At the time I didn't know why I spent all my time reading, but I loved it. Every word became an experience, every sentence was a new adventure and every book was a chapter in my life.."
+	</p>
+
+	<p>Shaheed didn't need much to keep himself busy, he found that he had gained the ability to fix things - thank's to the many technical manuals he had consumed, and happily busied himself with tinkering. He had discovered how to perform plumbing procedures, how to work with electrical appliances and even how to fix common appliances.</p>
+	
+	<p class="quote">
+	"I have always had a great memory, and I found that I could recall certain kinds of information more vividly than others - mostly technical stuff, like schematics and wiring diagrams."
+	</p>
+	
+	<p>He tried his hand at many things, but finally settled on woodwork as a hobby. He liked constructing things, and found that wood was a great medium to bring function into form without much hassle.</p>
+	
+	<p class="quote">I finally found that woodwork gave me the most satisfaction, honing a block of wood into something aesthetic or functional always gave me great joy. I loved building boxes of all kinds, cabinets, speaker enclosures and chests all gave me great joy.</p>
+</div>
+<body>
 </html>

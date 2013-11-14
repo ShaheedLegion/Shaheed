@@ -9,6 +9,9 @@ body
 	font-size:18px;
 	text-shadow: 1px 1px 2px #676fa3;
 	filter: dropshadow(color=#676fa3, offx=1, offy=1);
+	
+	margin-left: 1em;
+	margin-right: 1em;
 }
 
 body, div, p, span
@@ -31,10 +34,18 @@ a
 	color:white;
 }
 
+a.bl {color:blue;}
+
 a:hover
 {
 	text-decoration:underline;
 	color:yellow;
+}
+
+p
+{
+margin-top: 1em;
+margin-bottom: 1em;
 }
 
 p.quote
@@ -147,9 +158,16 @@ p.quote
 	color:white;
 	font-size:14px;
 	text-align: center;
+	margin: 0;
 }
 
 .bodycontent
 {
 	padding: 10px;
+}
+
+h3
+{
+border-top: 1px solid;
+border-bottom: 1px solid;
 }

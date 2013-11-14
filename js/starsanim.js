@@ -1,5 +1,5 @@
 var camera, scene, renderer;
-var geometry, material, mesh;
+//var geometry, material, mesh;
 var mouseX = 0, mouseY = 0, particles = [];
 var fps = 30;
 
@@ -82,7 +82,7 @@ function init() {
 
     scene = new THREE.Scene();
 	scene.add(camera);
-
+/*
     geometry = new THREE.CubeGeometry(600, 600, 600);
     material = new THREE.MeshBasicMaterial({
         color: 0xff0000,
@@ -91,7 +91,7 @@ function init() {
 
     mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
-
+*/
     renderer = new THREE.CanvasRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -114,9 +114,10 @@ function animate()
 	setTimeout(function()
 	{
         requestAnimationFrame(animate);
-        // Drawing code goes here
+/*
 		mesh.rotation.x += 0.01;
 		mesh.rotation.y += 0.02;
+*/
 		updateParticles();
 		renderer.render(scene, camera);
     }, 1000 / fps);
