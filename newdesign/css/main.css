@@ -1,20 +1,20 @@
 html, body
 {
-width:100%;
-height:100%;
+	width:100%;
+	height:100%;
 }
 
 body
 {
-	background:#333;
-	margin:0;
-	padding:0;
-
-	color:white;
 	font-size:18px;
-
 	text-shadow: 1px 1px 2px #676fa3;
 	filter: dropshadow(color=#676fa3, offx=1, offy=1);
+}
+
+body, div, p, span
+{
+	margin:0;
+	padding:0;
 }
 
 p.quote
@@ -27,42 +27,56 @@ p.quote
 
 object
 {
-width: 100%;
-height:100%;
-z-index:4;
+	width: 100%;
+	height:100%;
+	z-index:4;
 }
+
+#id1{ background: url('../images/pic1.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
+#id2{ background: url('../images/pic2.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
+#id3{ background: url('../images/pic3.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
+#id4{ background: url('../images/pic4.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
+#id5{ background: url('../images/pic5.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
+#id6{ background: url('../images/pic6.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
+#id7{ background: url('../images/pic7.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
+#id8{ background: url('../images/pic8.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
+#id9{ background: url('../images/pic9.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
 
 .exhibit
 {
     position: absolute;
     display: inline-block;
-    background: url('../images/pic13.jpg') no-repeat;
-	background-position:0 0;
-	background-size: 100% 100%;
     color: white;
-    width: 160px;
-    height: 120px;
+    width: 200px;
+    height: 80px;
+	
+	border: 2px white solid;
+	-webkit-border-radius: 9px;
+	-moz-border-radius: 9px;
+	border-radius: 9px;
 }
 
-#blocky
+.exhibit h4
 {
-  background: grey;
+	margin-top: 1em;
+	margin-bottom: 0px;
+	background: black;
+}
+
+.exhibit span
+{
+	font-size: 12px;
 }
 
 .menubar
 {
-display: block;
-width: 100%;
-height: 300px;
-overflow: hidden;
-
-
-position: absolute;
-left:0;
-top:0;
-
-margin:0;
-padding:0;
+	display: block;
+	width: 100%;
+	height: 300px;
+	overflow: hidden;
+	position: absolute;
+	left:0;
+	top:0;
 }
 
 .menubutton
@@ -94,7 +108,6 @@ padding:0;
 .centermenu
 {
 	width: 80px;
-	margin:0;
 	margin-left: auto;
 	margin-right: auto;
 	border-bottom: white 2px solid;
@@ -115,13 +128,6 @@ padding:0;
 	color:white;
 	font-size:14px;
 	text-align: center;
-	margin:0;
-}
-
-h4
-{
-margin-top: 2em;
-background: black;
 }
 
 .bodycontent

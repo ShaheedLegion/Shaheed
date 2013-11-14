@@ -65,23 +65,34 @@ TileRow.prototype.moveElements = function(sx, sy)
 
 TileRow.prototype.getX = function()
 {
-	return this.tiles[0].x;
+	if (this.tiles.length)
+		return this.tiles[0].x;
+	return 0;
 }
 
 TileRow.prototype.getY = function()
 {
-	return this.tiles[0].y;
+	if (this.tiles.length)
+		return this.tiles[0].y;
+	return 0;
 }
 
 TileRow.prototype.getXEnd = function()
 {
-	var end = this.tiles.length - 1;
-	return (this.tiles[end].x + this.tiles[end].w);
+	if (this.tiles.length)
+	{
+		var end = this.tiles.length - 1;
+		return (this.tiles[end].x + this.tiles[end].w);
+	}
+	
+	return 0;
 }
 
 TileRow.prototype.getYEnd = function()
 {
-	return (this.tiles[0].y + this.tiles[0].h);
+	if (this.tiles.length)
+		return (this.tiles[0].y + this.tiles[0].h);
+	return 0;
 }
 ;
 
@@ -92,7 +103,7 @@ function TileManager (_class, _rows, _cols)
     this.tagClassName = _class;
 	this.parent = 0;
     this.rows = _rows;
-    this.cols = _cols;
+    this.cols = _cols - 1;
 	this.cx = 0;
 	this.cy = 0;
 	this.mx = 0;
@@ -170,8 +181,12 @@ TileManager.prototype.moveRowsY = function()
 			return 0;
 			
 	if (this.cy < 0)
+	{
+		if (this._rows[lastrow].tiles.length == 0)
+			lastrow--;
 		if (this._rows[lastrow].getYEnd() < this.parent.clientHeight - this._gap)
 			return 0;
+	}
 	return 1;
 }
 
@@ -240,7 +255,7 @@ $(document).ready(
 			}
 		);
 
-	  _tman = new TileManager ('exhibit', 4, 5);
+	  _tman = new TileManager ('exhibit', 3, 3);
 	  _tman.init();
 	  hideMenu();
 	  _menushowing = 0;
