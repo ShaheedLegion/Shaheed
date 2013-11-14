@@ -2,15 +2,27 @@ html, body
 {
 width:100%;
 height:100%;
-overflow:hidden;
 }
 
 body
 {
-background:#333;
-margin:0;
-padding:0;
-overflow:hidden;
+	background:#333;
+	margin:0;
+	padding:0;
+
+	color:white;
+	font-size:18px;
+
+	text-shadow: 1px 1px 2px #676fa3;
+	filter: dropshadow(color=#676fa3, offx=1, offy=1);
+}
+
+p.quote
+{
+	margin-left:2em;
+	margin-top:1em;
+	margin-bottom:1em;
+	font-style:italic;
 }
 
 object
@@ -55,30 +67,64 @@ padding:0;
 
 .menubutton
 {
-display:block;
-width:100%;
-height:20px;
+	display:block;
+	width:100%;
+	height:20px;
+	z-index: 10;
+	position:absolute;
+	bottom:0;
+	left:0;
 
-background:green;
-z-index: 10;
-
-position:absolute;
-bottom:0;
-left:0;
+	/* fallback */
+	background-color: #1a82f7;
+	background: url('images/menu-bar.png');
+	background-repeat: repeat-x;
+	/* Safari 4-5, Chrome 1-9 */
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#1a82f7), to(#2F2727));
+	/* Safari 5.1, Chrome 10+ */
+	background: -webkit-linear-gradient(top, #573A3A, #1a82f7);
+	/* Firefox 3.6+ */
+	background: -moz-linear-gradient(top, #2F2727, #1a82f7);
+	/* IE 10 */
+	background: -ms-linear-gradient(top, #2F2727, #1a82f7);
+	/* Opera 11.10+ */
+	background: -o-linear-gradient(top, #2F2727, #1a82f7);
 }
 
-.menubutton p
+.centermenu
 {
-	text-align:center;
-	color:white;
+	width: 80px;
 	margin:0;
-	padding:0;
-	font-family: sanserif;
-	font-size:18px;
+	margin-left: auto;
+	margin-right: auto;
+	border-bottom: white 2px solid;
+	border-right: white 2px solid;
+	border-left: white 2px solid;
+	
+	-webkit-border-bottom-right-radius: 9px;
+	-webkit-border-bottom-left-radius: 9px;
+	-moz-border-radius-bottomright: 9px;
+	-moz-border-radius-bottomleft: 9px;
+	border-bottom-right-radius: 9px;
+	border-bottom-left-radius: 9px;
+}
+
+.centermenu p
+{
+	padding:0 10px 0 10px;
+	color:white;
+	font-size:14px;
+	text-align: center;
+	margin:0;
 }
 
 h4
 {
 margin-top: 2em;
 background: black;
+}
+
+.bodycontent
+{
+	padding: 10px;
 }
