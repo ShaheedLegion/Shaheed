@@ -1,7 +1,6 @@
 html, body
 {
 	width:100%;
-	height:100%;
 }
 
 body
@@ -29,12 +28,19 @@ object
 
 a
 {
+	border:none;
 	border: 0;
 	text-decoration: none;
 	color:white;
 }
 
 a.bl {color:blue;}
+a.big
+{
+width: 100%;
+height:100%;
+display:block;
+}
 
 a:hover
 {
@@ -171,3 +177,71 @@ h3
 border-top: 1px solid;
 border-bottom: 1px solid;
 }
+
+
+.dpad
+{
+	position:absolute;
+	width:160px;
+	height:160px;
+	left:0;
+	bottom:20px;
+	
+	z-index:12;
+}
+.arrowl
+{
+	background: url('../images/arrow-l.png') no-repeat;
+	background-position: 0 0;
+	background-size: 100% 100%;
+
+	width: 64px;
+	height:32px;
+
+	position:absolute;
+	left:0;
+	top:64px;
+}
+
+.arrowr
+{
+	background: url('../images/arrow-r.png') no-repeat;
+	background-position: 0 0;
+	background-size: 100% 100%;
+
+	width: 64px;
+	height:32px;
+
+	position:absolute;
+	left:96px;
+	top:64px;
+}
+
+.arrowu
+{
+	background: url('../images/arrow-u.png') no-repeat;
+	background-position: 0 0;
+	background-size: 100% 100%;
+
+	width:32px;
+	height:64px;
+
+	position:absolute;
+	left:64px;
+	top:0;
+}
+
+.arrowd
+{
+	background: url('../images/arrow-d.png') no-repeat;
+	background-position: 0 0;
+	background-size: 100% 100%;
+
+	width:32px;
+	height:64px;
+
+	position:absolute;
+	left:64px;
+	top:96px;
+}
+

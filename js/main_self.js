@@ -234,6 +234,29 @@ TileManager.prototype.run = function()
 ;
 
 /****************************************************************/
+var speed = 10;	//measured in pixel units
+
+function navleft()
+{
+	_tman.mx = _tman.hw + speed;
+	_tman.my = _tman.my;
+}
+function navright()
+{
+	_tman.mx = _tman.hw  - speed;
+	_tman.my = _tman.my;
+}
+function navup()
+{
+	_tman.mx = _tman.mx;
+	_tman.my = _tman.hh  - speed;
+}
+function navdown()
+{
+	_tman.mx = _tman.mx;
+	_tman.my = _tman.hh  + speed;
+}
+
 var _menushowing;
 $(document).ready(
 	function()
@@ -261,7 +284,7 @@ $(document).ready(
 	  _menushowing = 0;
 	}
 );
-
+/*
 document.onmousemove = function(e)
 { 
     if (window.event)
@@ -283,3 +306,4 @@ document.addEventListener('touchmove',
 		_tman.my = touch.pageY;
 	}
 , false);
+*/
