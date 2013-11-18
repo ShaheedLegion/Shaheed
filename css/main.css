@@ -23,7 +23,7 @@ object
 {
 	width: 100%;
 	height:100%;
-	z-index:4;
+	z-index:12;
 }
 
 a
@@ -90,6 +90,7 @@ p.quote
 {
 	width: 100%;
 	height:100%;
+	display:block;
 }
 
 .exhibit h4
@@ -113,6 +114,7 @@ p.quote
 	position: absolute;
 	left:0;
 	top:0;
+	z-index:12;
 }
 
 .menubutton
@@ -120,7 +122,7 @@ p.quote
 	display:block;
 	width:100%;
 	height:20px;
-	z-index: 10;
+	z-index: 12;
 	position:absolute;
 	bottom:0;
 	left:0;
@@ -170,6 +172,9 @@ p.quote
 .bodycontent
 {
 	padding: 10px;
+	max-width: 800px;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 h3
@@ -244,4 +249,19 @@ border-bottom: 1px solid;
 	left:64px;
 	top:96px;
 }
+
+.arrows
+{
+	background: url('../images/arrow-s.png') no-repeat;
+	background-position: 0 0;
+	background-size: 100% 100%;
+
+	width:32px;
+	height:32px;
+
+	position:absolute;
+	left:64px;
+	top:64px;
+}
+
 

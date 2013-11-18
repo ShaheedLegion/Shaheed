@@ -114,9 +114,9 @@ function TileManager (_class, _rows, _cols)
 	this.boundary = 40;
 	this._gap = 100;
 	
-	var speed = 6;
+	var speed = 20;
 	this.speed_x = speed;
-	this.speed_y = (speed / 2);
+	this.speed_y = speed;
 }
 
 TileManager.prototype.init = function()
@@ -135,7 +135,7 @@ TileManager.prototype.init = function()
   for (_i = 0; _i < _tags.length; _i++)
   {
     //do the width/height calculation here since tiles don't know about each other
-    var currtile = new Tile(_col_x, _row_y, 5, _tags[_i]);
+    var currtile = new Tile(_col_x, _row_y, 12, _tags[_i]);
 	this._rows[currrow].addTile(currtile, _col);
 
     _col_x += _tags[_i].clientWidth + this._gap;
@@ -211,6 +211,10 @@ TileManager.prototype.anim = function()
 	{
 		var xDistance = this.hw - this.mx;
 		var yDistance = this.hh - this.my;
+		if (this.mx != 0)
+			this.mx = (this.mx > 0 ? this.mx - this.speed_x: this.mx + this.speed_x);
+		if (this.my != 0)
+			this.mx = (this.my > 0 ? this.my - this.speed_y: this.my + this.speed_y);
 		var distance = Math.sqrt(xDistance * xDistance + yDistance * yDistance);
 		if (distance  > this.boundary || distance < -this.boundary)
 		{
@@ -234,27 +238,30 @@ TileManager.prototype.run = function()
 ;
 
 /****************************************************************/
-var speed = 10;	//measured in pixel units
-
 function navleft()
 {
-	_tman.mx = _tman.hw + speed;
+	_tman.mx = _tman.hw + _tman.speed_x;
 	_tman.my = _tman.my;
 }
 function navright()
 {
-	_tman.mx = _tman.hw  - speed;
+	_tman.mx = _tman.hw  - _tman.speed_x;
 	_tman.my = _tman.my;
 }
 function navup()
 {
 	_tman.mx = _tman.mx;
-	_tman.my = _tman.hh  - speed;
+	_tman.my = _tman.hh  - _tman.speed_y;
 }
 function navdown()
 {
 	_tman.mx = _tman.mx;
-	_tman.my = _tman.hh  + speed;
+	_tman.my = _tman.hh  + _tman.speed_y;
+}
+function navstop()
+{
+	_tman.mx = _tman.hw;
+	_tman.my = _tman.hh;
 }
 
 var _menushowing;
@@ -284,26 +291,3 @@ $(document).ready(
 	  _menushowing = 0;
 	}
 );
-/*
-document.onmousemove = function(e)
-{ 
-    if (window.event)
-		e = window.event; 
-
-	var _x = e.x ? e.x : e.clientX;
-	var _y = e.y ? e.y : e.clientY;
-
-	_tman.mx = _x;
-	_tman.my = _y;
-}
-
-document.addEventListener('touchmove', 
-	function(e)
-	{
-		e.preventDefault();
-		var touch = e.touches[0];
-		_tman.mx = touch.pageX;
-		_tman.my = touch.pageY;
-	}
-, false);
-*/

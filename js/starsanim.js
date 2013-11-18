@@ -32,6 +32,7 @@ function makeParticles()
 		// we make a particle material and pass through the 
 		// colour and custom particle render function we defined. 
 		material = new THREE.ParticleCanvasMaterial( { color: (Math.random() * 0xffffff), program: particleRender } );
+		//material = new THREE.ParticleCanvasMaterial( { color: 0, program: particleRender } );
 		// make the particle
 		particle = new THREE.Particle(material);
  
@@ -60,12 +61,10 @@ function updateParticles()
 	var xBias = (window.innerWidth / 2) - mouseX;
 	for(var i=0; i < particles.length; i++)
 	{
- 
-		particle = particles[i]; 
+ 		particle = particles[i]; 
  
 		// and move it forward dependent on the mouseY position. 
 		particle.position.z +=  (mouseY * 0.1) + 10;
-		//particle.position.x += (xBias * 0.1);
 		// if the particle is too close move it to the back
 
 		if ((particle.position.z > limit) || (particle.position.x > limit) || (particle.position.x < -limit))
@@ -82,16 +81,7 @@ function init() {
 
     scene = new THREE.Scene();
 	scene.add(camera);
-/*
-    geometry = new THREE.CubeGeometry(600, 600, 600);
-    material = new THREE.MeshBasicMaterial({
-        color: 0xff0000,
-        wireframe: true
-    });
 
-    mesh = new THREE.Mesh(geometry, material);
-    scene.add(mesh);
-*/
     renderer = new THREE.CanvasRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -114,10 +104,6 @@ function animate()
 	setTimeout(function()
 	{
         requestAnimationFrame(animate);
-/*
-		mesh.rotation.x += 0.01;
-		mesh.rotation.y += 0.02;
-*/
 		updateParticles();
 		renderer.render(scene, camera);
     }, 1000 / fps);
