@@ -126,7 +126,7 @@ TileManager.prototype.init = function()
   var _i;
   var _col = 0;
   var _row = 0;
-  var _col_x = 0;
+  var _col_x = this._gap;
   var _row_y = 0;
   
   var currrow = 0;
@@ -144,7 +144,7 @@ TileManager.prototype.init = function()
     if (_col > this.cols)
     {
       _col = 0; //start at x = 0;
-      _col_x = 0;
+      _col_x = this._gap;
       
       _row++; //row can increment indefinitely.
       _row_y += _tags[_i].clientHeight + this._gap;
@@ -264,30 +264,10 @@ function navstop()
 	_tman.my = _tman.hh;
 }
 
-var _menushowing;
 $(document).ready(
 	function()
 	{
-		$('#toggle').click(
-			function()
-			{
-				if (!_menushowing)
-				{
-					showMenu();
-					_menushowing = 1;
-				}
-				else
-				{
-					hideMenu();
-					_menushowing = 0;
-				}
-				return false;
-			}
-		);
-
-	  _tman = new TileManager ('exhibit', 3, 3);
+	  _tman = new TileManager ('exhibit', 9, 1);
 	  _tman.init();
-	  hideMenu();
-	  _menushowing = 0;
 	}
 );

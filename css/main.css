@@ -1,8 +1,9 @@
+/*
 html, body
 {
 	width:100%;
 }
-
+*/
 body
 {
 	font-size:18px;
@@ -19,19 +20,10 @@ body, div, p, span
 	padding:0;
 }
 
-object
+object.menudata
 {
 	width: 100%;
 	height:100%;
-	z-index:12;
-}
-
-a
-{
-	border:none;
-	border: 0;
-	text-decoration: none;
-	color:white;
 }
 
 a.bl {color:blue;}
@@ -41,13 +33,13 @@ width: 100%;
 height:100%;
 display:block;
 }
-
+/*
 a:hover
 {
 	text-decoration:underline;
 	color:yellow;
 }
-
+*/
 p
 {
 margin-top: 1em;
@@ -62,49 +54,6 @@ p.quote
 	font-style:italic;
 }
 
-#id1{ background: url('../images/pic1.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
-#id2{ background: url('../images/pic2.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
-#id3{ background: url('../images/pic3.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
-#id4{ background: url('../images/pic4.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
-#id5{ background: url('../images/pic5.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
-#id6{ background: url('../images/pic6.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
-#id7{ background: url('../images/pic7.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
-#id8{ background: url('../images/pic8.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
-#id9{ background: url('../images/pic9.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
-
-.exhibit
-{
-    position: absolute;
-    display: inline-block;
-    color: white;
-    width: 200px;
-    height: 80px;
-	
-	border: 2px white solid;
-	-webkit-border-radius: 9px;
-	-moz-border-radius: 9px;
-	border-radius: 9px;
-}
-
-.exhibit a
-{
-	width: 100%;
-	height:100%;
-	display:block;
-}
-
-.exhibit h4
-{
-	margin-top: 1em;
-	margin-bottom: 0px;
-	background: black;
-}
-
-.exhibit span
-{
-	font-size: 12px;
-}
-
 .menubar
 {
 	display: block;
@@ -114,7 +63,6 @@ p.quote
 	position: absolute;
 	left:0;
 	top:0;
-	z-index:12;
 }
 
 .menubutton
@@ -122,14 +70,14 @@ p.quote
 	display:block;
 	width:100%;
 	height:20px;
-	z-index: 12;
+/*	z-index: 12;*/
 	position:absolute;
 	bottom:0;
 	left:0;
 
 	/* fallback */
 	background-color: #1a82f7;
-	background: url('images/menu-bar.png');
+	background: url('../images/menu-bar.png');
 	background-repeat: repeat-x;
 	/* Safari 4-5, Chrome 1-9 */
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#1a82f7), to(#2F2727));
@@ -182,86 +130,3 @@ h3
 border-top: 1px solid;
 border-bottom: 1px solid;
 }
-
-
-.dpad
-{
-	position:absolute;
-	width:160px;
-	height:160px;
-	left:0;
-	bottom:20px;
-	
-	z-index:12;
-}
-.arrowl
-{
-	background: url('../images/arrow-l.png') no-repeat;
-	background-position: 0 0;
-	background-size: 100% 100%;
-
-	width: 64px;
-	height:32px;
-
-	position:absolute;
-	left:0;
-	top:64px;
-}
-
-.arrowr
-{
-	background: url('../images/arrow-r.png') no-repeat;
-	background-position: 0 0;
-	background-size: 100% 100%;
-
-	width: 64px;
-	height:32px;
-
-	position:absolute;
-	left:96px;
-	top:64px;
-}
-
-.arrowu
-{
-	background: url('../images/arrow-u.png') no-repeat;
-	background-position: 0 0;
-	background-size: 100% 100%;
-
-	width:32px;
-	height:64px;
-
-	position:absolute;
-	left:64px;
-	top:0;
-}
-
-.arrowd
-{
-	background: url('../images/arrow-d.png') no-repeat;
-	background-position: 0 0;
-	background-size: 100% 100%;
-
-	width:32px;
-	height:64px;
-
-	position:absolute;
-	left:64px;
-	top:96px;
-}
-
-.arrows
-{
-	background: url('../images/arrow-s.png') no-repeat;
-	background-position: 0 0;
-	background-size: 100% 100%;
-
-	width:32px;
-	height:32px;
-
-	position:absolute;
-	left:64px;
-	top:64px;
-}
-
-

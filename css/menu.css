@@ -1,0 +1,166 @@
+html, body
+{
+	width:100%;
+}
+
+body
+{
+	height: 300px;
+	overflow: hidden;
+	padding:0;
+	margin:0;
+}
+
+object
+{
+	width: 100%;
+	height:100%;
+}
+
+a
+{
+	border:none;
+	border: 0;
+	text-decoration: none;
+	color:white;
+}
+
+a:hover
+{
+	text-decoration:underline;
+	color:yellow;
+}
+
+a.big
+{
+width: 100%;
+height:100%;
+display:block;
+}
+
+#id1{ background: url('../images/pic1.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
+#id2{ background: url('../images/pic2.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
+#id3{ background: url('../images/pic3.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
+#id4{ background: url('../images/pic4.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
+#id5{ background: url('../images/pic5.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
+#id6{ background: url('../images/pic6.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
+#id7{ background: url('../images/pic7.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
+#id8{ background: url('../images/pic8.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
+#id9{ background: url('../images/pic9.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
+#id10{ background: url('../images/pic1.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
+#id12{ background: url('../images/pic2.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
+#id13{ background: url('../images/pic3.jpg') no-repeat; background-position:0 0; background-size: 100% 100%; }
+
+.exhibit
+{
+    position: absolute;
+    display: inline-block;
+    color: white;
+    width: 200px;
+    height: 80px;
+	
+	border: 2px white solid;
+	-webkit-border-radius: 9px;
+	-moz-border-radius: 9px;
+	border-radius: 9px;
+}
+
+.exhibit a
+{
+	width: 100%;
+	height:100%;
+	display:block;
+}
+
+.exhibit h4
+{
+	margin-top: 1em;
+	margin-bottom: 0px;
+	background: black;
+}
+
+.exhibit span
+{
+	font-size: 12px;
+}
+
+.dpad
+{
+	position:absolute;
+	width:160px;
+	height:160px;
+	left:0;
+	bottom:20px;
+	
+	z-index:12;
+}
+.arrowl
+{
+	background: url('../images/arrow-l2.png') no-repeat;
+	background-position: 0 0;
+	background-size: 100% 100%;
+
+	width: 64px;
+	height:32px;
+
+	position:absolute;
+	left:24px;
+	top:64px;
+}
+
+.arrowr
+{
+	background: url('../images/arrow-r2.png') no-repeat;
+	background-position: 0 0;
+	background-size: 100% 100%;
+
+	width: 64px;
+	height:32px;
+
+	position:absolute;
+	left:72px;
+	top:64px;
+}
+
+.arrowu
+{
+	background: url('../images/arrow-u2.png') no-repeat;
+	background-position: 0 0;
+	background-size: 100% 100%;
+
+	width:32px;
+	height:64px;
+
+	position:absolute;
+	left:64px;
+	top:24px;
+}
+
+.arrowd
+{
+	background: url('../images/arrow-d2.png') no-repeat;
+	background-position: 0 0;
+	background-size: 100% 100%;
+
+	width:32px;
+	height:64px;
+
+	position:absolute;
+	left:64px;
+	top:72px;
+}
+
+.arrows
+{
+	background: url('../images/arrow-s.png') no-repeat;
+	background-position: 0 0;
+	background-size: 100% 100%;
+
+	width:32px;
+	height:32px;
+
+	position:absolute;
+	left:64px;
+	top:64px;
+}
+
