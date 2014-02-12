@@ -54,9 +54,9 @@ display:block;
 .exhibit
 {
     position: absolute;
-    display: inline-block;
+    display: block;
     color: white;
-    width: 200px;
+    width: 90px;
     height: 80px;
 	
 	border: 2px white solid;
@@ -76,18 +76,42 @@ display:block;
 {
 	margin-top: 1em;
 	margin-bottom: 0px;
-	background: black;
+	background: #000000;
 }
 
-.exhibit span
+.exhibit div
 {
 	font-size: 12px;
+	font-weight: bold;
+	color: #FFFFFF;
+	background: #000000;
+	
+	position: absolute;
+	width: 100px;
+	height: 80px;
+	display: block;
+
+	border: 0px black solid;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	
+	padding: 0;
+	margin: 0;
+	
+	padding-left: 2px;
+	padding-right: 2px;
+	
+	background: -webkit-radial-gradient(blue, black, blue); /* Safari */
+	background: -o-radial-gradient(blue, black, blue); /* For Opera 11.1 to 12.0 */
+	background: -moz-radial-gradient(blue, black, blue); /* For Firefox 3.6 to 15 */
+	background: radial-gradient(blue, black, blue); /* Standard syntax */
 }
 
 .dpad
 {
 	position:absolute;
-	width:96px;
+	width:92px;
 	height:136px;
 	left:0;
 	top:64px;
@@ -105,7 +129,7 @@ display:block;
 	height:64px;
 
 	position:absolute;
-	left:16px;
+	left:10px;
 	top:0px;
 }
 
@@ -119,7 +143,7 @@ display:block;
 	height:64px;
 
 	position:absolute;
-	left:16px;
+	left:10px;
 	top:72px;
 }
 

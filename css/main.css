@@ -123,10 +123,23 @@ p.quote
 	max-width: 800px;
 	margin-left: auto;
 	margin-right: auto;
+	margin-top: 30px;
 }
 
 h3
 {
 border-top: 1px solid;
 border-bottom: 1px solid;
+}
+
+div.portrait
+{
+	width: 90%;
+	margin-left: 5%;
+	border: 1px black solid;
+}
+
+div.portrait img
+{
+	width: 100%;
 }
