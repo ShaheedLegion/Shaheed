@@ -2,6 +2,40 @@ var camera, scene, renderer;
 //var geometry, material, mesh;
 var mouseX = 0, mouseY = 0, particles = [];
 var fps = 30;
+var motionTrigger;
+
+	function MotionTrigger(secondsRange)
+	{	//trigger a new motion target every (random) seconds
+		this.timeDelta = 0;
+		this.deltaTime = 0;
+		this.secondsRange = secondsRange;
+		this.targetX = 0;
+		this.targetY = 0;
+		this.clock = new THREE.Clock();
+		this.inMotion = 0;
+		this.calculateDelta();
+	}
+
+	MotionTrigger.prototype.calculateDelta = function()
+	{	//calculate new target position and delta time
+		this.deltaTime = this.clock.getElapsedTime();
+		this.timeDelta = this.deltaTime + (Math.random() * this.secondsRange);
+		
+		this.targetX = Math.random() * 5000 - 2500;
+		this.targetY = Math.random() * 5000 - 2500;
+		
+		if (this.inMotion == 0)	//basically flip a variable between 0 and 1
+			this.inMotion = 1;
+		else this.inMotion = 0;
+	}
+	
+	MotionTrigger.prototype.update = function()
+	{
+		if (this.clock.getElapsedTime() >= this.timeDelta)
+		{	//we have reached time limit, calculate new time.
+			this.calculateDelta();
+		}
+	}
 
 function onMouseMove(event)
 {
@@ -57,22 +91,46 @@ function makeParticles()
 function updateParticles()
 {
 	// iterate through every particle
-	var limit = 1000;
-	var xBias = (window.innerWidth / 2) - mouseX;
-	for(var i=0; i < particles.length; i++)
+	if (motionTrigger.inMotion)
 	{
- 		particle = particles[i]; 
- 
-		// and move it forward dependent on the mouseY position. 
-		particle.position.z +=  (mouseY * 0.1) + 10;
-		// if the particle is too close move it to the back
-
-		if ((particle.position.z > limit) || (particle.position.x > limit) || (particle.position.x < -limit))
+		var limit = 1000;
+		var xBias = (window.innerWidth / 2) - mouseX;
+		
+		
+		for(var i=0; i < particles.length; i++)
 		{
-			particle.position.z -= 2000; //push the particle back
-			particle.position.x = Math.random() * limit - (limit / 2);
+			particle = particles[i]; 
+	 
+			// and move it forward dependent on the mouseY position. 
+			particle.position.z +=  (mouseY * 0.1) + 10;
+			// if the particle is too close move it to the back
+
+			if ((particle.position.z > limit) || (particle.position.x > limit) || (particle.position.x < -limit))
+			{
+				particle.position.z -= 2000; //push the particle back
+				particle.position.x = Math.random() * limit - (limit / 2);
+				particleReset = 1;
+			}
 		}
- 	}
+	}
+	updateCamera();
+	motionTrigger.update();
+}
+
+function updateCamera()
+{
+	if (camera.position.x < motionTrigger.targetX)
+		camera.position.x++;
+	if (camera.position.x >  motionTrigger.targetX)
+		camera.position.x--;
+	if (camera.position.y <  motionTrigger.targetY)
+		camera.position.y++;
+	if (camera.position.y >  motionTrigger.targetY)
+		camera.position.y--;
+	
+	var vec3 = new THREE.Vector3( 0,  0,  -1000);
+	camera.lookAt( vec3 );
+
 }
 
 function init() {
@@ -90,6 +148,8 @@ function init() {
 	// EVENTS
 	THREEx.WindowResize(renderer, camera);
 	THREEx.FullScreen.bindKey({ charCode : 'm'.charCodeAt(0) });
+	
+	motionTrigger = new MotionTrigger(30);	//trigger new motion trigger every 30 seconds
 
 	makeParticles();
  
