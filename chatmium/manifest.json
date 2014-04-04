@@ -1,0 +1,24 @@
+{
+  "manifest_version": 2,
+  "name": "Chatmium - Chat to friends.",
+  "short_name": "Chatmium",
+  "description": "Allows you to chat to other Chatmium users. Written by Shaheed Abdol, check me out at http://www.ShaheedAbdol.co.za",
+  "version": "1.3",
+
+  "icons": {
+			"16": "iconsm.png",
+			"128": "icon.png"
+	},
+
+   "app": {
+    "background": {
+      "scripts": ["launch.js"]
+    }
+  },
+  "offline_enabled":true,
+  "permissions": [
+	"http://www.ShaheedAbdol.co.za/chatter.php",
+	"http://127.0.0.1/chatter.php",
+	"notifications"
+  ]
+}

@@ -1,0 +1,183 @@
+		*{margin: 0; padding: 0; width: 100%;}
+		html,body{height: 100%; background: #222221;}
+		.boxsizingBorder{-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;}
+		.chatwrapper{min-height: 100%; overflow-x: hidden;}
+		button{border-style:none; color:#00f; background-color:#fdfdfd;}
+		table { border-spacing: 0px; }
+		.ident
+		{
+			background: #8899AA;
+			padding-left: 4px;
+			/*float:left;*/
+			/*width: 100%;*/
+			height: 20px;
+			width: 100%;
+			max-width: 100%;
+			display:block;
+		}
+		.ident p
+		{
+			font-size: 12px;
+			color: #F6F7F8;
+			padding-left: 4px;
+			padding-top: 2px;
+			margin: 0;
+			text-overflow:hidden;
+		}
+		
+		.ident span
+		{
+			font-size: 14px;
+			color: #F6F7F8;
+			padding-left: 4px;
+			padding-top: 2px;
+			overflow:hidden;
+			white-space:nowrap;
+			/*outline:blue 1px solid;*/
+			display:block;
+		}
+		.menubuttons{width: 68px; height: 24px; margin-left: 2px;}
+		.submitbutton{display: inline; width: 68px;}
+		.fileinput{display: inline; width: 88px;}
+		#menuform{height: 22px; margin-left: 2px; display: inline-block; width: 400px;}
+		#userbuttons{width: 100%; background: #aaFFaa; padding: 0; /*float:left;*/}
+		#sounds{width: 16px;}
+
+		#showmenu
+		{
+			display:block;
+			width: 32px;
+			height: 32px;
+			background-image: url(menu.png);
+			background-repeat: no-repeat;
+			background-position: 0% 0%;
+			background-size: 100% 100%;
+		}
+		.chatcontent
+		{
+			background: #C7C7E2;
+			overflow-y: auto;
+			overflow-x:hidden;
+			height: 80%;
+			max-height: 80%;
+		}
+		  
+		.chatitems{list-style-type:none; -webkit-padding-start: 0;}
+		  
+		.chatitems li
+		{
+			background: #FFECCF;
+			display: block;
+			width: 97%;
+			margin-left: 1px;
+			margin-top:2px;
+			margin-bottom: 10px;
+			padding: 1px;
+			font-size: 14px;
+			text-shadow: 1px 1px #ccbbbb;
+
+			border: 2px solid #b2b1b2;
+			padding-top: 4px;
+			padding-bottom: 4px;
+
+			-moz-border-radius:10px;
+			-webkit-border-radius:10px;
+			border-radius:10px;
+
+			-webkit-box-shadow: 3px 3px 5px #888;
+			-moz-box-shadow: 3px 3px 5px #888;
+			box-shadow: 3px 3px 5px #888;
+		}
+		img.general{display: block; height: auto; max-width: 100%;}
+		img.smiley{width: 32px; display: inline;}
+		.smileyitems{list-style-type:none; -webkit-padding-start: 0; margin-bottom: 10px;}
+		.smileyitems li
+		{
+			background: #FFECCF;
+			display: inline-block;
+			margin-right: 6px;
+			margin-top:2px;
+			width: 32px;
+		}
+		.smileyitems li a{	border:0; text-decoration:0;}
+		#usermessage
+		{
+			display: block;
+			background: #E7E7E7;
+			width: 100%;
+			max-width: auto;
+			height: 40px;
+
+			color:#00f;
+			background-color:#fdfdfd;
+			border:2px solid #f00;
+		}
+		
+		#send
+		{
+			display: block;
+			width: 80px;
+			height: 62px;
+			margin-left: 5px;
+			border: 2px solid #f00;
+		}
+		.chatcontrol
+		{
+			display: table;
+			background: #5C69FC;
+			padding-left: 0px;
+			height: 40px;
+			padding-right: 4px;
+			width: 100%;
+			max-width: 100%;
+			overflow-x:hidden;
+			
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+		}
+		/*Get the user name*/
+		.getusername
+		{
+			position:absolute;
+			left:0;
+			right:0;
+			top:0;
+			bottom:0;
+			background:#555555;
+			padding-top:2em;
+		}
+		.getusername p{color:#F7F7F7; font-size:16px;}
+		.getusername input
+		{
+			display: inline-block;
+			border: 0;
+			background: #E7E7E7;
+			width: 200px;
+			height: 30px;
+			margin: 10px;
+			font-size: 16px;
+		}
+		.getusername button
+		{
+			display: inline-block;
+			width: 100px;
+			height: 30px;
+			margin: 10px;
+		}
+		.getusername a { color: #FFeebb; }
+		/**Deal with the menu button and menu items**/
+
+		.chatsmiley
+		{
+			position:absolute;
+			left:10px;
+			width:350px;
+			top:20px;
+			padding: 10px;
+			border: 2px solid #FEFEFE;
+			
+			background:#BED8E2;
+			display:none;
+			z-index:999;
+		}
