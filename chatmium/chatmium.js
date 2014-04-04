@@ -256,8 +256,10 @@ var chatFetcher = {
 document.addEventListener('DOMContentLoaded', registerEvents);
 document.addEventListener('keypress', filterKeys, false);
 window.onresize = handleResize;
+/*
 window.onunload = function () { return false; }
 window.onbeforeunload = function () { return false; }
+*/
 function registerEvents()
 {
 	//document.getElementById('send').addEventListener('click', sendMessage);
@@ -417,17 +419,61 @@ function setUserText(uploadedfile)
 {
 	chatFetcher.sendChat('__|' + uploadedfile + '|__');
 }
+function setErrorText(error)
+{
+	var parent = document.getElementById('chatitems');
+	var li = document.createElement('li');
+	li.innerHTML = "<b>Chatmium:  </b>[" + error + "] while uploading file";
+	setBubbleColor(li);
+	parent.appendChild(li);
+}
+
+function checkallowedExt(filename)
+{
+	var suffixes = [".jpg", ".jpeg", ".png", ".gif"];
+	for (var i = 0; i < suffixes.length; i++)
+	{
+		if (filename.indexOf(suffixes[i], filename.length - suffixes[i].length) !== -1)
+			return true;
+	}
+	return false;
+}
 
 (function() {
 	 $('form').ajaxForm({
 		beforeSend: function() {
+			var filename = document.getElementById("image-file").value;
+			var allowed = checkallowedExt(filename);
+				if (allowed)
+				{
+					var loader = document.getElementById("loadingfile");
+					if (loader)
+						loader.style.display = "block";
+				}
 		},
 		uploadProgress: function(event, position, total, percentComplete) {
+		
+			var progress = document.getElementById("percentage");
+			if (progress)
+			{
+				var text = "Uploading File: [" + percentComplete + "]% of [" + total + "]";
+				progress.innerHTML = text;
+			}
+		
 		},
 		success: function() {
 		},
+		error: function() {
+		},
 		complete: function(xhr) {
-			setUserText(xhr.responseText);
+			if (xhr.responseText.length)
+				setUserText(xhr.responseText);
+			else if (xhr.statusText.length)
+				setErrorText(xhr.statusText);
+
+			var loader = document.getElementById("loadingfile");
+			if (loader)
+				loader.style.display = "none";
 		}
 	});
 })();

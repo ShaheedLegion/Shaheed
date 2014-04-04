@@ -37,10 +37,10 @@
 			display:block;
 		}
 		.menubuttons{width: 68px; height: 24px; margin-left: 2px;}
-		.submitbutton{display: inline; width: 68px;}
-		.fileinput{display: inline; width: 88px;}
-		#menuform{height: 22px; margin-left: 2px; display: inline-block; width: 400px;}
-		#userbuttons{width: 100%; background: #aaFFaa; padding: 0; /*float:left;*/}
+		.submitbutton{display: inline; width: 46px; height: 24px; border-style:none; color:#00f; background-color:#fdfdfd;}
+		.fileinput{display: inline; width: 86px;border-style:none; color:#00f; background-color:#fdfdfd;}
+		#menuform{height: 22px; margin-left: 2px; display: inline-block; width: 138px;}
+		#userbuttons{width: 100%; background: #aaFFaa; padding: 0; height: 24px;/*float:left;*/}
 		#sounds{width: 16px;}
 
 		#showmenu
@@ -89,7 +89,9 @@
 			box-shadow: 3px 3px 5px #888;
 		}
 		img.general{display: block; height: auto; max-width: 100%;}
+		img.soundicon{width: 24px; height: 24px; display: inline; float:left;}
 		img.smiley{width: 32px; display: inline;}
+		img.smileybig{width: 64px; display: block;}
 		.smileyitems{list-style-type:none; -webkit-padding-start: 0; margin-bottom: 10px;}
 		.smileyitems li
 		{
@@ -178,6 +180,24 @@
 			border: 2px solid #FEFEFE;
 			
 			background:#BED8E2;
+			display:none;
+			z-index:999;
+		}
+		
+		.loadingfile
+		{
+			position:absolute;
+			left:0px;
+			width:200px;
+			top:0px;
+			padding: 10px;
+			border: 2px solid #FEFEFE;
+			
+			-webkit-box-shadow: 3px 3px 5px #888;
+			-moz-box-shadow: 3px 3px 5px #888;
+			box-shadow: 3px 3px 5px #888;
+
+			background:#2ED8EB;
 			display:none;
 			z-index:999;
 		}

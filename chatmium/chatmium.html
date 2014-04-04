@@ -49,10 +49,11 @@
 			</div>
 
 			<div id="userbuttons">
-				<input type="checkbox" id="sounds" name="Sound" >Sound</input>
+				<input type="checkbox" id="sounds" name="Sound" ><img class="soundicon" src="audio.png"/></input>
 				<button value="Emoticons" id="smileys" class="menubuttons">Emoticons</button>
 				
 				<form enctype="multipart/form-data" action="http://www.shaheedabdol.co.za/chatmium/upload.php" method="post" id="menuform">
+				<!--<form enctype="multipart/form-data" action="http://192.168.0.100/chatmium/upload.php" method="post" id="menuform">-->
 				<input id="image-file" type="file" name="upfile" class="fileinput"/>
 				<input type="submit" value="Upload" class="submitbutton" />
 				</form>
@@ -72,6 +73,11 @@
 		<button value="ok" id="setalias">Ok</button>
 		<br/>
 		<p>Written by Shaheed Abdol, for more info visit <a href="http://www.ShaheedAbdol.co.za" target="blank">http://www.ShaheedAbdol.co.za</a></p>
+	</div>
+	
+	<div class="loadingfile" id="loadingfile">
+		<img class="smileybig" src="loading.gif"/>
+		<p id="percentage"></p>
 	</div>
   </body>
 </html>
