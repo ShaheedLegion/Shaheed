@@ -173,8 +173,8 @@
 		.chatsmiley
 		{
 			position:absolute;
-			left:10px;
-			width:350px;
+			left:0px;
+			width:200px;
 			top:20px;
 			padding: 10px;
 			border: 2px solid #FEFEFE;
@@ -197,7 +197,7 @@
 			-moz-box-shadow: 3px 3px 5px #888;
 			box-shadow: 3px 3px 5px #888;
 
-			background:#2ED8EB;
+			background:#A0DBBB;
 			display:none;
 			z-index:999;
 		}
