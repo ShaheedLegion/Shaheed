@@ -256,10 +256,7 @@ var chatFetcher = {
 document.addEventListener('DOMContentLoaded', registerEvents);
 document.addEventListener('keypress', filterKeys, false);
 window.onresize = handleResize;
-/*
-window.onunload = function () { return false; }
-window.onbeforeunload = function () { return false; }
-*/
+
 function registerEvents()
 {
 	//document.getElementById('send').addEventListener('click', sendMessage);
@@ -289,7 +286,7 @@ function registerEvents()
 			}
 		}
 	}
-	
+
 	gradientPrefix = getCssValuePrefix('backgroundImage', 'linear-gradient(left, #fff, #fff)');
 }
 /*
@@ -419,6 +416,7 @@ function setUserText(uploadedfile)
 {
 	chatFetcher.sendChat('__|' + uploadedfile + '|__');
 }
+
 function setErrorText(error)
 {
 	var parent = document.getElementById('chatitems');
