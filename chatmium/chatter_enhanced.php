@@ -1,5 +1,5 @@
 <?php
-
+header("Access-Control-Allow-Origin: *");
 /*
 The Chatmium App - Written by Shaheed Abdol:
 http://www.ShaheedAbdol.co.za
@@ -163,7 +163,7 @@ Any suggestions can be sent to me on my website ...
 			$message = trim($_GET['value']);
 			if (empty($message))
 				$message = $_POST['value'];
-			$response = "<line from='".$userid"' to='".$targetuserid"'>[".get_next_line_number()."]{".$user."}".$message."</line>";
+			$response = "<line from='".$userid."' to='".$targetuserid."'>[".get_next_line_number()."]{".$user."}".$message."</line>";
 			write_message($response);
 			
 			//clear out repsonse?
@@ -182,6 +182,7 @@ Any suggestions can be sent to me on my website ...
 			$user = $_GET['user'];
 			if (empty($user))
 				$user = $_POST['user'];
+				
 			$response = "<line>[".get_next_line_number()."]{".$user."}has joined the room!</line>";
 			write_message($response);
 			write_debug($response);
@@ -200,7 +201,7 @@ Any suggestions can be sent to me on my website ...
 	}
 	else
 	{
-		echo "File accessed without GET or POST";
+		echo "<p>File accessed without GET or POST</p>";
 	}
 
 ?>

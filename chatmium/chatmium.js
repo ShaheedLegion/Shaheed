@@ -14,14 +14,17 @@ Visit my website at:
 for more information.
 */
 var currentServer = "http://www.ShaheedAbdol.co.za/chatmium/chatter_enhanced.php";
+currentServer = "http://127.0.0.1/chatter_enhanced.php";	//simply reassign the variable.
 var gradientPrefix = '';
 var _user_id = -1;
 var _target_user_id = -1;
 
-chatMessage = function (str)
+chatMessage = function (str, fromid, toid)
 {
 	this.origStr = str;
 	this.messageNumber = -1;
+	this.fromId = fromid;
+	this.toId = toid;	//this will always be my userid.
 	this.messageOwner = '';
 	this.messageText = '';
 
@@ -82,6 +85,49 @@ chatMessage.prototype.decodeMessage = function()
 		this.messageText = this.decodeEmoticons(message);
 		this.messageText = this.decodeImages(this.messageText);
 	}
+}
+
+chatMessage.prototype.getOwnerLink = function()
+{
+	return "<a href='privatemessage(" + this.fromId.toString() + ")'>" + this.messageOwner + "</a>";
+}
+
+function parseFromTo(content, startpos)
+{
+	var _from = -1, _to = -1;	//to discard messages on client side.
+	var from_user_id = -1;
+	var to_user_id = -1;
+	var pos = content.indexOf("<line", startpos);
+	
+	if (pos != -1)
+	{
+		var _temp_pos = content.indexOf("from", pos + 5);
+
+		if (_temp_pos != -1)
+		{
+			//get from and to users
+			var from_loc = _temp_pos + 6;	//from='
+			var _from_end = content.indexOf("'", from_loc);
+			
+			from_user_id = parseInt(content.substring(from_loc, _from_end));
+			
+			_temp_pos = _from_end;
+			from_loc = content.indexOf("to", _temp_pos);
+			
+			if (from_loc != -1)
+			{
+				from_loc += 4;
+				_from_end = content.indexOf("'", from_loc);
+				
+				to_user_id = parseInt(content.substring(from_loc, _from_end));
+			}
+			
+			
+			pos = _from_end;
+		}
+	}
+	
+	return [pos, from_user_id, to_user_id];
 }
 
 
@@ -175,40 +221,74 @@ var chatFetcher = {
 	{
 		var content = e.target.responseText;
 		var parent = document.getElementById('chatitems');
+		//var from_user_id = -1;
+		//var to_user_id = -1;
 
 		if (content.length)
 		{
+		/*
 			var _from = -1, _to = -1;	//to discard messages on client side.
 
 			var pos = content.indexOf("<line");
-			var _temp_pos = content.indexOf(".", pos + 5);
-			
+			var _temp_pos = content.indexOf("from", pos + 5);
+
 			if (_temp_pos != -1)
 			{
 				//get from and to users
+				var from_loc = _temp_pos + 6;	//from='
+				var _from_end = content.indexOf("'", from_loc);
 				
-				pos = _temp_pos;
+				from_user_id = parseInt(content.substring(from_loc, _from_end));
+				
+				_temp_pos = _from_end;
+				from_loc = content.indexOf("to", _temp_pos);
+				
+				if (from_loc != -1)
+				{
+					from_loc += 4;
+					_from_end = content.indexOf("'", from_loc);
+					
+					to_user_id = parseInt(content.substring(from_loc, _from_end));
+				}
+				
+				
+				pos = _from_end;
 			}
+			*/
+			var positions = parseFromTo(content, 0);
 			
-			
-			var pos2 = 0;
-			while(pos > -1)
+			if (positions[2] != -1 && (positions[2] != _user_id))
 			{
-				pos2 = content.indexOf("</line>", pos);
-				var substr = content.substring(pos + 6, pos2);
-				pos = content.indexOf("<line>", pos2 + 7);
+				//need to find a way to perform this processing on server side.
+				return;
+			}
+			var pos2 = 0;
+			while (positions[0] > -1)
+			{
+				pos2 = content.indexOf("</line>", positions[0]);
+				var substr = content.substring(positions[0] + 6, pos2);
 				
-				var messObj = new chatMessage(substr);
+				positions = parseFromTo(content, pos2 + 7);
+				//pos = content.indexOf("<line>", pos2 + 7);
+				
+				if (positions[2] != -1 && (positions[2] != _user_id))
+				{
+					//need to find a way to perform this processing on server side.
+					continue;
+				}
+				
+				var messObj = new chatMessage(substr, positions[1], positions[2]);
 				
 				if (_user_id == -1)
 					setUserId(messObj.messageNumber);
 				
 				var li = document.createElement('li');
-				li.innerHTML = "<b>" + messObj.messageOwner + ":  </b>" + messObj.messageText;
+				li.innerHTML = "<b>" + messObj.getOwnerLink() + ":  </b>" + messObj.messageText;
 				setBubbleColor(li);
 				parent.appendChild(li);
 				
 				this.chatMessages.push(messObj);
+				positions[0] = pos2;
 			}
 			
 			var container = document.getElementById("chatcontent");
