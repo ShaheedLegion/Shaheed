@@ -7,12 +7,124 @@
   <head>
     <title>Chatmium</title>
 	<link rel="stylesheet" type="text/css" href="chatstyles.css"/>
+	
+	<link rel="stylesheet" type="text/css" href="tabs.css"/>
+	<script type="text/javascript">
+	var _global_cb = 0;
+	function tab(className, tab)
+	{
+		var elements = document.getElementsByClassName(className);
+		for (var i = 0; i < elements.length; i++)
+		{
+			elements[i].style.display = "none";	//hide the tab
+			document.getElementById('label_tab' + (i+1)).setAttribute("class", "");	//set the list item to "inactive"
+		}
+
+		document.getElementById(tab).style.display = 'block';
+		document.getElementById('label_' + tab).setAttribute("class", "active");
+		
+		if (_global_cb != 0)
+			_global_cb();
+	}
+
+	</script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
     <script src="http://malsup.github.com/jquery.form.js"></script>
     <script src="chatmium.js"></script>
   </head>
   <body>
 
+  <!--Label bar (Tabs) which control the interface shown to the user.-->
+  <div id="tabs">
+	  <ul>
+		<li onclick="tab('interface', 'tab1')" class="" id="label_tab1"><a>Alias</a></li>
+		<li onclick="tab('interface', 'tab2')" class="" id="label_tab2"><a>Chat</a></li>
+		<li onclick="tab('interface', 'tab3')" class="" id="label_tab3"><a>Private</a></li>
+		<li onclick="tab('interface', 'tab4')" class="" id="label_tab4"><a>About</a></li>
+	  </ul>
+  </div>
+
+  <div id="Content_Area">
+  
+	<div id="tab1" class="interface">
+			<div class="getusername" id ="getusername">
+				<p>Please choose your username, this will be your name for the remainder of your session.</p>
+				<p>You are limited to 24 characters for your name:</p>
+				<input id="useralias" maxlength="24"/>
+				<button value="ok" id="setalias">Ok</button>
+				<br/>
+				<p>Written by Shaheed Abdol, for more info visit <a href="http://www.ShaheedAbdol.co.za" target="blank">http://www.ShaheedAbdol.co.za</a></p>
+			</div>
+	</div>
+ 
+	<div id="tab2" class="interface">
+			<div class="chatwrapper">
+				<div class="chatcontent" id="chatcontent">
+					<ul class="chatitems" id="chatitems">
+					</ul>
+				</div>
+
+				<div id="userbuttons">
+					<input type="checkbox" id="sounds" name="Sound" ><img class="soundicon" src="audio.png"/></input>
+					<button value="Emoticons" id="smileys" class="menubuttons">Emoticons</button>
+					
+					<form enctype="multipart/form-data" action="http://www.shaheedabdol.co.za/chatmium/upload.php" method="post" id="menuform">
+					<!--<form enctype="multipart/form-data" action="http://192.168.0.100/chatmium/upload.php" method="post" id="menuform">-->
+					<input id="image-file" type="file" name="upfile" class="fileinput"/>
+					<input type="submit" value="Upload" class="submitbutton" />
+					</form>
+				</div>
+				
+				<div class="ident" id="username"></div>
+
+				<div class="chatcontrol" id="chatcontrol">
+					<textarea name="usermessage" cols="*" rows="2" id="usermessage"></textarea>
+				</div>
+			</div>
+	</div>
+	
+	<!--Need to find a better way to deal with these tabs which contain private content.-->
+	<div id="tab3" class="interface">
+			<ul>
+				<!--<li onclick="tab(sub_tab1)" class="active" id="label_privchat1"><a>Alias</a></li>-->
+			</ul>
+			<div class="chatwrapper">
+				<div class="chatcontent" id="chatcontent">
+					<ul class="privatechatitems" id="privatechatitems">
+					</ul>
+				</div>
+
+				<div id="userbuttons">
+					<input type="checkbox" id="sounds" name="Sound" ><img class="soundicon" src="audio.png"/></input>
+					<button value="Emoticons" id="smileys" class="menubuttons">Emoticons</button>
+					
+					<form enctype="multipart/form-data" action="http://www.shaheedabdol.co.za/chatmium/uploadprivate.php" method="post" id="menuform">
+					<input id="image-file" type="file" name="upfile" class="fileinput"/>
+					<input type="submit" value="Upload" class="submitbutton" />
+					</form>
+				</div>
+				
+				<div class="ident" id="username"></div>
+
+				<div class="chatcontrol" id="chatcontrol">
+					<textarea name="usermessage" cols="*" rows="2" id="usermessage"></textarea>
+				</div>
+			</div>
+	</div>
+	
+	<div id="tab4" class="interface">
+			<div class="getusername" id ="getusername">
+				<p>Chatmium is a chat application written by Shaheed Abdol in 2013/2014.</p>
+				<p>Chatmium is free to download and free to use, with no advertising and no hidden agenda. We don't want any personal details, and don't even want your email address.</p>
+				<p>Since Chatmium is unmoderated, we rely on the users to keep things clean, fun, and legal.</p>
+				<br/>
+				<p>For more info visit <a href="http://www.ShaheedAbdol.co.za" target="blank">http://www.ShaheedAbdol.co.za</a></p>
+			</div>
+	</div>
+
+	
+	<!--Misc. Floating divs which appear above content on specific tabs-->
+	
 	<div class="chatsmiley" id="chatsmiley">
 		<p>
 		<b><i>Smileys by <a href="http://icontexto.deviantart.com">IconTexto</a>...</i></b>
@@ -42,42 +154,12 @@
 		<button value="Cancel" id="closesmiley" class="menubuttons">Cancel</button>
 	</div>
 
-		<div class="chatwrapper">
-			<div class="chatcontent" id="chatcontent">
-				<ul class="chatitems" id="chatitems">
-				</ul>
-			</div>
-
-			<div id="userbuttons">
-				<input type="checkbox" id="sounds" name="Sound" ><img class="soundicon" src="audio.png"/></input>
-				<button value="Emoticons" id="smileys" class="menubuttons">Emoticons</button>
-				
-				<form enctype="multipart/form-data" action="http://www.shaheedabdol.co.za/chatmium/upload.php" method="post" id="menuform">
-				<!--<form enctype="multipart/form-data" action="http://192.168.0.100/chatmium/upload.php" method="post" id="menuform">-->
-				<input id="image-file" type="file" name="upfile" class="fileinput"/>
-				<input type="submit" value="Upload" class="submitbutton" />
-				</form>
-			</div>
-			
-			<div class="ident" id="username"></div>
-
-			<div class="chatcontrol" id="chatcontrol">
-				<textarea name="usermessage" cols="*" rows="2" id="usermessage"></textarea>
-			</div>
-		</div>
-
- 	<div class="getusername" id ="getusername">
-		<p>Please choose your username, this will be your name for the remainder of your session.</p>
-		<p>You are limited to 24 characters for your name:</p>
-		<input id="useralias" maxlength="24"/>
-		<button value="ok" id="setalias">Ok</button>
-		<br/>
-		<p>Written by Shaheed Abdol, for more info visit <a href="http://www.ShaheedAbdol.co.za" target="blank">http://www.ShaheedAbdol.co.za</a></p>
-	</div>
 	
 	<div class="loadingfile" id="loadingfile">
 		<img class="smileybig" src="loading.gif"/>
 		<p id="percentage"></p>
+	</div>
+
 	</div>
   </body>
 </html>

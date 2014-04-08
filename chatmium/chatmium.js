@@ -13,8 +13,10 @@ Visit my website at:
 	
 for more information.
 */
-var currentServer = "http://www.ShaheedAbdol.co.za/chatter.php";
+var currentServer = "http://www.ShaheedAbdol.co.za/chatmium/chatter_enhanced.php";
 var gradientPrefix = '';
+var _user_id = -1;
+var _target_user_id = -1;
 
 chatMessage = function (str)
 {
@@ -97,7 +99,9 @@ var chatFetcher = {
 		var output = currentServer + '?' + 
 		'query=' + encodeURIComponent(this.current_function) + '&' +
 		'user='+ encodeURIComponent(this.currentUser) + '&' +
-		'value='+ encodeURIComponent(this.current_message);
+		'userid='+ encodeURIComponent(_user_id) + '&' +
+		'targetuserid=' + encodeURIComponent(_target_user_id) + '&' +
+		'value=' + encodeURIComponent(this.current_message);
 		return output;
 	}
 	,
@@ -131,14 +135,14 @@ var chatFetcher = {
 	{
 		this.current_message = this.filter_message(message);
 		this.current_function = 'send';
-		this.requestChat();
+		this.requestChat(0);
 	}
 	,
 	joinChat: function(user)
 	{
 		this.currentUser = user;
 		this.current_function = 'join';
-		this.requestChat();
+		this.requestChat(setUserId);
 
 		this.timerId = setInterval(requestMessages, 2500);
 	}
@@ -159,17 +163,34 @@ var chatFetcher = {
 		clearTimeout(this.timerId);
 		this.current_message = 'has left the chatroom';
 		this.current_function = 'remove';
-		this.requestChat();
+		this.requestChat(0);
 	}
 	,
-	showChatLines_: function (e)
+	sendChatmiumMessage: function(message)
+	{
+		this.sendChat(message);
+	}
+	,
+	showChatLines_: function (e, callback)
 	{
 		var content = e.target.responseText;
 		var parent = document.getElementById('chatitems');
 
 		if (content.length)
 		{
-			var pos = content.indexOf("<line>");
+			var _from = -1, _to = -1;	//to discard messages on client side.
+
+			var pos = content.indexOf("<line");
+			var _temp_pos = content.indexOf(".", pos + 5);
+			
+			if (_temp_pos != -1)
+			{
+				//get from and to users
+				
+				pos = _temp_pos;
+			}
+			
+			
 			var pos2 = 0;
 			while(pos > -1)
 			{
@@ -178,6 +199,9 @@ var chatFetcher = {
 				pos = content.indexOf("<line>", pos2 + 7);
 				
 				var messObj = new chatMessage(substr);
+				
+				if (_user_id == -1)
+					setUserId(messObj.messageNumber);
 				
 				var li = document.createElement('li');
 				li.innerHTML = "<b>" + messObj.messageOwner + ":  </b>" + messObj.messageText;
@@ -259,9 +283,6 @@ window.onresize = handleResize;
 
 function registerEvents()
 {
-	//document.getElementById('send').addEventListener('click', sendMessage);
-	//document.getElementById('closechat').addEventListener('click', closeChatWindow);
-	//document.getElementById('minchat').addEventListener('click', minimizeChatWindow);
 	document.getElementById('setalias').addEventListener('click', getChatName);
 	document.getElementById('smileys').addEventListener('click', getChatSmiley);
 	document.getElementById('acceptsmiley').addEventListener('click', acceptChatSmiley);
@@ -288,6 +309,9 @@ function registerEvents()
 	}
 
 	gradientPrefix = getCssValuePrefix('backgroundImage', 'linear-gradient(left, #fff, #fff)');
+	
+	_global_cb = handleResize;	//make sure that handleResize is called when we switch tabs
+	tab('interface', 'tab1');	//make sure the correct tab is showing at startup.
 }
 /*
 function creationCallback(notId)
@@ -311,26 +335,35 @@ function filterKeys(e)
 	return false;
 }
 
+function checkPreviousAlias(userName)
+{
+	var name = document.getElementById("username");
+	if (name.innerHTML.length)
+		chatFetcher.sendChatmiumMessage("User alias changed to: " + userName);
+}
+
 function getChatName()
 {
 	var chatalias = document.getElementById("useralias");
 	var userName = chatalias.value;
-	
-	var name = document.getElementById("username");
-	if (name)
-	{
-		name.innerHTML = "<span><b><i>" + userName + "</i></b></span>" ;
-		
-		//now set the display of the "get user name dialog" to none
-		var dialog = document.getElementById("getusername");
-		if (dialog)
-		{
-			dialog.style.display = "none";
-			handleResize();
-		}
 
-		chatFetcher.joinChat(userName);	//start the chatting!
-		document.getElementById('usermessage').focus();
+	if (userName.length)
+	{
+		checkPreviousAlias(userName);
+		var name = document.getElementById("username");
+		if (name)
+		{
+			name.innerHTML = userName;
+
+			tab('interface', 'tab2');	//make sure the correct tab is showing to chat.
+
+			chatFetcher.joinChat(userName);	//start the chatting!
+			document.getElementById('usermessage').focus();
+		}
+	}
+	else
+	{
+		alert('Please enter a user name.');
 	}
 	return false;
 }
@@ -341,7 +374,7 @@ function handleResize()
 	if (chat)
 	{
 		chat.style.display = "block";
-		var newHeight = document.body.clientHeight - 88;
+		var newHeight = document.body.clientHeight - 120;
 		if (newHeight >= 0)
 			chat.style.height = "" + newHeight +"px";
 	}
@@ -426,6 +459,12 @@ function setErrorText(error)
 	parent.appendChild(li);
 }
 
+function setUserId(id)
+{
+	if (_user_id == -1)
+		_user_id = id;
+}
+
 function checkallowedExt(filename)
 {
 	var suffixes = [".jpg", ".jpeg", ".png", ".gif"];
@@ -481,7 +520,7 @@ function requestMessages()
 	//shim for the way in which window messages are handled.
 	chatFetcher.current_message = chatFetcher.findLastMessage(chatFetcher);
 	chatFetcher.current_function = 'fetch';
-	chatFetcher.requestChat();
+	chatFetcher.requestChat(0);
 }
 
 function playChatSound()

@@ -1,0 +1,80 @@
+#tabs ul
+{
+	padding: 0px;
+	margin: 0px;
+	margin-left: 2px;
+	list-style-type: none;
+	height: 26px;
+}
+
+#tabs ul li
+{
+	display: inline-block;
+	clear: none;
+	float: left;
+	height: 24px;
+	width: 58px;
+}
+
+#tabs ul li a
+{
+	position: relative;
+	/*margin-top: 16px;*/
+	display: block;
+	margin-left: 6px;
+	line-height: 24px;
+	padding-left: 6px;
+	background: #f6f6f6;
+	z-index: 9999;
+	border: 1px solid #ccc;
+	border-bottom: 0px;
+	-moz-border-radius-topleft: 4px;
+	border-top-left-radius: 4px;
+	-moz-border-radius-topright: 4px;
+	border-top-right-radius: 4px;
+	width: 130px;
+	color: #000000;
+	text-decoration: none;
+	font-weight: bold;
+
+	width: 100%;
+	height: 100%;
+}
+
+#tabs ul li a:hover
+{
+	text-decoration: underline;
+}
+
+#tabs#Content_Area
+{
+	padding: 0 15px;
+	clear:both;
+	overflow:hidden;
+	line-height:19px;
+	position: relative;
+	z-index: 5;
+	height: 150px;
+	overflow: hidden;
+	background: grey;
+}
+
+#tabs {top: 2px; border-bottom: 2px solid white; width: 99%;}
+#Content_Area {top: 2px;}
+
+p { padding-left: 5px; padding-right: 5px; width: 90%; text-align: justify;}
+
+.interface
+{
+	width: 99%;
+	overflow: hidden;
+	display: block;
+	
+	position: absolute;
+	left: 2px;
+	top: 30px;
+	right: 2px;
+	bottom: 2px;
+}
+
+.active{ text-decoration: underline; color: #fe2b3d;}

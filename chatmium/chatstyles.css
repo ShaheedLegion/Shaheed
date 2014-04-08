@@ -14,7 +14,17 @@
 			width: 100%;
 			max-width: 100%;
 			display:block;
+			
+			font-style: italic;
+			font-weight: bold;
+			
+			font-size: 14px;
+			color: #F6F7F8;
+			padding-top: 2px;
+			overflow:hidden;
+			white-space:nowrap;
 		}
+/*
 		.ident p
 		{
 			font-size: 12px;
@@ -33,15 +43,15 @@
 			padding-top: 2px;
 			overflow:hidden;
 			white-space:nowrap;
-			/*outline:blue 1px solid;*/
 			display:block;
 		}
+*/
 		.menubuttons{width: 68px; height: 24px; margin-left: 2px;}
 		.submitbutton{display: inline; width: 46px; height: 24px; border-style:none; color:#00f; background-color:#fdfdfd;}
 		.fileinput{display: inline; width: 86px;border-style:none; color:#00f; background-color:#fdfdfd;}
 		#menuform{height: 22px; margin-left: 2px; display: inline-block; width: 138px;}
 		#userbuttons{width: 100%; background: #aaFFaa; padding: 0; height: 24px;/*float:left;*/}
-		#sounds{width: 16px;}
+		#sounds{width: 12px;}
 
 		#showmenu
 		{
@@ -146,9 +156,9 @@
 			top:0;
 			bottom:0;
 			background:#555555;
-			padding-top:2em;
+			padding-top:1em;
 		}
-		.getusername p{color:#F7F7F7; font-size:16px;}
+		.getusername p{color:#F7F7F7; font-size:16px; padding-right: 6px; overflow-y:auto;}
 		.getusername input
 		{
 			display: inline-block;
