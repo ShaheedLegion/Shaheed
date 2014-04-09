@@ -89,45 +89,94 @@ chatMessage.prototype.decodeMessage = function()
 
 chatMessage.prototype.getOwnerLink = function()
 {
-	return "<a href='privatemessage(" + this.fromId.toString() + ")'>" + this.messageOwner + "</a>";
+	return "<a href='javascript:privatemessage(" + this.fromId.toString() + ")'>" + this.messageOwner + "</a>";
+}
+
+
+function determineMessageType(message)
+{	//Check the type of a message, either old format, new format or invalid.
+	var pos = message.indexOf("<line");
+	if (pos == -1)
+		return -1;	//invalid since we cannot find the marker
+		
+	var endpos = message.indexOf(">", pos);
+	
+	var diff = endpos - (pos + 5);
+	
+	if (diff > 1)
+		return 1;
+	
+	return 0;
+}
+
+
+function parseOldMessage(fetcher, remainingContent)
+{
+	var pos = remainingContent.indexOf("<line>");
+	var pos2 = pos;
+	var messageAdded = 0;
+	if (pos != -1)
+	{
+		pos2 = remainingContent.indexOf("</line>", pos + 6);
+		if (pos2 != -1)	//incomplete message - might never get here, but "safety first"
+		{
+			var substr = remainingContent.substring(pos + 6, pos2);	//get everything inside the marker.
+			fetcher.handleMessageAdd(substr, -1, -1);
+			messageAdded = 1;
+			pos2 += 7;
+		}
+	}
+	return [remainingContent.substr(pos2), messageAdded];
+}
+
+function parseNewMessage(fetcher, messageType, remainingContent)
+{	//don't check messageType yet, as we only have one "new" type of message.
+	var pos = remainingContent.indexOf("<line");
+	var pos3 = pos;
+	var messageAdded = 0;
+	if (pos != -1)
+	{
+		var pos2 = remainingContent.indexOf(">", pos);
+		if (pos2 != -1)	//incomplete message.
+		{
+			var lineval = remainingContent.substr(pos, pos2 + 1);	//get the whole tag.
+			var fromto = parseFromTo(lineval);
+			
+			pos3 = remainingContent.indexOf("</line>", pos2 + 1);
+			if (pos3 != -1)	//incomplete message - might never get here, but "safety first"
+			{
+				var substr = remainingContent.substring(pos2 + 1, pos3);	//get everything inside the marker.
+				fetcher.handleMessageAdd(substr, fromto[0], fromto[1]);
+				messageAdded = 1;
+				pos3 += 7;
+			}
+		}
+	}
+	return [remainingContent.substr(pos2), messageAdded];
 }
 
 function parseFromTo(content, startpos)
 {
-	var _from = -1, _to = -1;	//to discard messages on client side.
 	var from_user_id = -1;
 	var to_user_id = -1;
-	var pos = content.indexOf("<line", startpos);
+	var pos = content.indexOf("from='", startpos);
 	
 	if (pos != -1)
 	{
-		var _temp_pos = content.indexOf("from", pos + 5);
+		var _from_end = content.indexOf("'", pos + 6);
+		if (_from_end != -1)	//incomplete message header
+			from_user_id = parseInt(content.substring(pos + 6, _from_end));
 
-		if (_temp_pos != -1)
+		pos = content.indexOf("to='", _from_end + 1);
+		if (pos != -1)
 		{
-			//get from and to users
-			var from_loc = _temp_pos + 6;	//from='
-			var _from_end = content.indexOf("'", from_loc);
-			
-			from_user_id = parseInt(content.substring(from_loc, _from_end));
-			
-			_temp_pos = _from_end;
-			from_loc = content.indexOf("to", _temp_pos);
-			
-			if (from_loc != -1)
-			{
-				from_loc += 4;
-				_from_end = content.indexOf("'", from_loc);
-				
-				to_user_id = parseInt(content.substring(from_loc, _from_end));
-			}
-			
-			
-			pos = _from_end;
+			var _to_end = content.indexOf("'", pos + 4);
+			if (_to_end != -1)	//incomplete message header
+				to_user_id = parseInt(content.substring(pos + 4, _to_end));
 		}
 	}
 	
-	return [pos, from_user_id, to_user_id];
+	return [from_user_id, to_user_id];
 }
 
 
@@ -217,93 +266,73 @@ var chatFetcher = {
 		this.sendChat(message);
 	}
 	,
+	handleMessageAdd: function(substr, fromid, toid)
+	{
+		var messObj = new chatMessage(substr, fromid, toid);
+		if (_user_id == -1)
+			setUserId(messObj.messageNumber);
+
+		var addMessage = 0;
+		if (fromid == -1 && toid == -1)	//joined the room message.
+			addMessage = 1;
+		
+		if (toid != -1 && toid == _user_id)	//private message from some user.
+			addMessage = 1;
+		
+		if (fromid != -1 && toid == -1)	//general message from some user.
+			addMessage = 1;
+		
+		if (addMessage != 0)
+		{
+			var parent = document.getElementById('chatitems');	
+			var li = document.createElement('li');
+			li.innerHTML = "<b>" + messObj.getOwnerLink() + ":  </b>" + messObj.messageText;
+			setBubbleColor(li);
+			parent.appendChild(li);
+			
+			this.chatMessages.push(messObj);
+		}
+	}
+	,
 	showChatLines_: function (e, callback)
 	{
-		var content = e.target.responseText;
-		var parent = document.getElementById('chatitems');
-		//var from_user_id = -1;
-		//var to_user_id = -1;
-
-		if (content.length)
+		if (e.target.responseText.length)
 		{
-		/*
-			var _from = -1, _to = -1;	//to discard messages on client side.
+			var remainingContent = e.target.responseText;
+			var messageType = 0;	//old message type
+			var messageAdded = 0;
 
-			var pos = content.indexOf("<line");
-			var _temp_pos = content.indexOf("from", pos + 5);
-
-			if (_temp_pos != -1)
+			var messageReturn = 0;
+			while (messageType != -1)
 			{
-				//get from and to users
-				var from_loc = _temp_pos + 6;	//from='
-				var _from_end = content.indexOf("'", from_loc);
-				
-				from_user_id = parseInt(content.substring(from_loc, _from_end));
-				
-				_temp_pos = _from_end;
-				from_loc = content.indexOf("to", _temp_pos);
-				
-				if (from_loc != -1)
-				{
-					from_loc += 4;
-					_from_end = content.indexOf("'", from_loc);
+				messageType = determineMessageType(remainingContent);
+
+				if (messageType == 0)	//old message type
+					messageReturn = parseOldMessage(this, remainingContent);
+				else if (messageType != -1)
+					messageReturn = parseNewMessage(this, messageType, remainingContent);	//allows for more than one format
 					
-					to_user_id = parseInt(content.substring(from_loc, _from_end));
-				}
+				remainingContent = messageReturn[0];
 				
-				
-				pos = _from_end;
+				if (messageReturn[1])
+					messageAdded = 1;
 			}
-			*/
-			var positions = parseFromTo(content, 0);
-			
-			if (positions[2] != -1 && (positions[2] != _user_id))
+
+			if (messageAdded)
 			{
-				//need to find a way to perform this processing on server side.
-				return;
-			}
-			var pos2 = 0;
-			while (positions[0] > -1)
-			{
-				pos2 = content.indexOf("</line>", positions[0]);
-				var substr = content.substring(positions[0] + 6, pos2);
-				
-				positions = parseFromTo(content, pos2 + 7);
-				//pos = content.indexOf("<line>", pos2 + 7);
-				
-				if (positions[2] != -1 && (positions[2] != _user_id))
+				var container = document.getElementById("chatcontent");
+				if (container)
+					container.scrollTop = container.scrollHeight;
+					//Here we set up the notification system which will be used by the app.
+				var opt =
 				{
-					//need to find a way to perform this processing on server side.
-					continue;
+					type: "basic",
+					title: "Message Received",
+					message: "A new message has been received!",
+					iconUrl: "iconsm.png"
 				}
-				
-				var messObj = new chatMessage(substr, positions[1], positions[2]);
-				
-				if (_user_id == -1)
-					setUserId(messObj.messageNumber);
-				
-				var li = document.createElement('li');
-				li.innerHTML = "<b>" + messObj.getOwnerLink() + ":  </b>" + messObj.messageText;
-				setBubbleColor(li);
-				parent.appendChild(li);
-				
-				this.chatMessages.push(messObj);
-				positions[0] = pos2;
+				playChatSound();
 			}
-			
-			var container = document.getElementById("chatcontent");
-			if (container)
-				container.scrollTop = container.scrollHeight;
-				//Here we set up the notification system which will be used by the app.
-			var opt =
-			{
-				type: "basic",
-				title: "Message Received",
-				message: "A new message has been received!",
-				iconUrl: "iconsm.png"
-			}
-			//chatFetcher.notification = chrome.notifications.create("got_message", opt, creationCallback);
-			playChatSound();
 		}
 	}
 	,
@@ -668,3 +697,6 @@ function closeChatWindow()
 	chrome.app.window.current().close();
 }
 */
+function privatemessage(to_user_id)
+{
+}

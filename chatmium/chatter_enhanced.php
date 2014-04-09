@@ -138,7 +138,7 @@ Any suggestions can be sent to me on my website ...
 	{
 		$response = '';
 		$func = $_GET['query'];
-		if (empty($func))
+		if (empty($func) && !empty($_POST['query']))
 			$func = $_POST['query'];
 
 		if ($func == 'test')
@@ -149,19 +149,19 @@ Any suggestions can be sent to me on my website ...
 		else if ($func == 'send')
 		{
 			$user = $_GET['user'];
-			if (empty($user))
+			if (empty($user) && !empty($_POST['user']))
 				$user = $_POST['user'];
 				
 			$userid = $_GET['userid'];
-			if (empty($user))
+			if (empty($userid) && !empty($_POST['userid']))
 				$userid = $_POST['userid'];
 				
 			$targetuserid = $_GET['targetuserid'];
-			if (empty($user))
+			if (empty($targetuserid) && !empty($_POST['targetuserid']))
 				$targetuserid = $_POST['targetuserid'];
 
 			$message = trim($_GET['value']);
-			if (empty($message))
+			if (empty($message) && !empty($_POST['value']))
 				$message = $_POST['value'];
 			$response = "<line from='".$userid."' to='".$targetuserid."'>[".get_next_line_number()."]{".$user."}".$message."</line>";
 			write_message($response);
@@ -173,14 +173,16 @@ Any suggestions can be sent to me on my website ...
 		else if ($func == 'fetch')
 		{
 			$last_message = $_GET['value'];
-			if (empty($last_message))
+			if (empty($last_message) && !empty($_POST['value']))
 				$last_message = $_POST['value'];
-			$response = read_messages($last_message);
+				
+			if (!empty($last_message))
+				$response = read_messages($last_message);
 		}
 		else if ($func == 'join')
 		{
 			$user = $_GET['user'];
-			if (empty($user))
+			if (empty($user) && !empty($_POST['user']))
 				$user = $_POST['user'];
 				
 			$response = "<line>[".get_next_line_number()."]{".$user."}has joined the room!</line>";
@@ -190,7 +192,7 @@ Any suggestions can be sent to me on my website ...
 		else if ($func == 'remove')
 		{
 			$user = $_GET['user'];
-			if (empty($user))
+			if (empty($user) && !empty($_POST['user']))
 				$user = $_POST['user'];
 			$response = "<line>[".get_next_line_number()."]{".$user."}has left the room!</line>";
 			write_message($response);
