@@ -291,13 +291,26 @@ var chatFetcher = {
 			addMessage = 1;
 			privateMessage = 1;
 		}
+		
+		var tomsg = '';
+		if (fromid != -1 && fromid == _user_id)	//this is a message I sent to another user privately.
+		{
+			if (toid != -1)	//this should not be true
+			{
+				tomsg = " -> " + this.getChatmiumUser(toid);
+				
+				
+				privateMessage = 1;
+			}
+			addMessage = 1;
+		}
 
 		var privPrefix = (privateMessage ? '<img class="smileysmall" src="iconpvt.png">&nbsp;&nbsp;' : "")
 		if (addMessage != 0)
 		{
 			var parent = document.getElementById('chatitems');	
 			var li = document.createElement('li');
-			li.innerHTML = privPrefix + "<b>" + messObj.getOwnerLink(this) + ":  </b>" + messObj.messageText;
+			li.innerHTML = privPrefix + "<b>" + messObj.getOwnerLink(this) + tomsg +  ":  </b>" + messObj.messageText;
 			setBubbleColor(li);
 			parent.appendChild(li);
 			
