@@ -101,6 +101,7 @@
 		img.general{display: block; height: auto; max-width: 100%;}
 		img.soundicon{width: 24px; height: 24px; display: inline; float:left;}
 		img.smiley{width: 32px; display: inline;}
+		img.smileysmall{width: 16px; display: inline;}
 		img.smileybig{width: 64px; display: block;}
 		.smileyitems{list-style-type:none; -webkit-padding-start: 0; margin-bottom: 10px;}
 		.smileyitems li

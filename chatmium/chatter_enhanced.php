@@ -116,7 +116,12 @@ Any suggestions can be sent to me on my website ...
 		else
 		{
 		}
-		return $response;
+		
+		//$find = array("\'", "\"");
+		//$replace = array("'", "\"");
+		//$unescaped_response = str_replace($find, $replace, $response); 
+		$unescaped_response = stripslashes($response);
+		return $unescaped_response;
 	}
 	/*
 	There are 4 functions:

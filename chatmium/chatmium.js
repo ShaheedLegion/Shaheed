@@ -14,10 +14,11 @@ Visit my website at:
 for more information.
 */
 var currentServer = "http://www.ShaheedAbdol.co.za/chatmium/chatter_enhanced.php";
-currentServer = "http://127.0.0.1/chatter_enhanced.php";	//simply reassign the variable.
+//currentServer = "http://127.0.0.1/chatter_enhanced.php";	//simply reassign the variable.
 var gradientPrefix = '';
 var _user_id = -1;
 var _target_user_id = -1;
+var _user_alias = '';
 
 chatMessage = function (str, fromid, toid)
 {
@@ -87,11 +88,16 @@ chatMessage.prototype.decodeMessage = function()
 	}
 }
 
-chatMessage.prototype.getOwnerLink = function()
-{
-	return "<a href='javascript:privatemessage(" + this.fromId.toString() + ")'>" + this.messageOwner + "</a>";
+chatMessage.prototype.getOwnerLink = function(fetcher)
+{	//can only private message users after they have their id's
+	if (this.messageText == "has joined the room!")	//cannot link to message when user joins a room
+		return this.messageOwner;
+	else
+	{
+		fetcher.addChatmiumUser(this.fromId, this.messageOwner);
+		return "<a href='javascript:privatemessage(" + this.fromId.toString() + ")' title='Send Private Message'>" + this.messageOwner + "</a>";
+	}
 }
-
 
 function determineMessageType(message)
 {	//Check the type of a message, either old format, new format or invalid.
@@ -187,6 +193,7 @@ var chatFetcher = {
 	notification: null,
 	audio: new Audio("alert.ogg"),
 	chatMessages: new Array(),
+	uniqueUsers: {},
 	timerId: 0,
 	
 	buildRequest: function()
@@ -231,6 +238,8 @@ var chatFetcher = {
 		this.current_message = this.filter_message(message);
 		this.current_function = 'send';
 		this.requestChat(0);
+		
+		privatemessage(-1);	//send and discard.
 	}
 	,
 	joinChat: function(user)
@@ -272,21 +281,23 @@ var chatFetcher = {
 		if (_user_id == -1)
 			setUserId(messObj.messageNumber);
 
-		var addMessage = 0;
+		var addMessage = 0, privateMessage = 0;
 		if (fromid == -1 && toid == -1)	//joined the room message.
 			addMessage = 1;
-		
-		if (toid != -1 && toid == _user_id)	//private message from some user.
-			addMessage = 1;
-		
 		if (fromid != -1 && toid == -1)	//general message from some user.
+			addMessage = 1;	
+		if (toid != -1 && toid == _user_id)	//private message from some user.
+		{
 			addMessage = 1;
-		
+			privateMessage = 1;
+		}
+
+		var privPrefix = (privateMessage ? '<img class="smileysmall" src="iconpvt.png">&nbsp;&nbsp;' : "")
 		if (addMessage != 0)
 		{
 			var parent = document.getElementById('chatitems');	
 			var li = document.createElement('li');
-			li.innerHTML = "<b>" + messObj.getOwnerLink() + ":  </b>" + messObj.messageText;
+			li.innerHTML = privPrefix + "<b>" + messObj.getOwnerLink(this) + ":  </b>" + messObj.messageText;
 			setBubbleColor(li);
 			parent.appendChild(li);
 			
@@ -339,6 +350,37 @@ var chatFetcher = {
 	errorChat_: function (e)
 	{
 		//Do nothing in this case - popping up an error would affect the UX.
+	}
+	,
+	addChatmiumUser: function(fromId, messageOwner)
+	{
+		if (fromId == -1)
+			return;
+
+		var userFound = 0;
+		for (var name in this.uniqueUsers)
+		{
+			if (name == messageOwner)
+			{
+				userFound = 1;
+				break;
+			}
+		}
+		
+		if (userFound == 0)
+			this.uniqueUsers[messageOwner] = fromId;
+	}
+	,
+	getChatmiumUser: function(userId)
+	{
+		for (var name in this.uniqueUsers)
+		{
+			if (this.uniqueUsers[name] == userId)
+			{
+				return name;
+			}
+		}
+		return "";
 	}
 	,
 	/*
@@ -463,6 +505,7 @@ function getChatName()
 		if (name)
 		{
 			name.innerHTML = userName;
+			_user_alias = userName;
 
 			tab('interface', 'tab2');	//make sure the correct tab is showing to chat.
 
@@ -483,7 +526,7 @@ function handleResize()
 	if (chat)
 	{
 		chat.style.display = "block";
-		var newHeight = document.body.clientHeight - 120;
+		var newHeight = document.body.clientHeight - 122;
 		if (newHeight >= 0)
 			chat.style.height = "" + newHeight +"px";
 	}
@@ -699,4 +742,18 @@ function closeChatWindow()
 */
 function privatemessage(to_user_id)
 {
+	_target_user_id = to_user_id;
+
+	var name = document.getElementById("username");
+	if (name)
+	{
+		if (_target_user_id != -1)
+		{
+			name.innerHTML = _user_alias + "->" + chatFetcher.getChatmiumUser(to_user_id) +  " <a href='javascript:privatemessage(-1)' title='Cancel Private Message'>[x]</a>";	
+		}
+		else
+		{
+			name.innerHTML = _user_alias;
+		}
+	}
 }
