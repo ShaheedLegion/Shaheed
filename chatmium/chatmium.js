@@ -19,6 +19,7 @@ var gradientPrefix = '';
 var _user_id = -1;
 var _target_user_id = -1;
 var _user_alias = '';
+var _sound_state = 1;
 
 chatMessage = function (str, fromid, toid)
 {
@@ -305,7 +306,7 @@ var chatFetcher = {
 			addMessage = 1;
 		}
 
-		var privPrefix = (privateMessage ? '<img class="smileysmall" src="iconpvt.png">&nbsp;&nbsp;' : "")
+		var privPrefix = (privateMessage ? '<img class="smileysmall" src="ui/iconpvt.png">&nbsp;&nbsp;' : "")
 		if (addMessage != 0)
 		{
 			var parent = document.getElementById('chatitems');	
@@ -690,14 +691,10 @@ function requestMessages()
 
 function playChatSound()
 {
-	var enableSound = document.getElementById("sounds");
-	if (enableSound)
+	if (_sound_state == 1)
 	{
-		if (enableSound.checked)
-		{
-			chatFetcher.audio.volume = 0.5;
-			chatFetcher.audio.play();
-		}
+		chatFetcher.audio.volume = 0.5;
+		chatFetcher.audio.play();
 	}
 }
 
@@ -770,3 +767,20 @@ function privatemessage(to_user_id)
 		}
 	}
 }
+
+function toggle(el){
+    if (el.title == "Sound Off")
+    {
+        el.src = 'ui/speaker_off.png';
+        el.title = "Sound On";
+		_sound_state = 0;
+    }
+    else if (el.title == "Sound On")
+    {
+        el.src = 'ui/speaker_on.png';
+        el.title = "Sound Off";
+		_sound_state = 1;
+    }
+
+    return false;
+} 

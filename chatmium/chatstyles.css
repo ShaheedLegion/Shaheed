@@ -1,5 +1,6 @@
 		*{margin: 0; padding: 0; width: 100%;}
 		html,body{height: 100%; background: #222221;}
+		body{overflow-x: hidden;}
 		.boxsizingBorder{-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;}
 		.chatwrapper{min-height: 100%; overflow-x: hidden;}
 		button{border-style:none; color:#00f; background-color:#fdfdfd;}
@@ -7,12 +8,12 @@
 		.ident
 		{
 			background: #8899AA;
-			padding-left: 4px;
+			/*padding-left: 4px;*/
 			/*float:left;*/
 			/*width: 100%;*/
 			height: 20px;
-			width: 100%;
-			max-width: 100%;
+			/*width: 99%;*/
+			max-width: 99%;
 			display:block;
 			
 			font-style: italic;
@@ -47,12 +48,48 @@
 		}
 */
 		.menubuttons{width: 68px; height: 24px; margin-left: 2px;}
-		.submitbutton{display: inline; width: 46px; height: 24px; border-style:none; color:#00f; background-color:#fdfdfd;}
+		.submitbutton{display: inline; width: 46px; height: 22px; border-style:none; color:#00f; background-color:#fdfdfd;}
+		/*
+		input[type=submit]
+		{
+			display: inline;
+			width: 46px;
+			height: 24px;
+			background:#ccc; border:0 none;
+			cursor:pointer;
+			-webkit-border-radius: 5px;
+			border-radius: 5px;
+			background: url('ui/arrow_up.png') no-repeat;
+		}
+		input[type=file]
+		{
+			display: inline;
+			width: 46px;
+			height: 24px;
+			padding: 0;
+			align-items: center;
+		}
+		*/
 		.fileinput{display: inline; width: 86px;border-style:none; color:#00f; background-color:#fdfdfd;}
 		#menuform{height: 22px; margin-left: 2px; display: inline-block; width: 138px;}
-		#userbuttons{width: 100%; background: #aaFFaa; padding: 0; height: 24px;/*float:left;*/}
-		#sounds{width: 12px;}
+		.userbuttons{width: 99%; background: #aaFFaa; padding: 0; height: 24px;/*float:left;*/}
+		/*#sounds{width: 16px;}*/
+/*
+		input[type=checkbox]
+		{  
+			display: none;  
+		}	 
+		label:before
+		{  
+			display: inline-block;  
+  
+			width: 16px;  
+			height: 16px;  
+  
+			margin-right: 10px;
 
+		} 
+*/
 		#showmenu
 		{
 			display:block;
@@ -68,6 +105,7 @@
 			background: #C7C7E2;
 			overflow-y: auto;
 			overflow-x:hidden;
+			width: 99%;
 			height: 80%;
 			max-height: 80%;
 		}
@@ -101,7 +139,7 @@
 		img.general{display: block; height: auto; max-width: 100%;}
 		img.soundicon{width: 24px; height: 24px; display: inline; float:left;}
 		img.smiley{width: 32px; display: inline;}
-		img.smileysmall{width: 16px; display: inline;}
+		.smileysmall{width: 16px; display: inline; padding-top: 2px;}
 		img.smileybig{width: 64px; display: block;}
 		.smileyitems{list-style-type:none; -webkit-padding-start: 0; margin-bottom: 10px;}
 		.smileyitems li
@@ -165,7 +203,7 @@
 			display: inline-block;
 			border: 0;
 			background: #E7E7E7;
-			width: 200px;
+			width: 180px;
 			height: 30px;
 			margin: 10px;
 			font-size: 16px;

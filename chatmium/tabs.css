@@ -2,7 +2,7 @@
 {
 	padding: 0px;
 	margin: 0px;
-	margin-left: 2px;
+	margin-left: 6px;
 	list-style-type: none;
 	height: 26px;
 }
@@ -13,7 +13,7 @@
 	clear: none;
 	float: left;
 	height: 24px;
-	width: 58px;
+	width: 38px;
 }
 
 #tabs ul li a
@@ -21,9 +21,10 @@
 	position: relative;
 	/*margin-top: 16px;*/
 	display: block;
-	margin-left: 6px;
+	margin-left: 0px;
 	line-height: 24px;
 	padding-left: 6px;
+	padding-top: 2px;
 	background: #f6f6f6;
 	z-index: 9999;
 	border: 1px solid #ccc;
