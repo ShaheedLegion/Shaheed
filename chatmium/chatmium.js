@@ -12,6 +12,7 @@ Visit my website at:
 for more information.
 */
 var currentServer = "http://www.ShaheedAbdol.co.za/chatmium/chatter_enhanced.php";
+var serverDomain = "http://www.shaheedabdol.co.za/";
 //currentServer = "http://127.0.0.1/chatter_enhanced.php";	//simply reassign the variable.
 var gradientPrefix = '';
 var _user_id = -1;

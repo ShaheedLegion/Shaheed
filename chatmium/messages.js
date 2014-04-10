@@ -47,7 +47,7 @@ chatMessage.prototype.decodeImages = function(message)
 			var imgname = str.substr(pos + 3, (pos2 - (pos + 3)));
 			var part1 = str.substring(0, pos);
 			var part2 = str.substring(pos2 + 3);
-			str = part1 + '<img class="general" src="' + imgname + '"/>' + part2;
+			str = part1 + '<img class="general" src="' + serverDomain + imgname + '"/>' + part2;
 			pos = str.indexOf('__|');
 		}
 	}
