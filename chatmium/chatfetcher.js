@@ -136,6 +136,7 @@ var chatFetcher = {
 			
 			obj.chatMessages.push(messObj);
 		}
+		return addMessage;
 	}
 	,
 	showChatLines_: function (e, callback)

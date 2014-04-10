@@ -32,7 +32,6 @@ function registerEvents()
 	document.getElementById('acceptsmiley').addEventListener('click', acceptChatSmiley);
 	document.getElementById('closesmiley').addEventListener('click', closeChatSmiley);
 	document.getElementById('useralias').focus();
-	//chrome.notifications.onClicked.addListener(clickedCallback);
 
 	var ul = document.getElementById('smileyitems');
 	if (ul)
@@ -51,18 +50,7 @@ function registerEvents()
 	gradientPrefix = getCssValuePrefix('backgroundImage', 'linear-gradient(left, #fff, #fff)');
 	tab('interface', 'tab1');	//make sure the correct tab is showing at startup.
 }
-/*
-function creationCallback(notId)
-{
-	//fake callback for the notification when an event is received.
-}
 
-function clickedCallback(notId)
-{
-	//make this window show - pop to front.
-	chrome.app.window.restore();
-}
-*/
 function filterKeys(e)
 {
 	if (e.keyCode === 13)
@@ -99,9 +87,7 @@ function getChatName()
 			document.getElementById('usermessage').focus();
 		}
 	}
-	else
-		alert('Please enter a user name.');
-
+	else { alert('Please enter a user name.'); }
 	return false;
 }
 
@@ -124,8 +110,7 @@ function getChatSmiley()
 	{
 		if (smileydiv.style.display == 'none' || smileydiv.style.display.length == 0)
 			smileydiv.style.display = 'block';
-		else
-			smileydiv.style.display = 'none';
+		else { smileydiv.style.display = 'none'; }
 	}
 	return false;
 }
@@ -138,7 +123,6 @@ function acceptChatSmiley()
 		var input = document.getElementById("usermessage");
 		if (input)	//find insertion point... add smileys there.
 			input.value = input.value + smileyinp.value;
-
 		smileyinp.value = '';
 	}
 	closeChatSmiley();
@@ -269,18 +253,6 @@ function getCssValuePrefix(name, value)
     }
 }
 
-/*
-function minimizeChatWindow()
-{
-	chrome.app.window.current().minimize();
-}
-
-function closeChatWindow()
-{
-	chatFetcher.endChat();
-	chrome.app.window.current().close();
-}
-*/
 function privatemessage(to_user_id)
 {
 	_target_user_id = to_user_id;
@@ -293,8 +265,8 @@ function privatemessage(to_user_id)
 	{
 		name.innerHTML = _user_alias + "->" + chatFetcher.getChatmiumUser(chatFetcher, to_user_id) +  " <a href='javascript:privatemessage(-1)' title='Cancel Private Message'>[x]</a>";	
 	}
-	else
-		name.innerHTML = _user_alias;
+	else{ name.innerHTML = _user_alias; }
+	document.getElementById('usermessage').focus();
 }
 
 function toggle(el)
@@ -325,6 +297,5 @@ function tab(className, tab)
 
 	document.getElementById(tab).style.display = 'block';
 	document.getElementById('label_' + tab).setAttribute("class", "active");
-	
 	handleResize();
 }

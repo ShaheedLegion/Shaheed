@@ -111,8 +111,7 @@ function parseOldMessage(obj, callback, remainingContent)
 		if (pos2 != -1)	//incomplete message - might never get here, but "safety first"
 		{
 			var substr = remainingContent.substring(pos + 6, pos2);	//get everything inside the marker.
-			callback(obj, substr, -1, -1);
-			messageAdded = 1;
+			messageAdded = callback(obj, substr, -1, -1);
 			pos2 += 7;
 		}
 	}
@@ -136,8 +135,7 @@ function parseNewMessage(obj, callback, messageType, remainingContent)
 			if (pos3 != -1)	//incomplete message - might never get here, but "safety first"
 			{
 				var substr = remainingContent.substring(pos2 + 1, pos3);	//get everything inside the marker.
-				callback(obj, substr, fromto[0], fromto[1]);
-				messageAdded = 1;
+				messageAdded = callback(obj, substr, fromto[0], fromto[1]);
 				pos3 += 7;
 			}
 		}
