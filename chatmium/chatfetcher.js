@@ -127,7 +127,8 @@ var chatFetcher = {
 
 		var privPrefix = (privateMessage ? '<img class="smileysmall" src="ui/iconpvt.png">&nbsp;&nbsp;' : "")
 		if (addMessage != 0)
-		{
+		{	//messages are handled here.
+		/*
 			var parent = document.getElementById('chatitems');	
 			var li = document.createElement('li');
 			li.innerHTML = privPrefix + "<b>" + messObj.getOwnerLink(obj, obj.addChatmiumUser) + tomsg +  ":  </b>" + messObj.messageText;
@@ -135,6 +136,8 @@ var chatFetcher = {
 			parent.appendChild(li);
 			
 			obj.chatMessages.push(messObj);
+			*/
+			roomManager.addMessage(fromid, privPrefix, messObj, tomsg);
 		}
 		return addMessage;
 	}
@@ -223,6 +226,7 @@ var chatFetcher = {
 		return "";
 	}
 	,
+	/*
 	setBubbleColor: function(element)
 	{	//can use more complex formula to determine the bg color.
 		var colr = Math.floor(128 + (Math.random() * 55));
@@ -245,6 +249,7 @@ var chatFetcher = {
 		}
 	}
 	,
+	*/
 	/*
 	gotNewMember: function (e)
 	{
