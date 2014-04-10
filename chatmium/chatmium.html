@@ -1,35 +1,14 @@
 <!DOCTYPE html>
 <html>
-	<!--
-		Chatmium - written by Shaheed Abdol, Copyright 2013.
-		Visit http://www.ShaheedAbdol.co.za for more information.
-	-->
+	<!--Chatmium - written by Shaheed Abdol, Copyright 2014. Visit http://www.ShaheedAbdol.co.za for more information.-->
   <head>
-    <title>Chatmium</title>
+    <title>Chatmium - Chat to friends!</title>
 	<link rel="stylesheet" type="text/css" href="chatstyles.css"/>
-	
 	<link rel="stylesheet" type="text/css" href="tabs.css"/>
-	<script type="text/javascript">
-	var _global_cb = 0;
-	function tab(className, tab)
-	{
-		var elements = document.getElementsByClassName(className);
-		for (var i = 0; i < elements.length; i++)
-		{
-			elements[i].style.display = "none";	//hide the tab
-			document.getElementById('label_tab' + (i + 1)).setAttribute("class", "");	//set the list item to "inactive"
-		}
-
-		document.getElementById(tab).style.display = 'block';
-		document.getElementById('label_' + tab).setAttribute("class", "active");
-		
-		if (_global_cb != 0)
-			_global_cb();
-	}
-
-	</script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
     <script src="http://malsup.github.com/jquery.form.js"></script>
+	<script src="messages.js"></script>
+	<script src="chatfetcher.js"></script>
     <script src="chatmium.js"></script>
   </head>
   <body>
@@ -45,124 +24,107 @@
   </div>
 
   <div id="Content_Area">
-  
-	<div id="tab1" class="interface">
-			<div class="getusername" id ="getusername">
-				<p>Please choose your username, this will be your name for the remainder of your session.</p>
-				<p>You are limited to 24 characters for your name:</p>
-				<input id="useralias" maxlength="24"/>
-				<button value="ok" id="setalias">Ok</button>
-				<br/>
-				<p>Written by Shaheed Abdol, for more info visit <a href="http://www.ShaheedAbdol.co.za" target="blank">www.ShaheedAbdol.co.za</a></p>
-			</div>
-	</div>
+		<div id="tab1" class="interface">
+				<div class="getusername" id ="getusername">
+					<p>Please choose your username, this will be your name for the remainder of your session.</p>
+					<p>You are limited to 24 characters for your name:</p>
+					<input id="useralias" maxlength="24"/>
+					<button value="ok" id="setalias">Ok</button>
+					<br/>
+					<p>Written by Shaheed Abdol, for more info visit <a href="http://www.ShaheedAbdol.co.za" target="blank">www.ShaheedAbdol.co.za</a></p>
+				</div>
+		</div>
  
-	<div id="tab2" class="interface">
-			<div class="chatwrapper">
-				<div class="chatcontent" id="chatcontent">
-					<ul class="chatitems" id="chatitems">
-					</ul>
-				</div>
+		<div id="tab2" class="interface">
+				<div class="chatwrapper">
+					<div class="chatcontent" id="chatcontent">
+						<ul class="chatitems" id="chatitems"></ul>
+					</div>
 
-				<div class="userbuttons">
-					<input type="image" src="ui/speaker_on.png" class="smileysmall" onclick="toggle(this);" title="Sound Off"/>
-					<a href="#" id="smileys"><img src="smileys/happy.ico" class="smileysmall"/></a>
+					<div class="userbuttons">
+						<input type="image" src="ui/speaker_on.png" class="smileysmall" onclick="toggle(this);" title="Sound Off"/>
+						<a href="#" id="smileys"><img src="smileys/happy.ico" class="smileysmall"/></a>
+						
+						<form enctype="multipart/form-data" action="http://www.shaheedabdol.co.za/chatmium/upload.php" method="post" id="menuform">
+						<input id="image-file" type="file" name="upfile" class="fileinput" value="File"/>
+						<input type="submit" value="Upload" class="submitbutton"></input>
+						</form>
+					</div>
 					
-					<form enctype="multipart/form-data" action="http://www.shaheedabdol.co.za/chatmium/upload.php" method="post" id="menuform">
-					<input id="image-file" type="file" name="upfile" class="fileinput" value="File"/>
-					<input type="submit" value="Upload" class="submitbutton"></input>
-					</form>
-				</div>
-				
-				<div class="ident" id="username"></div>
+					<div class="ident" id="username"></div>
 
-				<div class="chatcontrol" id="chatcontrol">
-					<textarea name="usermessage" cols="*" rows="2" id="usermessage"></textarea>
+					<div class="chatcontrol" id="chatcontrol">
+						<textarea name="usermessage" cols="*" rows="2" id="usermessage"></textarea>
+					</div>
 				</div>
-			</div>
-	</div>
-	
-	<!--Need to find a better way to deal with these tabs which contain private content.-->
+		</div>
 
-	<div id="tab3" class="interface">
-	<!--
-			<ul>
-				<li onclick="tab(sub_tab1)" class="active" id="label_privchat1"><a>Alias</a></li>
+		<!--Need to find a better way to deal with these tabs which contain private content.-->
+		<div id="tab3" class="interface">
+				<ul id="privateusers"><!--<li onclick="tab(sub_tab1)" class="active" id="label_privchat1"><a>Alias</a></li>--></ul>
+				<div class="chatwrapper">
+				<!--
+					<div class="chatcontent" id="chatcontent">
+						<ul class="chatitems" id="privatechatitems"></ul>
+					</div>
+					
+					<div class="userbuttons">
+						<input type="image" src="ui/speaker_on.png" class="smileysmall" onclick="toggle(this);" title="Sound Off"/>
+						<a href="#" id="smileys"><img src="smileys/happy.ico" class="smileysmall"/></a>
+						
+						<form enctype="multipart/form-data" action="http://www.shaheedabdol.co.za/chatmium/upload.php" method="post" id="menuform">
+						<input id="image-file" type="file" name="upfile" class="fileinput" value="File"/>
+						<input type="submit" value="Upload" class="submitbutton"></input>
+						</form>
+					</div>
+					
+					<div class="ident" id="username"></div>
+
+					<div class="chatcontrol" id="chatcontrol">
+						<textarea name="usermessage" cols="*" rows="2" id="usermessage"></textarea>
+					</div>-->
+				</div>
+		</div>
+
+		<div id="tab4" class="interface">
+				<div class="getusername" id ="getusername">
+					<p>Chatmium is a chat application written by Shaheed Abdol in 2013/2014.</p>
+					<p>Since Chatmium is unmoderated, we rely on the users to keep things clean, fun, and legal.</p>
+					<br/>
+					<p>For more info visit <a href="http://www.ShaheedAbdol.co.za" target="blank">www.ShaheedAbdol.co.za</a></p>
+				</div>
+		</div>
+
+		<!--Misc. Floating divs which appear above content on specific tabs-->
+		<div class="chatsmiley" id="chatsmiley">
+			<p><b><i>Smileys by <a href="http://icontexto.deviantart.com">IconTexto</a>...</i></b></p>
+			<br/>
+			<ul class="smileyitems" id="smileyitems">
+			<li><a href="#" id="angry.ico"><img src="smileys/angry.ico" alt="angry"/></a></li>
+			<li><a href="#" id="wink.ico"><img src="smileys/wink.ico" alt="wink"/></a></li>
+			<li><a href="#" id="smiling.ico"><img src="smileys/smiling.ico" alt="smiling"/></a></li>
+			<li><a href="#" id="cheeky.ico"><img src="smileys/cheeky.ico" alt="cheeky"/></a></li>
+			<li><a href="#" id="nerd.ico"><img src="smileys/nerd.ico" alt="nerd"/></a></li>
+			<li><a href="#" id="cool.ico"><img src="smileys/cool.ico" alt="cool"/></a></li>
+			<li><a href="#" id="surprised.ico"><img src="smileys/surprised.ico" alt="surprised"/></a></li>
+			<li><a href="#" id="blushing.ico"><img src="smileys/blushing.ico" alt="blushing"/></a></li>
+			<li><a href="#" id="envious.ico"><img src="smileys/envious.ico" alt="envious"/></a></li>
+			<li><a href="#" id="crying.ico"><img src="smileys/crying.ico" alt="crying"/></a></li>
+			<li><a href="#" id="sad.ico"><img src="smileys/sad.ico" alt="sad"/></a></li>
+			<li><a href="#" id="lol.ico"><img src="smileys/lol.ico" alt="lol"/></a></li>
+			<li><a href="#" id="ecstatic.ico"><img src="smileys/ecstatic.ico" alt="ecstatic"/></a></li>
+			<li><a href="#" id="happy.ico"><img src="smileys/happy.ico" alt="happy"/></a></li>
+
 			</ul>
-	-->
-			<div class="chatwrapper">
-			<!--
-				<div class="chatcontent" id="chatcontent">
-					<ul class="chatitems" id="privatechatitems">
-					</ul>
-				</div>
-				
-				<div class="userbuttons">
-					<input type="image" src="ui/speaker_on.png" class="smileysmall" onclick="toggle(this);" title="Sound Off"/>
-					<a href="#" id="smileys"><img src="smileys/happy.ico" class="smileysmall"/></a>
-					
-					<form enctype="multipart/form-data" action="http://www.shaheedabdol.co.za/chatmium/upload.php" method="post" id="menuform">
-					<input id="image-file" type="file" name="upfile" class="fileinput" value="File"/>
-					<input type="submit" value="Upload" class="submitbutton"></input>
-					</form>
-				</div>
-				
-				<div class="ident" id="username"></div>
-
-				<div class="chatcontrol" id="chatcontrol">
-					<textarea name="usermessage" cols="*" rows="2" id="usermessage"></textarea>
-				</div>-->
-			</div>
-	</div>
-
-	<div id="tab4" class="interface">
-			<div class="getusername" id ="getusername">
-				<p>Chatmium is a chat application written by Shaheed Abdol in 2013/2014.</p>
-				<!--<p>Chatmium is free to download and free to use, with no advertising and no hidden agenda. We don't want any personal details, and don't even want your email address.</p>-->
-				<p>Since Chatmium is unmoderated, we rely on the users to keep things clean, fun, and legal.</p>
-				<br/>
-				<p>For more info visit <a href="http://www.ShaheedAbdol.co.za" target="blank">www.ShaheedAbdol.co.za</a></p>
-			</div>
-	</div>
-
-	
-	<!--Misc. Floating divs which appear above content on specific tabs-->
-	
-	<div class="chatsmiley" id="chatsmiley">
-		<p>
-		<b><i>Smileys by <a href="http://icontexto.deviantart.com">IconTexto</a>...</i></b>
-		</p>
-		<br/>
-		<!--Add in chat smileys here-->
-		<ul class="smileyitems" id="smileyitems">
-		<li><a href="#" id="angry.ico"><img src="smileys/angry.ico" alt="angry"/></a></li>
-		<li><a href="#" id="wink.ico"><img src="smileys/wink.ico" alt="wink"/></a></li>
-		<li><a href="#" id="smiling.ico"><img src="smileys/smiling.ico" alt="smiling"/></a></li>
-		<li><a href="#" id="cheeky.ico"><img src="smileys/cheeky.ico" alt="cheeky"/></a></li>
-		<li><a href="#" id="nerd.ico"><img src="smileys/nerd.ico" alt="nerd"/></a></li>
-		<li><a href="#" id="cool.ico"><img src="smileys/cool.ico" alt="cool"/></a></li>
-		<li><a href="#" id="surprised.ico"><img src="smileys/surprised.ico" alt="surprised"/></a></li>
-		<li><a href="#" id="blushing.ico"><img src="smileys/blushing.ico" alt="blushing"/></a></li>
-		<li><a href="#" id="envious.ico"><img src="smileys/envious.ico" alt="envious"/></a></li>
-		<li><a href="#" id="crying.ico"><img src="smileys/crying.ico" alt="crying"/></a></li>
-		<li><a href="#" id="sad.ico"><img src="smileys/sad.ico" alt="sad"/></a></li>
-		<li><a href="#" id="lol.ico"><img src="smileys/lol.ico" alt="lol"/></a></li>
-		<li><a href="#" id="ecstatic.ico"><img src="smileys/ecstatic.ico" alt="ecstatic"/></a></li>
-		<li><a href="#" id="happy.ico"><img src="smileys/happy.ico" alt="happy"/></a></li>
-
-		</ul>
-		<input type="text" id="currentsmileys"></input>
-		<br/>
-		<button value="Ok" id="acceptsmiley" class="menubuttons">Ok</button>
-		<button value="Cancel" id="closesmiley" class="menubuttons">Cancel</button>
-	</div>
-
-	
-	<div class="loadingfile" id="loadingfile">
-		<img class="smileybig" src="loading.gif"/>
-		<p id="percentage"></p>
-	</div>
-
+			<input type="text" id="currentsmileys"></input>
+			<br/>
+			<button value="Ok" id="acceptsmiley" class="menubuttons">Ok</button>
+			<button value="Cancel" id="closesmiley" class="menubuttons">Cancel</button>
+		</div>
+		<div class="loadingfile" id="loadingfile">
+			<img class="smileybig" src="loading.gif"/>
+			<p id="percentage"></p>
+		</div>
 	</div>
   </body>
 </html>
