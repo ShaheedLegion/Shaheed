@@ -10,7 +10,7 @@ var chatFetcher = {
 	current_function:'',
 	currentUser:'',
 	notification: null,
-	audio: new Audio("alert.ogg"),
+	audio: new Audio("notification.ogg"),
 	_sound_state: 1,
 	chatMessages: new Array(),
 	uniqueUsers: {},
