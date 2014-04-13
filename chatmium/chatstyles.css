@@ -4,6 +4,7 @@
 		.boxsizingBorder{-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;}
 		.chatwrapper{min-height: 100%; overflow-x: hidden;}
 		.privatechatwrapper{min-height: 100%; overflow-x: hidden;}
+		#privateusers{display: none; position: absolute; width: 99%; left: 0; right: 0; top: 22px; bottom: 22px;}
 		button{border-style:none; color:#00f; background-color:#fdfdfd;}
 		table { border-spacing: 0px; }
 		.ident

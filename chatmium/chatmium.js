@@ -13,7 +13,7 @@ for more information.
 */
 var currentServer = "http://www.ShaheedAbdol.co.za/chatmium/chatter_enhanced.php";
 var serverDomain = "http://www.shaheedabdol.co.za/";
-//currentServer = "http://127.0.0.1/chatter_enhanced.php";	//simply reassign the variable.
+currentServer = "http://127.0.0.1/chatter_enhanced.php";	//simply reassign the variable.
 var gradientPrefix = '';
 var _user_id = -1;
 var _target_user_id = -1;
@@ -233,7 +233,7 @@ function checkallowedExt(filename)
 
 function requestMessages()
 {	//shim for the way in which window messages are handled.
-	chatFetcher.current_message = chatFetcher.findLastMessage(chatFetcher);
+	chatFetcher.current_message = chatFetcher.findLastMessage(chatFetcher, _target_user_id);
 	chatFetcher.current_function = 'fetch';
 	chatFetcher.requestChat();
 }
@@ -299,4 +299,49 @@ function tab(className, tab)
 	document.getElementById(tab).style.display = 'block';
 	document.getElementById('label_' + tab).setAttribute("class", "active");
 	handleResize();
+	handleTabChange(tab);
+}
+
+function handleTabChange(tab)
+{
+	if (tab == 'tab3')	//do something special for private messages
+	{
+		var privateTab = document.getElementById('privateusers');
+		showMenu(privateTab);
+	}
+}
+
+//Windows closing code - only used at end of chatmium lifecycle
+var handledClose = 0;
+window.onbeforeunload = handleCloseWindow;
+window.onunload = handleCloseWindow;
+
+function handleCloseWindow()
+{
+	if (handledClose == 0)
+	{
+		if (_user_id != -1)
+		{
+			chatFetcher.endChat();
+			_user_id = -1;
+		}
+		handledClose = 1;
+	}
+	
+	return null;
+}
+
+function showMenu(tab)
+{
+	if (tab.style.display == 'none')
+	{
+		while(tab.firstChild)
+		{	//check if this leaks memory and unbind event handlers from the child node before removing
+			tab.removeChild(tab.firstChild);
+		}
+		chatFetcher.room_handler.enumerateChatmiumUsers(tab);	//fills the list with users.
+		tab.style.display = 'block';
+		return;
+	}
+	tab.style.display = 'none';
 }

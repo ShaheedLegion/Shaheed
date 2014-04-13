@@ -10,6 +10,7 @@ chatMessage = function (str, fromid, toid)
 	this.messageNumber = -1;
 	this.fromId = fromid;
 	this.toId = toid;	//this will always be my userid.
+	this.type = '';
 	this.messageOwner = '';
 	this.messageText = '';
 	this.messageRead = 0;

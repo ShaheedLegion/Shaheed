@@ -4,6 +4,7 @@ Copyright Shaheed Abdol 2014
 */
 
 //[Depends] on [messages.js]
+//[Depends] on [rooms.js]
 
 var chatFetcher = {
 	current_message:'',
@@ -13,7 +14,7 @@ var chatFetcher = {
 	audio: new Audio("notification.ogg"),
 	_sound_state: 1,
 	chatMessages: new Array(),
-	uniqueUsers: {},
+	room_handler: new roomHandler(),
 	timerId: 0,
 	
 	buildRequest: function()
@@ -71,15 +72,9 @@ var chatFetcher = {
 		this.timerId = setInterval(cb, 2500);
 	}
 	,
-	findLastMessage: function(obj)
+	findLastMessage: function(obj, userid)
 	{
-		var highest = 0;
-		for (var i = 0; i < obj.chatMessages.length; i++)
-		{
-			if (obj.chatMessages[i].messageNumber > highest)
-				highest = obj.chatMessages[i].messageNumber;
-		}
-		return highest;
+		return obj.room_handler.findHighestMessage(obj.room_handler, userid);
 	}
 	,
 	endChat: function()
@@ -118,8 +113,6 @@ var chatFetcher = {
 			if (toid != -1)	//this should not be true
 			{
 				tomsg = " -> " + obj.getChatmiumUser(obj, toid);
-				
-				
 				privateMessage = 1;
 			}
 			addMessage = 1;
@@ -137,7 +130,8 @@ var chatFetcher = {
 			
 			obj.chatMessages.push(messObj);
 			*/
-			roomManager.addMessage(fromid, privPrefix, messObj, tomsg);
+			var fromuserid = (fromid == _user_id ? -1 : fromid);
+			obj.room_handler.addMessage(obj.room_handler, fromuserid, privPrefix, messObj, tomsg);
 		}
 		return addMessage;
 	}
@@ -195,6 +189,7 @@ var chatFetcher = {
 		//Do nothing in this case - popping up an error would affect the UX.
 	}
 	,
+	/*
 	addChatmiumUser: function(obj, fromId, messageOwner)
 	{
 		if (fromId == -1)
@@ -226,6 +221,7 @@ var chatFetcher = {
 		return "";
 	}
 	,
+	*/
 	/*
 	setBubbleColor: function(element)
 	{	//can use more complex formula to determine the bg color.

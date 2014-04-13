@@ -27,8 +27,7 @@ function setBubbleColor(element)
 		colb = Math.floor(200 + (Math.random() * 55));
 		
 		var endColString = "rgb(" + colr + "," + colg + "," + colb + ")"
-		element.style.backgroundImage = gradientPrefix + 'linear-gradient('
-		+ 'bottom' + ', ' + endColString + ' 25%, ' + colString + ' 100%)';
+		element.style.backgroundImage = gradientPrefix + 'linear-gradient(' + 'bottom' + ', ' + endColString + ' 25%, ' + colString + ' 100%)';
 	}
 }
 
@@ -67,7 +66,22 @@ room.prototype.addMessage = function(privPrefix, messObj, tomsg)
 	li.innerHTML = privPrefix + "<b>" + messObj.getOwnerLink(this.userHandler, this.userHandler.addChatmiumUser) + tomsg +  ":  </b>" + messObj.messageText;
 	setBubbleColor(li);
 	parent.appendChild(li);
+	
+	if (messObj.type == 'remove')
+		this.userHandler.removeChatmiumUser(messObj.fromId);
+	
 	this.messages.push(messObj);
+}
+
+room.prototype.highestMessage = function(obj)
+{
+	var highest = 0;
+	for (var i = 0; i < obj.messages.length; i++)
+	{
+		if (obj.messages[i].messageNumber > highest)
+			highest = obj.messages[i].messageNumber;
+	}
+	return highest;
 }
 
 /**************************RoomHandler*****************************/
@@ -77,19 +91,19 @@ roomHandler = function()
 	this.uniqueUsers = {};
 }
 
-roomHandler.prototype.addChatmiumUser = function(fromId, messageOwner)
+roomHandler.prototype.addChatmiumUser = function(obj, fromId, messageOwner)
 {
 	if (fromId == -1)	//this means "everyone", so we don't store it uniquely
 		return;
 
 	var userFound = 0;
-	for (var name in this.uniqueUsers)
+	for (var name in obj.uniqueUsers)
 	{
-		if ((name == messageOwner) && (this.uniqueUsers[name] == fromId))
+		if ((name == messageOwner) && (obj.uniqueUsers[name] == fromId))
 			return;	//escape is duplicate name and id is found, else add the user to our list.
 	}
 
-	this.uniqueUsers[messageOwner] = fromId;
+	obj.uniqueUsers[messageOwner] = fromId;
 }
 
 roomHandler.prototype.getChatmiumUser = function(userId)
@@ -124,21 +138,35 @@ roomHandler.prototype.enumerateChatmiumUsers = function(element)
 	}
 }
 
-roomHandler.prototype.addMessage = function(fromid, privPrefix, messObj, tomsg)
+roomHandler.prototype.addMessage = function(obj, fromid, privPrefix, messObj, tomsg)
 {	//find room with matching id ... add message to room
-	for (var i = 0; i < this.rooms.length; i++)
+	for (var i = 0; i < obj.rooms.length; i++)
 	{
-		if (this.rooms[i].userId == fromid)
+		if (obj.rooms[i].userId == fromid)
 		{
-			this.rooms[i].addMessage(privPrefix, messObj, tomsg);
+			obj.rooms[i].addMessage(privPrefix, messObj, tomsg);
 			return;
 		}
 	}	//if room was not found, then generate new room, add to list and append message
 
 	var roomString = fromid + '--' + (new Date().getTime()) + '' + (((Math.random() + 1) * 133245723) % 3416557); //generate room id here, nothing fancy, just try not to clash
 	var roomId = roomString.replace('.', '');
-	var newRoom = new room(fromid, roomId, this);
+	var newRoom = new room(fromid, roomId, obj);
 
-	newRoom.addMessage(privPrefix, mesObj, tomsg);
-	this.rooms.append(newRoom);
+	newRoom.addMessage(privPrefix, messObj, tomsg);
+	obj.rooms.push(newRoom);
+}
+
+roomHandler.prototype.findHighestMessage = function(obj, userid)
+{
+	var highest = 0;
+	for (var i = 0; i < obj.rooms.length; i++)
+	{
+		if (obj.rooms[i].userId == userid)
+		{
+			highest = obj.rooms[i].highestMessage(obj.rooms[i]);
+			return highest;
+		}
+	}
+	return 0;
 }

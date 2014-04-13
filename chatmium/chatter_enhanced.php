@@ -60,7 +60,7 @@ Any suggestions can be sent to me on my website ...
 		$fp_debug = fopen('debuglog.txt', 'a');
 		if ($fp_debug)
 		{
-			fwrite($fp_debug, $msg."\n");
+			fwrite($fp_debug, $msg."\r\n");
 			fclose($fp_debug);
 		}
 	}
@@ -98,14 +98,16 @@ Any suggestions can be sent to me on my website ...
 	{
 		$fp_messages = fopen('messages.txt', 'r');
 		$response = '';
-		
+		write_debug("Opening Message Log");
 		if ($fp_messages)
 		{
+			write_debug("Opened Message Log");
 			while (($line = fgets($fp_messages)) !== false)
 			{
 				//parse each line to get the message number ..
 				//this will slow things down very quickly.
 				$log_line = parse_line_number($line);
+				write_debug("Got Line number - ".$log_line);
 				if ($log_line > $last_message)
 				{
 					$response .= $line;
@@ -170,7 +172,7 @@ Any suggestions can be sent to me on my website ...
 				$message = $_POST['value'];
 			$response = "<line from='".$userid."' to='".$targetuserid."'>[".get_next_line_number()."]{".$user."}".$message."</line>";
 			write_message($response);
-			
+			write_debug("Message Received:".$response);
 			//clear out repsonse?
 			//let client side request this message along with other chat windows?
 			$response = '';
@@ -178,11 +180,16 @@ Any suggestions can be sent to me on my website ...
 		else if ($func == 'fetch')
 		{
 			$last_message = $_GET['value'];
+			write_debug("received fetch query, last message:".$last_message);
 			if (empty($last_message) && !empty($_POST['value']))
 				$last_message = $_POST['value'];
-				
-			if (!empty($last_message))
+			
+			write_debug("received fetch query, last message:".$last_message);
+			if (strlen($last_message))
+			{
+				write_debug("reading response:".$last_message);
 				$response = read_messages($last_message);
+			}
 		}
 		else if ($func == 'join')
 		{
@@ -195,15 +202,17 @@ Any suggestions can be sent to me on my website ...
 			write_debug($response);
 		}
 		else if ($func == 'remove')
-		{
+		{	//remove messages are the only ones with a type prefix
 			$user = $_GET['user'];
 			if (empty($user) && !empty($_POST['user']))
 				$user = $_POST['user'];
-			$response = "<line>[".get_next_line_number()."]{".$user."}has left the room!</line>";
+			$response = "<line type='remove' from='".$userid."' to='-1'>[".get_next_line_number()."]{".$user."}has left the room!</line>";
 			write_message($response);
 			write_debug($response);
 			$response = '';	//do not respond to the same client - they have closed their window
 		}
+		if (strlen($response))
+			write_debug("server responding with:".$response);
 		echo $response;
 	}
 	else
