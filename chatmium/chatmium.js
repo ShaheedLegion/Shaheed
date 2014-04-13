@@ -66,7 +66,7 @@ function checkPreviousAlias(userName)
 {
 	var name = document.getElementById("username");
 	if (name.innerHTML.length)
-		chatFetcher.sendChatmiumMessage(privatemessage, "User alias changed to: " + userName);
+		chatFetcher.sendChat(privatemessage, "User alias changed to: " + userName);
 }
 
 function getChatName()
@@ -94,13 +94,12 @@ function getChatName()
 
 function handleResize()
 {
-	var chat = document.getElementById("chatcontent");
-	if (chat)
-	{
-		chat.style.display = "block";
+	var chat = document.getElementsByClassName("chatcontent");
+	for (var i = 0; i < chat.length; i++)
+	{	//chat.style.display = "block";
 		var newHeight = document.body.clientHeight - 122;
 		if (newHeight >= 0)
-			chat.style.height = "" + newHeight +"px";
+			chat[i].style.height = "" + newHeight +"px";
 	}
 }
 
@@ -233,7 +232,7 @@ function checkallowedExt(filename)
 
 function requestMessages()
 {	//shim for the way in which window messages are handled.
-	chatFetcher.current_message = chatFetcher.findLastMessage(chatFetcher, _target_user_id);
+	chatFetcher.current_message = chatFetcher.room_handler.findHighestMessage(chatFetcher.room_handler, _target_user_id);
 	chatFetcher.current_function = 'fetch';
 	chatFetcher.requestChat();
 }
@@ -268,6 +267,23 @@ function privatemessage(to_user_id)
 	}
 	else{ name.innerHTML = _user_alias; }
 	document.getElementById('usermessage').focus();
+}
+
+function startPrivateMessage(to_user_id)
+{
+	_target_user_id = to_user_id;
+
+	var name = document.getElementById("username");
+	if (name == 0 || name == null)
+		return;
+
+	if (_target_user_id != -1)
+	{
+		name.innerHTML = _user_alias + "->" + chatFetcher.getChatmiumUser(chatFetcher, to_user_id) +  " <a href='javascript:privatemessage(-1)' title='Cancel Private Message'>[x]</a>";	
+	}
+	else{ name.innerHTML = _user_alias; }
+	document.getElementById('usermessage').focus();
+	tab("interface", "tab2");
 }
 
 function toggle(el)

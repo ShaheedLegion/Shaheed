@@ -132,6 +132,8 @@ roomHandler.prototype.enumerateChatmiumUsers = function(element)
 {	//pass a list of all unique users to the element.
 	for (var name in this.uniqueUsers)
 	{
+		if (name == "removeItem")	//do not add our prototype to the user list.
+			continue;
 		var item = document.createElement('li');
 		item.innerHTML = "<a href='javascript:startPrivateChat(" + this.uniqueUsers[name] + ")' title='Enter private chat'>" + name + "</a>"
 		element.appendChild(item);

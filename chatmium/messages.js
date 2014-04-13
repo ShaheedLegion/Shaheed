@@ -1,6 +1,5 @@
 /*
 messages.js - all functions related to chatmium messages go in this file.
-
 Written by Mogamat Shaheed Abdol Copyright 2014.
 */
 
@@ -65,7 +64,6 @@ chatMessage.prototype.decodeMessage = function()
 
 		pos = this.origStr.indexOf("{", pos);
 		var pos2 = this.origStr.indexOf("}", pos);
-
 		this.messageOwner = this.origStr.substring(pos + 1, pos2);
 
 		var message = this.origStr.substring(pos2 + 1, this.origStr.length).trim();
@@ -92,21 +90,19 @@ function determineMessageType(message)
 		return -1;	//invalid since we cannot find the marker
 		
 	var endpos = message.indexOf(">", pos);
-	
 	var diff = endpos - (pos + 5);
 	
 	if (diff > 1)
 		return 1;
-	
 	return 0;
 }
-
 
 function parseOldMessage(obj, callback, remainingContent)
 {
 	var pos = remainingContent.indexOf("<line>");
 	var pos2 = pos;
 	var messageAdded = 0;
+
 	if (pos != -1)
 	{
 		pos2 = remainingContent.indexOf("</line>", pos + 6);
@@ -125,6 +121,7 @@ function parseNewMessage(obj, callback, messageType, remainingContent)
 	var pos = remainingContent.indexOf("<line");
 	var pos3 = pos;
 	var messageAdded = 0;
+
 	if (pos != -1)
 	{
 		var pos2 = remainingContent.indexOf(">", pos);
@@ -132,8 +129,8 @@ function parseNewMessage(obj, callback, messageType, remainingContent)
 		{
 			var lineval = remainingContent.substr(pos, pos2 + 1);	//get the whole tag.
 			var fromto = parseFromTo(lineval);
-			
 			pos3 = remainingContent.indexOf("</line>", pos2 + 1);
+
 			if (pos3 != -1)	//incomplete message - might never get here, but "safety first"
 			{
 				var substr = remainingContent.substring(pos2 + 1, pos3);	//get everything inside the marker.
@@ -165,6 +162,5 @@ function parseFromTo(content, startpos)
 				to_user_id = parseInt(content.substring(pos + 4, _to_end));
 		}
 	}
-	
 	return [from_user_id, to_user_id];
 }
