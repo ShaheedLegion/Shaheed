@@ -43,12 +43,11 @@ var chatFetcher = {
 		message = message.replace(new RegExp(this.escape_regexp('}'), 'g'), '&#125;');
 		return message;
 	},
-	sendChat: function(cb, message)
+	sendChat: function(message)
 	{
 		this.current_message = this.filter_message(message);
 		this.current_function = 'send';
 		this.requestChat();
-		cb(-1);	//TODO: This callback execution must be removed - let the user decide when to end a private chat.
 	},
 	joinChat: function(cb, user)
 	{
@@ -84,7 +83,7 @@ var chatFetcher = {
 		{
 			if (toid != -1)	//this should not be true
 			{
-				tomsg = " -> " + obj.getChatmiumUser(obj, toid);
+				tomsg = " -> " + obj.room_handler.getChatmiumUser(toid);
 				privateMessage = 1;
 			}
 			addMessage = 1;

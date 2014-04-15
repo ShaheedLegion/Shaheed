@@ -49,6 +49,7 @@ function registerEvents()
 		}
 	}
 	gradientPrefix = getCssValuePrefix('backgroundImage', 'linear-gradient(left, #fff, #fff)');
+	chatFetcher.room_handler.addGeneralRoom();
 	tab('interface', 'tab1');	//make sure the correct tab is showing at startup.
 }
 
@@ -66,7 +67,7 @@ function checkPreviousAlias(userName)
 {
 	var name = document.getElementById("username");
 	if (name.innerHTML.length)
-		chatFetcher.sendChat(privatemessage, "User alias changed to: " + userName);
+		chatFetcher.sendChat("User alias changed to: " + userName);
 }
 
 function getChatName()
@@ -157,7 +158,7 @@ function sendMessage()
 		var msg = input.value;	//not sure how that works
 		if (msg.length)
 		{	//try not to send blank messages - preserve bandwidth
-			chatFetcher.sendChat(privatemessage, msg);
+			chatFetcher.sendChat(msg);
 			input.value = '';	//clear out the text area after we have sent the message.
 		}
 	}
@@ -166,7 +167,7 @@ function sendMessage()
 
 function setUserText(uploadedfile)
 {
-	chatFetcher.sendChat(privatemessage, '__|' + uploadedfile + '|__');
+	chatFetcher.sendChat('__|' + uploadedfile + '|__');
 }
 
 function setErrorText(error)
@@ -269,7 +270,7 @@ function privatemessage(to_user_id)
 	document.getElementById('usermessage').focus();
 }
 
-function startPrivateMessage(to_user_id)
+function startPrivateChat(to_user_id)
 {
 	_target_user_id = to_user_id;
 
@@ -279,11 +280,13 @@ function startPrivateMessage(to_user_id)
 
 	if (_target_user_id != -1)
 	{
-		name.innerHTML = _user_alias + "->" + chatFetcher.getChatmiumUser(chatFetcher, to_user_id) +  " <a href='javascript:privatemessage(-1)' title='Cancel Private Message'>[x]</a>";	
+		name.innerHTML = _user_alias + "->" + chatFetcher.room_handler.getChatmiumUser(to_user_id) +  " <a href='javascript:privatemessage(-1)' title='Cancel Private Message'>[x]</a>";	
 	}
 	else{ name.innerHTML = _user_alias; }
-	document.getElementById('usermessage').focus();
+	showMenu(document.getElementById('privateusers'));
 	tab("interface", "tab2");
+	chatFetcher.room_handler.displayChatRoom(_target_user_id);
+	document.getElementById('usermessage').focus();
 }
 
 function toggle(el)
@@ -349,9 +352,9 @@ function handleCloseWindow()
 
 function showMenu(tab)
 {
-	if (tab.style.display == 'none')
+	if (tab.style.display == 'none' || tab.style.display == "")
 	{
-		while(tab.firstChild)
+		while (tab.firstChild)
 		{	//check if this leaks memory and unbind event handlers from the child node before removing
 			tab.removeChild(tab.firstChild);
 		}

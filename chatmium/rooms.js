@@ -45,18 +45,25 @@ room = function(userid, roomId, handler)
 
 room.prototype.createRoomElement = function()
 {	//create a list element which will store the messages.
-	var div = document.createElement('div');	//create the parent div.
-	div.className = 'chatcontent';
-	div.id = '' + this.roomId;
-	
+	var div = document.getElementById('privatechatwrapper');	//create the parent div.
 	var list = document.createElement('ul');
 	list.className = 'chatitems';
 	list.id = 'list' + this.roomId;
+	list.style.display = 'none';
 
 	div.appendChild(list);
 
-	var privateTab = document.getElementById('privatechatwrapper');
-	privateTab.appendChild(div);
+	//var privateTab = document.getElementById('privatechatwrapper');
+	//privateTab.appendChild(div);
+}
+
+room.prototype.showContent = function(display)
+{
+	var list = document.getElementById('list'+this.roomId);
+	if (display)
+		list.style.display = 'block';
+	else
+		list.style.display = 'none';
 }
 
 room.prototype.addMessage = function(privPrefix, messObj, tomsg)
@@ -89,6 +96,15 @@ roomHandler = function()
 {
 	this.rooms = new Array();
 	this.uniqueUsers = {};
+}
+
+roomHandler.prototype.addGeneralRoom = function()
+{	//Now add the general room	- this room will always exist as it is the room where public messages appear.
+	var roomString = '-1' + '--' + (new Date().getTime()) + '' + (((Math.random() + 1) * 133245723) % 3416557); //generate room id here, nothing fancy, just try not to clash
+	var roomId = roomString.replace('.', '');
+	var newRoom = new room(-1, roomId, this);
+
+	this.rooms.push(newRoom);
 }
 
 roomHandler.prototype.addChatmiumUser = function(obj, fromId, messageOwner)
@@ -171,4 +187,15 @@ roomHandler.prototype.findHighestMessage = function(obj, userid)
 		}
 	}
 	return 0;
+}
+
+roomHandler.prototype.displayChatRoom = function(userid)
+{
+	for (var i = 0; i < this.rooms.length; i++)
+	{
+		if (this.rooms[i].userId == userid)
+			this.rooms[i].showContent(1);
+		else
+			this.rooms[i].showContent(0);
+	}
 }

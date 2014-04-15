@@ -206,6 +206,11 @@ Any suggestions can be sent to me on my website ...
 			$user = $_GET['user'];
 			if (empty($user) && !empty($_POST['user']))
 				$user = $_POST['user'];
+			
+			$userid = $_GET['userid'];
+			if (empty($userid) && !empty($_POST['userid']))
+				$userid = $_POST['userid'];
+
 			$response = "<line type='remove' from='".$userid."' to='-1'>[".get_next_line_number()."]{".$user."}has left the room!</line>";
 			write_message($response);
 			write_debug($response);
