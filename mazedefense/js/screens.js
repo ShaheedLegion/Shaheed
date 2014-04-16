@@ -23,4 +23,5 @@ ScreenHandler.prototype.render = function()
 ScreenHandler.prototype.StartGame = function(vars)
 {
 	this._current_screen = new GameScreen(this, this._broadcaster);
+	this._broadcaster.broadcast('resize', [this._canvas_handler._canvas.width, this._canvas_handler._canvas.height]);
 }

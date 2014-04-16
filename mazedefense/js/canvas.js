@@ -10,7 +10,8 @@ CanvasHandler = function(id, broadcaster)
 	
 	this.broadcaster = broadcaster;
 	this.broadcaster.broadcast('canvas', [this, 0]);
-	this.broadcaster.broadcast('resize', [this._canvas.width, this._canvas.height]);
+	this.broadcaster.broadcast('resize', [this._canvas.clientWidth, this._canvas.clientHeight]);
+	this.handleResize();
 }
 
 CanvasHandler.prototype.handleClick = function(_event)

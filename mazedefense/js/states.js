@@ -137,7 +137,32 @@ StartScreen.prototype.handleResize = function(vars)
 }
 
 /******************************************************************************************************/
-
+//run the actual game here!
+	GameGrid = function(cells, dim)
+	{
+		this._rows = cells;
+		this._cols = cells;
+		this._cellsize = dim;
+		this._view_w = 0;
+		this._view_h = 0;
+		
+		this._current_row = this._rows / 2;
+		this._current_col = this._cols / 2;
+	}
+	
+	GameGrid.prototype.render = function(_context)
+	{
+		_context.fillStyle = "#6B3e7c";
+		_context.fillRect(0, 0, 100, 100);
+	}
+	GameGrid.prototype.handleResize = function(w, h)
+	{
+		this._view_w = (w / 2);
+		this._view_h = (h / 2);
+		
+		
+	}
+	
 GameScreen = function(_handler, _broadcaster)
 {
 	this._handler = _handler;
@@ -154,6 +179,7 @@ GameScreen = function(_handler, _broadcaster)
 GameScreen.prototype.loadResources = function()
 {
 	//load all the required resources here ...
+	this._grid = new GameGrid(64, 64);
 }
 
 GameScreen.prototype.handleClick = function(vars)
@@ -163,6 +189,14 @@ GameScreen.prototype.handleClick = function(vars)
 
 GameScreen.prototype.handleResize = function(vars)
 {
-
+	this._w = vars[0];
+	this._h = vars[1];
+	this._grid.handleResize(this._w, this._h);
 }
 
+GameScreen.prototype.render = function(_context)
+{
+	_context.clearRect(0, 0, this._w, this._h)	//not required since we are filling the canvas;
+	
+	this._grid.render(_context);
+}
