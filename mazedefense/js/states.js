@@ -26,10 +26,88 @@ StartScreen = function(_handler, _broadcaster)
 	
 	this._broadcaster.registerObserver('click', this.handleClick.bind(this));
 	this._broadcaster.registerObserver('resize', this.handleResize.bind(this));
+	
+	this._data_points = new Array();	//set up the data points for the background effect.
+	for (var i = 0; i < 12; i++)
+		this._data_points.push(-1);
+}
+
+StartScreen.prototype.checkBackground = function(offset)
+{
+	if (this._data_points[0 + offset] == -1)	//not set yet
+	{
+		this._data_points[0 + offset] = (Math.random() * (this._w / 4)) + 2;
+		this._data_points[1 + offset] = (Math.random() * (this._h / 4)) + 2;
+		
+		this._data_points[2 + offset] = (this._data_points[0 + offset] + ((this._w / 4) * 3) + 2);
+		this._data_points[3 + offset] = (this._data_points[1 + offset] + ((this._h / 4) * 3) + 2);
+		
+		this._data_points[4 + offset] = (Math.random() * 10) > 5 ? 1 : -1;
+		this._data_points[5 + offset] = (Math.random() * 6) + 3;	//minimum display time of 2 seconds.
+	}
+	
+	var y_eq = 0;
+	if (this._data_points[4 + offset] > 0)	//move horizontally
+	{
+		if (this._data_points[0 + offset] < this._data_points[2 + offset])
+			this._data_points[0 + offset] += this._data_points[5 + offset];
+		else if (this._data_points[0 + offset] > this._data_points[2 + offset])
+			this._data_points[0 + offset] -= this._data_points[5 + offset];
+		if (Math.abs(this._data_points[0 + offset] - this._data_points[2 + offset]) < 20)
+			this._data_points[4 + offset] = -1;
+	}
+	else	//move vertically
+	{
+		if (this._data_points[1 + offset] < this._data_points[3 + offset])
+			this._data_points[1 + offset] += this._data_points[5 + offset];
+		else if (this._data_points[1 + offset] > this._data_points[3 + offset])
+			this._data_points[1 + offset] -= this._data_points[5 + offset];
+		if (Math.abs(this._data_points[1 + offset] - this._data_points[3 + offset]) < 20)
+			y_eq = 1;
+	}
+	
+	if (y_eq == 1)
+	{
+		this._data_points[0 + offset] = -1;
+		return 0;
+	}
+	return 1;
+}
+
+StartScreen.prototype.drawBackground = function(_context)
+{
+	_context.clearRect(0, 0, this._w, this._h);
+
+	var _p1 = this.checkBackground(0);
+	var _p2 = this.checkBackground(6);
+	
+	if (_p1)	//draw the first set of points...
+	{
+		_context.beginPath();
+		_context.moveTo(this._data_points[0], 0);
+		_context.lineTo(this._data_points[0], this._h);
+		_context.stroke();
+		
+		_context.moveTo(0, this._data_points[1]);
+		_context.lineTo(this._w, this._data_points[1]);
+		_context.stroke();
+	}
+	if (_p2)	//draw the second set of points...
+	{
+		_context.beginPath();
+		_context.moveTo(this._data_points[6], 0);
+		_context.lineTo(this._data_points[6], this._h);
+		_context.stroke();
+		
+		_context.moveTo(0, this._data_points[7]);
+		_context.lineTo(this._w, this._data_points[7]);
+		_context.stroke();
+	}
 }
 
 StartScreen.prototype.render = function(_context)
 {
+	this.drawBackground(_context);
 	if (IsImageOk(this._sprite))
 	{
 		var x = (this._w / 2) - (this._sprite.width / 2);
@@ -57,3 +135,34 @@ StartScreen.prototype.handleResize = function(vars)
 	this._w = vars[0];
 	this._h = vars[1];
 }
+
+/******************************************************************************************************/
+
+GameScreen = function(_handler, _broadcaster)
+{
+	this._handler = _handler;
+	this._broadcaster = _broadcaster;
+	this._sprites = new Array();
+	this._w = 0;
+	this._h = 0;
+	
+	this._broadcaster.registerObserver('click', this.handleClick.bind(this));
+	this._broadcaster.registerObserver('resize', this.handleResize.bind(this));
+	this.loadResources();
+}
+
+GameScreen.prototype.loadResources = function()
+{
+	//load all the required resources here ...
+}
+
+GameScreen.prototype.handleClick = function(vars)
+{
+
+}
+
+GameScreen.prototype.handleResize = function(vars)
+{
+
+}
+
