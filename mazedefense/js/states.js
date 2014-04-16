@@ -20,16 +20,60 @@ StartScreen = function(_handler, _broadcaster)
 	this._handler = _handler;
 	this._broadcaster = _broadcaster;
 	this._sprite = new Image();
+	this._sprite_hover = new Image();
 	this._sprite.src = "images/button_play.png";
+	this._sprite_hover.src = "images/button_play_hover.png";
+	this._audio = new Audio();
+	this._audio.src = "sounds/lost.ogg";
+	this._audio.onloadeddata=this.playAudio.bind(this);
 	this._w = 0;
 	this._h = 0;
+	this._hover = 0;
+
 	
 	this._broadcaster.registerObserver('click', this.handleClick.bind(this));
+	this._broadcaster.registerObserver('move', this.handleMove.bind(this));
 	this._broadcaster.registerObserver('resize', this.handleResize.bind(this));
 	
 	this._data_points = new Array();	//set up the data points for the background effect.
 	for (var i = 0; i < 12; i++)
-		this._data_points.push(-1);
+		this._data_points.push(-1);// dammit opera...
+
+	if (!("createImageData" in CanvasRenderingContext2D.prototype))
+	{
+		CanvasRenderingContext2D.prototype.createImageData = function(sw,sh) { return this.getImageData(0,0,sw,sh);}
+	}
+	
+	this.p1 = 0,
+	this.p2 = 0,
+	this.p3 = 0,
+	this.p4 = 0,
+	this.t1 = 0;
+	this.t2 = 0;
+	this.t3 = 0
+	this.t4 = 0
+	this.aSin = [];
+	this.ti = 15;
+	//cv = ig.getContext('2d'),
+	this.buffer = document.createElement('canvas');
+	this.buffer.width = 320;
+	this.buffer.height = 240;
+	this.cd = this.buffer.getContext("2d").createImageData(320, 240);
+	this.fd = 0.4;
+	this.ps = -4.4;
+	this.ps2 = 3.3;
+	
+	var i = 512, rad = 0;
+	while (i--)
+	{
+		rad = (i * 0.703125) * 0.0174532;
+		this.aSin[i] = Math.sin(rad) * 1024;
+	}
+}
+
+StartScreen.prototype.playAudio = function()
+{
+	this._audio.play();
 }
 
 StartScreen.prototype.checkBackground = function(offset)
@@ -78,6 +122,47 @@ StartScreen.prototype.drawBackground = function(_context)
 {
 	_context.clearRect(0, 0, this._w, this._h);
 
+	var cdData = this.cd.data, i = 320, j, x, idx;    
+	this.t4 = this.p4;
+	this.t3 = this.p3;
+
+	while (i--)
+	{
+		this.t1 = this.p1 + 5;
+		this.t2 = this.p2 + 3;
+		this.t3 &= 511;
+		this.t4 &= 511;
+		j = 240;
+		while (j--)
+		{
+			this.t1 &= 511;
+			this.t2 &= 511;
+			x = this.aSin[this.t1] + this.aSin[this.t2] + this.aSin[this.t3] + this.aSin[this.t4];
+			var idx = (i + j * 320) * 4;
+
+			cdData[idx] = x/2.6;	//as = 2.6
+			cdData[idx + 1] = 0;
+			cdData[idx + 2] = 50;
+			cdData[idx + 3] = 225;
+
+			this.t1 += 5;
+			this.t2 += 3;
+		}
+
+		this.t4 += 4.4;	//as1 = 4.4
+		this.t3 += 2.2;	//fd1 = 2.2
+	}
+
+	this.cd.data = cdData;    
+
+	this.buffer.getContext("2d").putImageData(this.cd, 0, 0, 0, 0, this._w, this._h);
+
+	this.p1 += this.ps;
+	this.p3 += this.ps2;
+	
+	//render buffer onto canvas
+	_context.drawImage(this.buffer,0, 0, this._w, this._h);
+
 	var _p1 = this.checkBackground(0);
 	var _p2 = this.checkBackground(6);
 	
@@ -108,25 +193,37 @@ StartScreen.prototype.drawBackground = function(_context)
 StartScreen.prototype.render = function(_context)
 {
 	this.drawBackground(_context);
-	if (IsImageOk(this._sprite))
+	if (IsImageOk(this._sprite) && IsImageOk(this._sprite_hover))
 	{
 		var x = (this._w / 2) - (this._sprite.width / 2);
 		var y = (this._h / 2) - (this._sprite.height / 2);
-		this._handler._canvas_handler._context.drawImage(this._sprite, Math.floor(x), Math.floor(y), this._sprite.width, this._sprite.height);
+		if (this._hover)
+			_context.drawImage(this._sprite_hover, Math.floor(x), Math.floor(y), this._sprite_hover.width, this._sprite_hover.height);
+		else
+			_context.drawImage(this._sprite, Math.floor(x), Math.floor(y), this._sprite.width, this._sprite.height);
 	}
 }
 
 StartScreen.prototype.handleClick = function(vars)
 {
-	if (IsImageOk(this._sprite))
+	var x = (this._w / 2) - (this._sprite.width / 2);
+	var y = (this._h / 2) - (this._sprite.height / 2);
+	if (vars[0] > x && vars[1] > y)
 	{
-		var x = (this._w / 2) - (this._sprite.width / 2);
-		var y = (this._h / 2) - (this._sprite.height / 2);
-		if (vars[0] > x && vars[1] > y)
-		{
-			if (vars[0] < (x + this._sprite.width) && vars[1] < (y + this._sprite.height))
-				this._broadcaster.broadcast('StartScreenClick', vars);
-		}
+		if (vars[0] < (x + this._sprite.width) && vars[1] < (y + this._sprite.height))
+			this._broadcaster.broadcast('StartScreenClick', vars);
+	}
+}
+
+StartScreen.prototype.handleMove = function(vars)
+{
+	this._hover = 0;
+	var x = (this._w / 2) - (this._sprite.width / 2);
+	var y = (this._h / 2) - (this._sprite.height / 2);
+	if (vars[0] > x && vars[1] > y)
+	{
+		if (vars[0] < (x + this._sprite.width) && vars[1] < (y + this._sprite.height))
+			this._hover = 1;
 	}
 }
 
