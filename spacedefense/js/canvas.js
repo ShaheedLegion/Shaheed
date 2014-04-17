@@ -4,6 +4,7 @@ CanvasHandler = function(id, broadcaster)
 	this._context = this._canvas.getContext("2d");
 	this._canvas.addEventListener('mousedown', this.handleClick.bind(this), false);
 	this._canvas.addEventListener('mousemove', this.handleMove.bind(this), false);
+	document.addEventListener("keydown", this.handleKey.bind(this), false);
 	window.onresize = this.handleResize.bind(this);
 	
 	this.click_x = 0;
@@ -54,6 +55,11 @@ CanvasHandler.prototype.handleMove = function(_event)
 	this.move_x = x;
 	this.move_y = y;
 	this.broadcaster.broadcast('move', [x, y]);
+}
+
+CanvasHandler.prototype.handleKey = function(_event)
+{
+	this.broadcaster.broadcast('keydown', [_event.keyCode, 0]);
 }
 
 CanvasHandler.prototype.handleResize = function()

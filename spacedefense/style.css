@@ -6,14 +6,12 @@ html {height: 100%;}
 body {
   margin: 0px; 
   background-color: #000;
-  background-image: url("images/bg.png");
   height: 100%;
 }
 
 #stage {
   position: absolute;
   margin: 0px;
-  background-image: url("images/mazebg.png");
   border: 0px solid #e44a26;
   width: 100%;
   height: 100%;

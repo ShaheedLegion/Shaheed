@@ -59,9 +59,9 @@ StartScreen = function(_handler, _broadcaster)
 	this.aSin = [];
 	this.ti = 15;
 	this.buffer = document.createElement('canvas');
-	this.buffer.width = 320;
-	this.buffer.height = 240;
-	this.cd = this.buffer.getContext("2d").createImageData(320, 240);
+	this.buffer.width = 160;
+	this.buffer.height = 120;
+	this.cd = this.buffer.getContext("2d").createImageData(160, 120);
 	this.fd = 0.4;
 	this.ps = -4.4;
 	this.ps2 = 3.3;
@@ -139,11 +139,7 @@ StartScreen.prototype.checkBackground = function(offset)
 
 StartScreen.prototype.drawBackground = function(_context)
 {
-	_context.clearRect(0, 0, this._w, this._h);
-	if (IsImageOk(this._bg_sprite))
-		_context.drawImage(this._bg_sprite,0, 0, this._w, this._h);
-
-	var cdData = this.cd.data, i = 320, j, x, idx;    
+	var cdData = this.cd.data, i = 160, j, x, idx;    
 	this.t4 = this.p4;
 	this.t3 = this.p3;
 
@@ -159,7 +155,7 @@ StartScreen.prototype.drawBackground = function(_context)
 			this.t1 &= 511;
 			this.t2 &= 511;
 			x = this.aSin[this.t1] + this.aSin[this.t2] + this.aSin[this.t3] + this.aSin[this.t4];
-			var idx = (i + j * 320) * 4;
+			var idx = (i + j * 160) * 4;
 
 			cdData[idx] = x/2.6;	//as = 2.6
 			cdData[idx + 1] = this.runners[0];
@@ -190,9 +186,13 @@ StartScreen.prototype.drawBackground = function(_context)
 	var _p1 = this.checkBackground(0);
 	var _p2 = this.checkBackground(6);
 	
+	if (IsImageOk(this._bg_sprite))
+		_context.drawImage(this._bg_sprite,0, 0, this._w, this._h);
+	
 	if (_p1)	//draw the first set of points...
 	{
 		_context.beginPath();
+		_context.strokeStyle = "#bb0000";
 		_context.moveTo(this._data_points[0], 0);
 		_context.lineTo(this._data_points[0], this._h);
 		_context.stroke();
@@ -204,6 +204,7 @@ StartScreen.prototype.drawBackground = function(_context)
 	if (_p2)	//draw the second set of points...
 	{
 		_context.beginPath();
+		_context.strokeStyle = "#00bb00";
 		_context.moveTo(this._data_points[6], 0);
 		_context.lineTo(this._data_points[6], this._h);
 		_context.stroke();
@@ -220,7 +221,7 @@ StartScreen.prototype.render = function(_context)
 	if (IsImageOk(this._sprite) && IsImageOk(this._sprite_hover))
 	{
 		var x = (this._w / 2) - (this._sprite.width / 2);
-		var y = (this._h / 2) - (this._sprite.height / 2);
+		var y = (this._h) - (this._sprite.height);
 		if (this._hover)
 			_context.drawImage(this._sprite_hover, Math.floor(x), Math.floor(y), this._sprite_hover.width, this._sprite_hover.height);
 		else
@@ -231,7 +232,7 @@ StartScreen.prototype.render = function(_context)
 StartScreen.prototype.handleClick = function(vars)
 {
 	var x = (this._w / 2) - (this._sprite.width / 2);
-	var y = (this._h / 2) - (this._sprite.height / 2);
+	var y = (this._h) - (this._sprite.height);
 	if (vars[0] > x && vars[1] > y)
 	{
 		if (vars[0] < (x + this._sprite.width) && vars[1] < (y + this._sprite.height))
@@ -243,7 +244,7 @@ StartScreen.prototype.handleMove = function(vars)
 {
 	this._hover = 0;
 	var x = (this._w / 2) - (this._sprite.width / 2);
-	var y = (this._h / 2) - (this._sprite.height / 2);
+	var y = (this._h) - (this._sprite.height);
 	if (vars[0] > x && vars[1] > y)
 	{
 		if (vars[0] < (x + this._sprite.width) && vars[1] < (y + this._sprite.height))
@@ -259,48 +260,100 @@ StartScreen.prototype.handleResize = function(vars)
 
 /******************************************************************************************************/
 //run the actual game here!
-	GameGrid = function(cells, dim)
+StarField = function(numstars, z_index)
+{
+	this._numstars = numstars;
+	this._z_index = z_index;
+	this._view_w = 0;
+	this._view_h = 0;
+
+	this._stars = new Array();
+	for (var i = 0; i < this._numstars * 2; i++)
 	{
-		this._rows = cells;
-		this._cols = cells;
-		this._cellsize = dim;
-		this._view_w = 0;
-		this._view_h = 0;
-		
-		this._current_row = this._rows / 2;
-		this._current_col = this._cols / 2;
+		var dummy = 0;
+		this._stars.push(dummy);
 	}
+}
 	
-	GameGrid.prototype.render = function(_context)
+StarField.prototype.render = function(_context)
+{
+	var starcol = (35 + (40 * this._z_index));
+	_context.strokeStyle = "rgb(" + starcol + ", " + starcol + ", " + starcol + ")";
+	_context.lineCap = "round";
+
+	_context.beginPath();
+	var x, y;
+	for (var i = 0; i < this._stars.length; i += 2)
 	{
-		_context.fillStyle = "#6B3e7c";
-		_context.fillRect(0, 0, 100, 100);
+		x = this._stars[i + 0];
+		y = this._stars[i + 1];
+		_context.moveTo(x - 1, y - 1);
+		_context.lineTo(x + 1, y + 1);
+		_context.stroke();
 	}
-	GameGrid.prototype.handleResize = function(w, h)
-	{
-		this._view_w = (w / 2);
-		this._view_h = (h / 2);
-		
-		
-	}
+}
+
+StarField.prototype.handleResize = function(w, h)
+{
+	this._view_w = w;
+	this._view_h = h;
 	
+	//we will need to reinitialize the star field here.
+	for (var i = 0; i < this._stars.length; i += 2)
+	{
+		this._stars[i + 0] = (Math.random() * this._view_w);
+		this._stars[i + 1] = (Math.random() * this._view_h);
+	}
+}
+
+StarField.prototype.move = function(direction)
+{
+	var dx = 0; dy = 0;
+	if (direction == 0)	//up
+		dy = -this._z_index;
+	if (direction == 1)	//right
+		dx = this._z_index;
+	if (direction == 2)	//down
+		dy = this._z_index;
+	if (direction == 3)	//left
+		dx = -this._z_index;
+	
+	for (var i = 0; i < this._stars.length; i += 2)
+	{
+		this._stars[i + 0] += dx;
+		this._stars[i + 1] += dy;
+		
+		if (this._stars[i + 0] < 0)
+			this._stars[i + 0] = this._view_w;
+		if (this._stars[i + 0] > this._view_w)
+			this._stars[i + 0] = 0;
+		if (this._stars[i + 1] < 0)
+			this._stars[i + 1] = this._view_h;
+		if (this._stars[i + 1] > this._view_h)
+			this._stars[i + 1] = 0;
+	}
+}
+
 GameScreen = function(_handler, _broadcaster)
 {
 	this._handler = _handler;
 	this._broadcaster = _broadcaster;
-	this._sprites = new Array();
+	this._stars = new Array();
 	this._w = 0;
 	this._h = 0;
+	this._direction = 2;
 	
 	this._broadcaster.registerObserver('click', this.handleClick.bind(this));
 	this._broadcaster.registerObserver('resize', this.handleResize.bind(this));
+	this._broadcaster.registerObserver('keydown', this.handleKey.bind(this));
 	this.loadResources();
 }
 
 GameScreen.prototype.loadResources = function()
 {
 	//load all the required resources here ...
-	this._grid = new GameGrid(64, 64);
+	for (var i = 0; i < 3; i++)
+		this._stars[i] = new StarField(128, (i + 1) * 2);
 }
 
 GameScreen.prototype.handleClick = function(vars)
@@ -308,16 +361,33 @@ GameScreen.prototype.handleClick = function(vars)
 
 }
 
+GameScreen.prototype.handleKey = function(vars)
+{
+	if (vars[0] == 87)	//w
+		this._direction = 2;
+	if (vars[0] == 83)	//s
+		this._direction = 0;
+	if (vars[0] == 65)	//a
+		this._direction = 1;
+	if (vars[0] == 68)	//d
+		this._direction = 3;
+}
+
 GameScreen.prototype.handleResize = function(vars)
 {
 	this._w = vars[0];
 	this._h = vars[1];
-	this._grid.handleResize(this._w, this._h);
+	for (var i = 0; i < this._stars.length; i++)
+		this._stars[i].handleResize(this._w, this._h);
 }
 
 GameScreen.prototype.render = function(_context)
 {
 	_context.clearRect(0, 0, this._w, this._h)	//not required since we are filling the canvas;
 	
-	this._grid.render(_context);
+	for (var i = 0; i < this._stars.length; i++)
+	{
+		this._stars[i].move(this._direction);
+		this._stars[i].render(_context);
+	}
 }
