@@ -23,9 +23,13 @@ StartScreen = function(_handler, _broadcaster)
 	this._sprite_hover = new Image();
 	this._sprite.src = "images/button_play.png";
 	this._sprite_hover.src = "images/button_play_hover.png";
+	this._bg_sprite = new Image();
+	this._bg_sprite.src = "images/start_bg.png";
+	
 	this._audio = new Audio();
 	this._audio.src = "sounds/lost.ogg";
-	this._audio.onloadeddata=this.playAudio.bind(this);
+	this._audio.onloadeddata = this.playAudio.bind(this);
+	this._audio.ended = this.playAudio.bind(this);
 	this._w = 0;
 	this._h = 0;
 	this._hover = 0;
@@ -54,7 +58,6 @@ StartScreen = function(_handler, _broadcaster)
 	this.t4 = 0
 	this.aSin = [];
 	this.ti = 15;
-	//cv = ig.getContext('2d'),
 	this.buffer = document.createElement('canvas');
 	this.buffer.width = 320;
 	this.buffer.height = 240;
@@ -62,7 +65,15 @@ StartScreen = function(_handler, _broadcaster)
 	this.fd = 0.4;
 	this.ps = -4.4;
 	this.ps2 = 3.3;
+	this.runners = new Array();
 	
+	this.runners.push(100);
+	this.runners.push(1);
+	this.runners.push(100);
+	this.runners.push(-1);
+	this.runners.push(200);
+	this.runners.push(-1);
+
 	var i = 512, rad = 0;
 	while (i--)
 	{
@@ -73,7 +84,16 @@ StartScreen = function(_handler, _broadcaster)
 
 StartScreen.prototype.playAudio = function()
 {
+	this.currentTime = this.startTime;
 	this._audio.play();
+}
+
+StartScreen.prototype.updateRunners = function(runner_offset)
+{
+	if (this.runners[1 + runner_offset] > 0) this.runners[0 + runner_offset] += 1;
+	if (this.runners[1 + runner_offset] < 0) this.runners[0 + runner_offset] -= 1;
+	if (this.runners[0 + runner_offset] > 250) this.runners[1 + runner_offset] = -1;
+	if (this.runners[0 + runner_offset] < 5) this.runners[1 + runner_offset] = 1;
 }
 
 StartScreen.prototype.checkBackground = function(offset)
@@ -89,7 +109,6 @@ StartScreen.prototype.checkBackground = function(offset)
 		this._data_points[4 + offset] = (Math.random() * 10) > 5 ? 1 : -1;
 		this._data_points[5 + offset] = (Math.random() * 6) + 3;	//minimum display time of 2 seconds.
 	}
-	
 	var y_eq = 0;
 	if (this._data_points[4 + offset] > 0)	//move horizontally
 	{
@@ -121,6 +140,8 @@ StartScreen.prototype.checkBackground = function(offset)
 StartScreen.prototype.drawBackground = function(_context)
 {
 	_context.clearRect(0, 0, this._w, this._h);
+	if (IsImageOk(this._bg_sprite))
+		_context.drawImage(this._bg_sprite,0, 0, this._w, this._h);
 
 	var cdData = this.cd.data, i = 320, j, x, idx;    
 	this.t4 = this.p4;
@@ -141,9 +162,9 @@ StartScreen.prototype.drawBackground = function(_context)
 			var idx = (i + j * 320) * 4;
 
 			cdData[idx] = x/2.6;	//as = 2.6
-			cdData[idx + 1] = 0;
-			cdData[idx + 2] = 50;
-			cdData[idx + 3] = 225;
+			cdData[idx + 1] = this.runners[0];
+			cdData[idx + 2] = this.runners[2];
+			cdData[idx + 3] = 155;
 
 			this.t1 += 5;
 			this.t2 += 3;
@@ -163,6 +184,9 @@ StartScreen.prototype.drawBackground = function(_context)
 	//render buffer onto canvas
 	_context.drawImage(this.buffer,0, 0, this._w, this._h);
 
+	this.updateRunners(0);
+	this.updateRunners(2);
+	this.updateRunners(4);
 	var _p1 = this.checkBackground(0);
 	var _p2 = this.checkBackground(6);
 	
