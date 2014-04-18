@@ -1,3 +1,7 @@
+//Utility functions which are accessible to all classes in this file.
+
+var TO_RADIANS = Math.PI / 180;
+
 function IsImageOk(img)
 {
     // During the onload event, IE correctly identifies any images that
@@ -13,6 +17,19 @@ function IsImageOk(img)
         return false;
 
     return true;    // No other way of checking: assume it’s ok.
+}
+
+function drawRotatedImage(_context, image, x, y, angle)
+{ 	// save the current co-ordinate system before we screw with it
+	_context.save();
+	// move to the middle of where we want to draw our image
+	_context.translate(x, y);
+	// rotate around that point, converting our angle from degrees to radians 
+	_context.rotate(angle * TO_RADIANS);
+ 	// draw it up and to the left by half the width and height of the image 
+	_context.drawImage(image, -(image.width/2), -(image.height/2));
+ 	// and restore the co-ords to how they were when we began
+	_context.restore(); 
 }
 
 StartScreen = function(_handler, _broadcaster)
@@ -334,6 +351,88 @@ StarField.prototype.move = function(direction)
 	}
 }
 
+Player = function()
+{	//the player .. which will hold the sprites which control the player.
+	this._sprites = new Array();
+	//we will be able to fire 64 projectiles. These will be reused as they reach the edge of the screen
+	this._projectiles = new Array();
+	this._x = 0;
+	this._y = 0;
+	this._w = 112;
+	this._h = 75;
+	this._view_w = 0;
+	this._view_h = 0;
+	this._projectile_timer = 50;	//we will fire one projectile every 10 frames (3 projectiles per second)
+	
+	var sources = ['player_1.png', 'laser_1.png'];
+	for (var i = 0; i < 2; i++)
+	{
+		this._sprites.push(new Image());
+		this._sprites[i].src = 'images/sprites/' + sources[i];
+	}
+	for (var i = 0; i < 256; i++)	//x, y, angle, alive
+		this._projectiles.push(0);	//push dummy value into array to get the correct number of variables to describe each projectile
+}
+
+Player.prototype.handleResize = function(w, h)
+{
+	this._view_w = w;
+	this._view_h = h;
+	this._x = (w / 2) - (this._w / 2);
+	this._y = (h / 2) - (this._h / 2);
+}
+
+Player.prototype.render = function(_context, dir)
+{
+	this._projectile_timer--;
+	if (this._projectile_timer == 0)
+	{	//time to fire a new projectile
+		for (var i = 0; i < 64; i += 4)
+		{
+			if (this._projectiles[i + 3] != 1)	//we have found a dead projectile, fire it.
+			{
+				this._projectiles[i + 0] = this._x - 8;
+				this._projectiles[i + 1] = this._y - 8;
+				this._projectiles[i + 2] = dir;
+				this._projectiles[i + 3] = 1;
+				break;
+			}
+		}
+		this._projectile_timer = 10;
+	}
+	this.updateProjectiles(_context);
+	
+	var _dir = (dir == 0 ? 2 : (dir == 2 ? 0 : (dir == 1? 3 : 1)));
+	if (IsImageOk(this._sprites[0]))
+		drawRotatedImage(_context, this._sprites[0], this._x, this._y, (_dir * 90));
+}
+
+Player.prototype.updateProjectiles = function(_context)
+{
+	var _speed = 5;
+	for (var i = 0; i < 64; i += 4)
+	{
+		if (this._projectiles[i + 3] != 0)	//only update if it's alive
+		{	//now move the projectile along its path.
+			var draw = 1;
+			if ((this._projectiles[i + 0] < 0) || (this._projectiles[i + 0] > this._view_w))
+				draw = 0;
+			if ((this._projectiles[i + 1] < 0) || (this._projectiles[i + 1] > this._view_h))
+				draw = 0;
+
+			if (draw)
+				_context.drawImage(this._sprites[1], this._projectiles[i + 0], this._projectiles[i + 1], 16, 16);
+			else
+				this._projectiles[i + 3] = 0;
+
+			var dx = (this._projectiles[i + 2] == 1 ? -_speed : (this._projectiles[i + 2] == 3 ? _speed : 0));
+			var dy = (this._projectiles[i + 2] == 2 ? -_speed : (this._projectiles[i + 2] == 0 ? _speed : 0));
+			this._projectiles[i + 0] += dx;
+			this._projectiles[i + 1] += dy;
+		}
+	}
+}
+
 GameScreen = function(_handler, _broadcaster)
 {
 	this._handler = _handler;
@@ -341,6 +440,7 @@ GameScreen = function(_handler, _broadcaster)
 	this._stars = new Array();
 	this._w = 0;
 	this._h = 0;
+	this._player = 0;
 	this._direction = 2;
 	
 	this._broadcaster.registerObserver('click', this.handleClick.bind(this));
@@ -350,10 +450,10 @@ GameScreen = function(_handler, _broadcaster)
 }
 
 GameScreen.prototype.loadResources = function()
-{
-	//load all the required resources here ...
+{	//load all the required resources here ...
 	for (var i = 0; i < 3; i++)
 		this._stars[i] = new StarField(128, (i + 1) * 2);
+	this._player = new Player();
 }
 
 GameScreen.prototype.handleClick = function(vars)
@@ -379,6 +479,7 @@ GameScreen.prototype.handleResize = function(vars)
 	this._h = vars[1];
 	for (var i = 0; i < this._stars.length; i++)
 		this._stars[i].handleResize(this._w, this._h);
+	this._player.handleResize(this._w, this._h);
 }
 
 GameScreen.prototype.render = function(_context)
@@ -390,4 +491,6 @@ GameScreen.prototype.render = function(_context)
 		this._stars[i].move(this._direction);
 		this._stars[i].render(_context);
 	}
+	
+	this._player.render(_context, this._direction);
 }
