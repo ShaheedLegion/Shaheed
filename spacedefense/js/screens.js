@@ -11,7 +11,7 @@ ScreenHandler.prototype.canvasCreated = function(vars)
 {	// we are obviously on screen 1, which introduces the player to the game.
 	this._canvas_handler = vars[0];
 	this._current_screen = new StartScreen(this, this._broadcaster);
-	setInterval(this.render.bind(this), 20);
+	setInterval(this.render.bind(this), 10);
 }
 
 ScreenHandler.prototype.render = function()

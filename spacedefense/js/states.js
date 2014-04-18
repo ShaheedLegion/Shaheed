@@ -277,6 +277,24 @@ StartScreen.prototype.handleResize = function(vars)
 
 /******************************************************************************************************/
 //run the actual game here!
+Vector = function(x, y)
+{
+	this._x = x;
+	this._y = y;
+}
+
+Vector.prototype.subtract = function(target)
+{
+	var _vec = new Vector(this._x - target._x, this._y - target._y);
+	return _vec;
+}
+
+Vector.prototype.divide = function(mod)
+{
+	var _vec = new Vector(this._x / mod, this._y / mod);
+	return _vec;
+}
+
 StarField = function(numstars, z_index)
 {
 	this._numstars = numstars;
@@ -363,6 +381,13 @@ Player = function()
 	this._view_w = 0;
 	this._view_h = 0;
 	this._projectile_timer = 50;	//we will fire one projectile every 10 frames (3 projectiles per second)
+	this._target_dir = 0;
+	this._current_dir = 0;
+	this._oculus = new Array();
+	this._oculus.push(0);
+	this._oculus.push(0);
+	this._radius = 200;
+	this._projectile_speed = 25;
 	
 	var sources = ['player_1.png', 'laser_1.png'];
 	for (var i = 0; i < 2; i++)
@@ -370,7 +395,7 @@ Player = function()
 		this._sprites.push(new Image());
 		this._sprites[i].src = 'images/sprites/' + sources[i];
 	}
-	for (var i = 0; i < 256; i++)	//x, y, angle, alive
+	for (var i = 0; i < 384; i++)	//x, y, angle, alive
 		this._projectiles.push(0);	//push dummy value into array to get the correct number of variables to describe each projectile
 }
 
@@ -380,6 +405,8 @@ Player.prototype.handleResize = function(w, h)
 	this._view_h = h;
 	this._x = (w / 2) - (this._w / 2);
 	this._y = (h / 2) - (this._h / 2);
+	this._oculus[0] = this._x;
+	this._oculus[1] = this._y + this._radius;
 }
 
 Player.prototype.render = function(_context, dir)
@@ -387,30 +414,67 @@ Player.prototype.render = function(_context, dir)
 	this._projectile_timer--;
 	if (this._projectile_timer == 0)
 	{	//time to fire a new projectile
-		for (var i = 0; i < 64; i += 4)
+		for (var i = 0; i < 64; i += 6)
 		{
 			if (this._projectiles[i + 3] != 1)	//we have found a dead projectile, fire it.
 			{
 				this._projectiles[i + 0] = this._x - 8;
 				this._projectiles[i + 1] = this._y - 8;
-				this._projectiles[i + 2] = dir;
+				this._projectiles[i + 2] = this._current_dir;
 				this._projectiles[i + 3] = 1;
+
+				var radians = this._current_dir * TO_RADIANS;
+				var ct = Math.cos(radians);
+				var st = Math.sin(radians);
+
+				var _rotated_X = (ct * (this._oculus[0] - this._x) - st * (this._oculus[1] - this._y)) + this._x;//(cos * (x - cx)) - (sin * (y - cy)) 
+				var _rotated_Y = (st * (this._oculus[0] - this._x) + ct * (this._oculus[1] - this._y)) + this._y;//(sin * (x - cx)) + (cos * (y - cy))
+				
+				var P = new Vector(this._x, this._y);
+				var B = new Vector(_rotated_X, _rotated_Y);
+				var PB = P.subtract(B);
+				var _delta = PB.divide(this._projectile_speed);
+				
+				this._projectiles[i + 4] = _delta._x;
+				this._projectiles[i + 5] = _delta._y;
+
 				break;
 			}
 		}
-		this._projectile_timer = 10;
+		this._projectile_timer = 6;
 	}
 	this.updateProjectiles(_context);
 	
-	var _dir = (dir == 0 ? 2 : (dir == 2 ? 0 : (dir == 1? 3 : 1)));
+	this._target_dir = (dir == 0 ? 2 : (dir == 2 ? 0 : (dir == 1? 3 : 1)));
+	this._target_dir *= 90;
 	if (IsImageOk(this._sprites[0]))
-		drawRotatedImage(_context, this._sprites[0], this._x, this._y, (_dir * 90));
+		drawRotatedImage(_context, this._sprites[0], this._x, this._y, this._current_dir);
+		
+	//now handle the rotation
+	var rotation_speed = 2;
+	if (this._current_dir > this._target_dir)
+	{
+		if (((this._current_dir >= 180) && (this._target_dir == 0)) || ((this._current_dir >=270) && (this._target_dir == 90)))
+			this._current_dir += rotation_speed;
+		else
+			this._current_dir -= rotation_speed;
+	}
+	else if (this._current_dir < this._target_dir)
+	{
+		if((this._current_dir) <= 90 && (this._target_dir == 270))
+			this._current_dir -= rotation_speed;
+		else
+			this._current_dir += rotation_speed;
+	}
+	if (this._current_dir > 360)
+		this._current_dir %= 360;
+	if (this._current_dir < 0)
+		this._current_dir = 360 + this._current_dir;
 }
 
 Player.prototype.updateProjectiles = function(_context)
 {
-	var _speed = 5;
-	for (var i = 0; i < 64; i += 4)
+	for (var i = 0; i < 64; i += 6)
 	{
 		if (this._projectiles[i + 3] != 0)	//only update if it's alive
 		{	//now move the projectile along its path.
@@ -425,10 +489,8 @@ Player.prototype.updateProjectiles = function(_context)
 			else
 				this._projectiles[i + 3] = 0;
 
-			var dx = (this._projectiles[i + 2] == 1 ? -_speed : (this._projectiles[i + 2] == 3 ? _speed : 0));
-			var dy = (this._projectiles[i + 2] == 2 ? -_speed : (this._projectiles[i + 2] == 0 ? _speed : 0));
-			this._projectiles[i + 0] += dx;
-			this._projectiles[i + 1] += dy;
+			this._projectiles[i + 0] += this._projectiles[i + 4];;
+			this._projectiles[i + 1] += this._projectiles[i + 5];
 		}
 	}
 }
@@ -452,7 +514,7 @@ GameScreen = function(_handler, _broadcaster)
 GameScreen.prototype.loadResources = function()
 {	//load all the required resources here ...
 	for (var i = 0; i < 3; i++)
-		this._stars[i] = new StarField(128, (i + 1) * 2);
+		this._stars[i] = new StarField(64, (i + 1) * 2);
 	this._player = new Player();
 }
 
@@ -493,4 +555,9 @@ GameScreen.prototype.render = function(_context)
 	}
 	
 	this._player.render(_context, this._direction);
+	
+	//now we render debug info.
+	_context.fillStyle = "#ff0000";
+	_context.font = "20px Georgia";
+	_context.fillText("Ship direction[" + this._player._current_dir + "] target[" + this._player._target_dir + "]", 10, 20);
 }
