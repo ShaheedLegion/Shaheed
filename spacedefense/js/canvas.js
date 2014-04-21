@@ -60,6 +60,7 @@ CanvasHandler.prototype.handleMove = function(_event)
 CanvasHandler.prototype.handleKey = function(_event)
 {
 	this.broadcaster.broadcast('keydown', [_event.keyCode, 0]);
+	return false;	//prevent the keyboard from popping up on android
 }
 
 CanvasHandler.prototype.handleResize = function()
