@@ -495,13 +495,26 @@ GamePad.prototype.handleResize = function(_vars)
 Radar = function(_broadcaster)
 {
 	this._broadcaster = _broadcaster;
-	this._world_w = 50000;	//width and height of the actual world
-	this._world_h = 50000;
+	this._world_w = 192000;	//width and height of the actual world
+	this._world_h = 108000;
+	this._world_scale_x = 0;
+	this._world_scale_y = 0;
+	this._display_w = 0;
+	this._display_h = 0;
 	
-	this._player_x = 25000;
-	this._player_y = 25000;
+	this._view_x = 0;
+	this._view_y = 0;
+	this._view_w = 0;
+	this._view_h = 0;
 	this._current_dir = 0;
 	this._broadcaster.registerObserver("direction", this.handleDirChange.bind(this));
+	
+	this._world_points = new Array();	//x and y pairs
+	
+	this._world_points.push(this._view_x);	//this is the center_x
+	this._world_points.push(this._view_y);	//this is the center_y
+	
+	this._canvas = document.createElement("canvas");	//use offscreen canvas to accomplish rendering.
 }
 
 Radar.prototype.handleDirChange = function(_vars)
@@ -509,9 +522,62 @@ Radar.prototype.handleDirChange = function(_vars)
 	this._current_dir = _vars[0];
 }
 
+Radar.prototype.addWorldPoint = function(x, y)
+{
+	this._world_points.push(x);//x
+	var _ret = this._world_points.length;	//return the length at the point where x was inserted.
+	this._world_points.push(y);//y
+	return ret;
+}
+
+Radar.prototype.addWorldTransform(w, h)
+{
+	this._view_w = w;
+	this._view_h = h;
+	this._display_w = (w < 640 ? (w / 2) : (w / 4));
+	this._display_h = (h < 480 ? (h / 2) : (h / 4));
+
+	this._world_scale_x = (1 / this._world_w) * this._display_w;
+	this._world_scale_y = (1 / this._world_h) * this._display_h;
+	
+	this._canvas.width = this._display_w;
+	this._canvas.height = this._display_h;
+	this._canvas.clientWidth = this._display_w;
+	this._canvas.clientHeight = this._display_h;
+}
+
 Radar.prototype.render = function(_context)
 {	//update the coordinates based on the game direction...
 	//render the radar as pixels, need to find nice looking radar.
+	//not sure how we will gather all enemies' coordinates...
+	
+	//For now we just focus on rendering the ship coordinates relative to the world.
+	var _ctx = this._canvas.getContext("2d");
+	_ctx.fillStyle = "#000000";
+	_ctx.fillRect(0, 0, this._display_w, this._display_h);
+
+	_ctx.strokeStyle = "rgb(255, 255, 255)";
+	_ctx.lineCap = "round";
+	_ctx.beginPath();
+	var hitrect = new HitRect(this._view_x, this._view_y, this._view_w, this._view_h);
+	var t_x = 0, t_y = 0;
+	for (var i = 0; i < this._world_points.length; i += 2)
+	{	//x = [i + 0], y = [i + 1]
+		if (hitrect.HitTest(this._world_points[i + 0], this._world_points[i + 1]))
+		{	//the point is within the world ... now we render the point.
+			t_x = this._world_points[i + 0] * this._world_scale_x;
+			t_y = this._world_points[i + 1] * this._world_scale_y;
+			
+			//Now draw the point.
+			_ctx.moveTo(t_x, t_y);
+			_ctx.lineTo(t_x + 1, t_y + 1);
+			_ctx.stroke();
+		}
+	}
+	///blit with ctx
+	_context.drawImage(this._canvas, 0, 0, this._display_w, this._display_h);	//for now we will render the context at the top-left.
+	//remove the added world points so that they may be transformed by the main transformation function ...
+	//might need to think about this a little more.
 }
 
 GameScreen = function(_handler, _broadcaster)
@@ -576,6 +642,7 @@ GameScreen.prototype.handleResize = function(vars)
 	for (var i = 0; i < this._stars.length; i++)
 		this._stars[i].handleResize(this._w, this._h);
 	this._player.handleResize(this._w, this._h);
+	this._radar.addWorldTransform(this._w, this._h);
 }
 
 GameScreen.prototype.render = function(_context)
