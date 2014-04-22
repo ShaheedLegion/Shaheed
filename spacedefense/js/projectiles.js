@@ -1,21 +1,3 @@
-Vector = function(x, y)
-{
-	this._x = x;
-	this._y = y;
-}
-
-Vector.prototype.subtract = function(target)
-{
-	var _vec = new Vector(this._x - target._x, this._y - target._y);
-	return _vec;
-}
-
-Vector.prototype.divide = function(mod)
-{
-	var _vec = new Vector(this._x / mod, this._y / mod);
-	return _vec;
-}
-
 ProjectileManager = function(imgname, numprojectiles)
 {
 	this._x = 0;

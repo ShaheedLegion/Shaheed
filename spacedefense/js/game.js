@@ -1,12 +1,49 @@
 //main game logic sits here
 var _broadcaster;
 var _screens;
+var _canvas;
+
+AudioDesc = function(name, repeat, endedcb)
+{
+	this._audio = new Audio();
+	this._audio.onloadeddata = this.playAudio.bind(this);
+	this.audiofinished = endedcb;
+	this.repeat = repeat;
+	this._audio.src = name;
+
+	setInterval(this.checkAudio.bind(this), 10);
+}
+
+AudioDesc.prototype.playAudio = function()
+{
+	this._audio.play();
+}
+
+AudioDesc.prototype.checkAudio = function()
+{
+	if (this._audio.ended)
+	{
+		this.audiofinished(this.name);
+		if (this.repeat)
+			this.playAudio();
+	}
+}
 
 window.onload = initialize();
 
 function initialize()
 {
 	_broadcaster = new Broadcaster();
-	_screens = new ScreenHandler(_broadcaster);
+	_world = new GameWorld(_broadcaster);
+	_screens = new ScreenHandler(_broadcaster, _world);
 	_canvas = new CanvasHandler('myCanvas', _broadcaster);
+	
+	
+	_audio = new Array();
+	_audio.push(new AudioDesc("sounds/lost.ogg", 1, trackEnded));
+}
+
+function trackEnded(name)
+{
+	//do nothing for now, in future we will play the next track in the list.
 }

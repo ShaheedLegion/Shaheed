@@ -1,40 +1,5 @@
-//Utility functions which are accessible to all classes in this file.
 
-var TO_RADIANS = Math.PI / 180;
-var _limited_device = (_mobile_device && _limited_caps) ? 1 : 0;
-
-
-function IsImageOk(img)
-{
-    // During the onload event, IE correctly identifies any images that
-    // weren’t downloaded as not complete. Others should too. Gecko-based
-    // browsers act like NS4 in that they report this incorrectly.
-    if (!img.complete)
-        return false;
-
-    // However, they do have two very useful properties: naturalWidth and
-    // naturalHeight. These give the true size of the image. If it failed
-    // to load, either of these should be zero.
-    if (typeof img.naturalWidth !== "undefined" && img.naturalWidth === 0)
-        return false;
-
-    return true;    // No other way of checking: assume it’s ok.
-}
-
-function drawRotatedImage(_context, image, x, y, angle)
-{ 	// save the current co-ordinate system before we screw with it
-	_context.save();
-	// move to the middle of where we want to draw our image
-	_context.translate(x, y);
-	// rotate around that point, converting our angle from degrees to radians 
-	_context.rotate(angle * TO_RADIANS);
- 	// draw it up and to the left by half the width and height of the image 
-	_context.drawImage(image, -(image.width/2), -(image.height/2));
- 	// and restore the co-ords to how they were when we began
-	_context.restore(); 
-}
-
-StartScreen = function(_handler, _broadcaster)
+StartScreen = function(_handler, _broadcaster, _world)
 {
 	this._handler = _handler;
 	this._broadcaster = _broadcaster;
@@ -45,15 +10,10 @@ StartScreen = function(_handler, _broadcaster)
 	this._bg_sprite = new Image();
 	this._bg_sprite.src = "images/start_bg.png";
 	
-	this._audio = new Audio();
-	this._audio.src = "sounds/lost.ogg";
-	this._audio.onloadeddata = this.playAudio.bind(this);
-	this._audio.ended = this.playAudio.bind(this);
 	this._w = 0;
 	this._h = 0;
 	this._hover = 0;
 
-	
 	this._broadcaster.registerObserver('click', this.handleClick.bind(this));
 	this._broadcaster.registerObserver('move', this.handleMove.bind(this));
 	this._broadcaster.registerObserver('resize', this.handleResize.bind(this));
@@ -100,12 +60,6 @@ StartScreen = function(_handler, _broadcaster)
 		this.runners.push(200);
 		this.runners.push(-1);
 	}
-}
-
-StartScreen.prototype.playAudio = function()
-{
-	this.currentTime = this.startTime;
-	this._audio.play();
 }
 
 StartScreen.prototype.updateRunners = function(runner_offset)
@@ -405,40 +359,6 @@ Player.prototype.render = function(_context, dir)
 		this._current_dir = 360 + this._current_dir;
 }
 
-HitRect = function(x, y, w, h)
-{
-	this._x = x;
-	this._y = y;
-	this._w = w;
-	this._h = h;
-}
-
-HitRect.prototype.Between = function (min, p, max)
-{
-  var result = 0;
-
-  if ( min < max )
-    if ( p > min && p < max )
-      result = 1;
-
-  if ( min > max )
-    if ( p > max && p < min)
-      result = 1;
-
-  if ( p == min || p == max )
-    result = 1;
- 
-  return result;
-}
-
-HitRect.prototype.HitTest = function(x, y)
-{
-	if (this.Between(this._x, x, this._x + this._w))
-		if (this.Between(this._y, y, this._y + this._h))
-			return 1;
-	return 0;
-}
-
 GamePad = function(handler, broadcast)
 {
 	this._handler = handler;
@@ -462,22 +382,17 @@ GamePad.prototype.render = function(_context)
 	if (IsImageOk(this._sprite))
 		_context.drawImage(this._sprite, 0, this._vh - this._sprite.height, this._sprite.width, this._sprite.height);
 }
-/*
-	if (vars[0] == 87)	//w
-	if (vars[0] == 83)	//s
-	if (vars[0] == 65)	//a
-	if (vars[0] == 68)	//d
-*/
+
 GamePad.prototype.handleClick = function(_vars)
 {
 	if (this._rects[0].HitTest(_vars[0], _vars[1]))	//left
-		this._broadcaster.broadcast("keydown", [65, 0]);
+		this._broadcaster.broadcast("keydown", [65, 0]);	//a
 	if (this._rects[1].HitTest(_vars[0], _vars[1]))	//right
-		this._broadcaster.broadcast("keydown", [68, 0]);
+		this._broadcaster.broadcast("keydown", [68, 0]);	//d
 	if (this._rects[2].HitTest(_vars[0], _vars[1]))	//up
-		this._broadcaster.broadcast("keydown", [87, 0]);
+		this._broadcaster.broadcast("keydown", [87, 0]);	//w
 	if (this._rects[3].HitTest(_vars[0], _vars[1]))	//down
-		this._broadcaster.broadcast("keydown", [83, 0]);
+		this._broadcaster.broadcast("keydown", [83, 0]);	//s
 }
 
 GamePad.prototype.handleResize = function(_vars)
@@ -492,53 +407,18 @@ GamePad.prototype.handleResize = function(_vars)
 	this._rects.push(new HitRect(28, this._vh - 28, 72, 28));	//bottom
 }
 
-Radar = function(_broadcaster)
+Radar = function(_broadcaster, _world)
 {
 	this._broadcaster = _broadcaster;
-	this._world_w = 192000;	//width and height of the actual world
-	this._world_h = 108000;
-	this._world_scale_x = 0;
-	this._world_scale_y = 0;
-	this._display_w = 0;
-	this._display_h = 0;
-	
-	this._view_x = 0;
-	this._view_y = 0;
-	this._view_w = 0;
-	this._view_h = 0;
-	this._current_dir = 0;
-	this._broadcaster.registerObserver("direction", this.handleDirChange.bind(this));
-	
-	this._world_points = new Array();	//x and y pairs
-	
-	this._world_points.push(this._view_x);	//this is the center_x
-	this._world_points.push(this._view_y);	//this is the center_y
-	
+	this._world = _world;
 	this._canvas = document.createElement("canvas");	//use offscreen canvas to accomplish rendering.
 }
 
-Radar.prototype.handleDirChange = function(_vars)
+Radar.prototype.addWorldTransform = function(w, h)
 {
-	this._current_dir = _vars[0];
-}
+	this._display_w = w / 3;//(w < 640 ? (w / 2) : (w / 4));
+	this._display_h = h / 3;//(h < 480 ? (h / 2) : (h / 4));
 
-Radar.prototype.addWorldPoint = function(x, y)
-{
-	this._world_points.push(x);//x
-	var _ret = this._world_points.length;	//return the length at the point where x was inserted.
-	this._world_points.push(y);//y
-	return ret;
-}
-
-Radar.prototype.addWorldTransform(w, h)
-{
-	this._view_w = w;
-	this._view_h = h;
-	this._display_w = (w < 640 ? (w / 2) : (w / 4));
-	this._display_h = (h < 480 ? (h / 2) : (h / 4));
-
-	this._world_scale_x = (1 / this._world_w) * this._display_w;
-	this._world_scale_y = (1 / this._world_h) * this._display_h;
 	
 	this._canvas.width = this._display_w;
 	this._canvas.height = this._display_h;
@@ -547,50 +427,50 @@ Radar.prototype.addWorldTransform(w, h)
 }
 
 Radar.prototype.render = function(_context)
-{	//update the coordinates based on the game direction...
-	//render the radar as pixels, need to find nice looking radar.
-	//not sure how we will gather all enemies' coordinates...
-	
+{
 	//For now we just focus on rendering the ship coordinates relative to the world.
 	var _ctx = this._canvas.getContext("2d");
 	_ctx.fillStyle = "#000000";
 	_ctx.fillRect(0, 0, this._display_w, this._display_h);
 
-	_ctx.strokeStyle = "rgb(255, 255, 255)";
-	_ctx.lineCap = "round";
-	_ctx.beginPath();
-	var hitrect = new HitRect(this._view_x, this._view_y, this._view_w, this._view_h);
-	var t_x = 0, t_y = 0;
-	for (var i = 0; i < this._world_points.length; i += 2)
-	{	//x = [i + 0], y = [i + 1]
-		if (hitrect.HitTest(this._world_points[i + 0], this._world_points[i + 1]))
-		{	//the point is within the world ... now we render the point.
-			t_x = this._world_points[i + 0] * this._world_scale_x;
-			t_y = this._world_points[i + 1] * this._world_scale_y;
-			
-			//Now draw the point.
-			_ctx.moveTo(t_x, t_y);
-			_ctx.lineTo(t_x + 1, t_y + 1);
-			_ctx.stroke();
-		}
-	}
-	///blit with ctx
+	this._world.renderScaledView(_ctx, this._display_w, this._display_h);
 	_context.drawImage(this._canvas, 0, 0, this._display_w, this._display_h);	//for now we will render the context at the top-left.
-	//remove the added world points so that they may be transformed by the main transformation function ...
-	//might need to think about this a little more.
 }
 
-GameScreen = function(_handler, _broadcaster)
+Enemy = function(name, world)
+{
+	this._sprite = new Image();
+	this._sprite.src = name;
+	this._world = world;
+	
+	var x = Math.random() * this._world.getDimensions._x;
+	var y = Math.random() * this._world.getDimensions._y;
+	var dx = (Math.random() * 10) - 5;
+	var dy = (Math.random() * 10) - 5;
+	this._idx = this._world.addWorldPoint(x, y, dx, dy);
+}
+
+Enemy.prototype.render = function(_context)
+{
+	if (this._world.pointInViewport(this._idx))
+	{
+		var vp = this._world.getViewPoint(this._idx);
+		_context.drawImage(this._sprite, vp[0], vp[1], this._sprite.width, this._sprite.height);
+	}
+}
+
+GameScreen = function(_handler, _broadcaster, _world)
 {
 	this._handler = _handler;
 	this._broadcaster = _broadcaster;
+	this._game_world = _world;
 	this._stars = new Array();
 	this._w = 0;
 	this._h = 0;
 	this._player = 0;
 	this._direction = 2;
 	this._game_controls = 0;
-	this._radar = new Radar(_broadcaster);
+	this._radar = new Radar(_broadcaster, _world);
 
 	this._broadcaster.registerObserver('click', this.handleClick.bind(this));
 	this._broadcaster.registerObserver('resize', this.handleResize.bind(this));
@@ -614,6 +494,17 @@ GameScreen.prototype.loadResources = function()
 		this._game_controls = new GamePad(this._handler, this._broadcaster);
 	this._player = new Player();
 	this._broadcaster.broadcast("direction", [this._direction, 0]);
+	
+	this._enemies = new Array();
+	
+	var enemysprites = ["images/sprites/enemy_1.png", "images/sprites/enemy_2.png", "images/sprites/enemy_3.png"];
+	
+	for (var i = 0; i < 200; i++)
+	{
+		var idx = Math.floor(Math.random() * enemysprites.length);
+		var enemy = new Enemy(enemysprites[idx], this._game_world);
+		this._enemies.push(enemy);
+	}
 }
 
 GameScreen.prototype.handleClick = function(vars)
@@ -656,6 +547,12 @@ GameScreen.prototype.render = function(_context)
 	}
 	
 	this._player.render(_context, this._direction);
+	
+	for (var i = 0; i < this._enemies.length; i++)
+	{
+		this._enemies[i].render(_context);
+	}
+	
 	if (this._game_controls != 0)
 		this._game_controls.render(_context);
 	
