@@ -438,10 +438,7 @@ Radar.prototype.render = function(_context)
 
 Enemy = function(name, world)
 {
-	this._sprite = new Image();
-	this._sprite.src = name;
 	this._world = world;
-	
 	var x = Math.random() * this._world.getDimensions()._x;
 	var y = Math.random() * this._world.getDimensions()._y;
 	
@@ -451,6 +448,18 @@ Enemy = function(name, world)
 	var PB = rotateAroundPoint(x, y, radius, dir);
 	var _delta = PB.divide(200);	//random speed
 	this._idx = this._world.addWorldPoint(x, y, _delta._x, _delta._y);
+	
+	this._sprite = new Image();
+	this._sprite.onload = this.updatePointDims.bind(this);
+	this._sprite.src = name;
+}
+
+Enemy.prototype.updatePointDims = function()
+{
+	var w = this._sprite.width;
+	var h = this._sprite.height;
+	
+	this._world.setPointDims(this._idx, w, h);	//this is used in the point-in-view calculation
 }
 
 Enemy.prototype.render = function(_context)

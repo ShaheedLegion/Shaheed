@@ -135,6 +135,30 @@ HitRect = function(x, y, w, h)
 	this._h = h;
 }
 
+HitRect.prototype.moveTopLeft = function(dx, dy)
+{
+	this._x += dx;
+	this._y += dy;
+}
+
+HitRect.prototype.moveBottomRight = function(dx, dy)
+{
+	this._w += dx;
+	this._h += dy;
+}
+
+HitRect.prototype.expand = function(dx, dy)
+{
+	this.moveTopLeft(-dx, -dy);
+	this.moveBottomRight(dx * 2, dy * 2);
+}
+
+HitRect.prototype.contract = function(dx, dy)
+{
+	this.moveTopLeft(dx, dy);
+	this.moveBottomRight(-(dx * 2), -(dy * 2));
+}
+
 HitRect.prototype.Between = function (min, p, max)
 {
   var result = 0;

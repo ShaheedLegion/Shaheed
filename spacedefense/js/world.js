@@ -16,6 +16,7 @@ GameWorld = function(_observer)
 	this._world_points = new Array();	//x and y pairs
 	this._viewport = new ViewPort(0, 0, 0, 0);
 	this._viewport_speed = 3;	//that is 3px per frame.
+	this._num_fields = 7;	//x, y, dx, dy, visible, w, h
 }
 
 GameWorld.prototype.handleDirChange = function(_vars)
@@ -31,6 +32,8 @@ GameWorld.prototype.addWorldPoint = function(x, y, dx, dy)
 	this._world_points.push(dx);
 	this._world_points.push(dy);
 	this._world_points.push(0);	//point in viewport, updated every frame.
+	this._world_points.push(1);	//point width
+	this._world_points.push(1);	//point height
 	return idx;
 }
 
@@ -48,6 +51,13 @@ GameWorld.prototype.getViewPoint = function(idx)
 {	//get point translated to viewpoint origin.
 	return [this._world_points[idx + 0] - this._viewport._port_location._x, this._world_points[idx + 1] - this._viewport._port_location._y];
 }
+
+GameWorld.prototype.setPointDims = function(idx, w, h)
+{
+	this._world_points[idx + 5] = w;
+	this._world_points[idx + 6] = h;
+}
+
 
 GameWorld.prototype.getDimensions = function()
 {
@@ -82,7 +92,7 @@ GameWorld.prototype.update = function()
 
 	var viewrect = new HitRect(this._viewport._port_location._x, this._viewport._port_location._y,
 							   this._viewport._port_dimensions._x, this._viewport._port_dimensions._y);
-	for (var i = 0; i < this._world_points.length; i += 5)
+	for (var i = 0; i < this._world_points.length; i += this._num_fields)
 	{	//update all the points in the world with their deltas. Do rudimentary bounds checking.
 		this._world_points[i + 0] += this._world_points[i + 2];
 		this._world_points[i + 1] += this._world_points[i + 3];
@@ -96,7 +106,9 @@ GameWorld.prototype.update = function()
 		if (this._world_points[i + 1] < 0)
 			this._world_points[i + 1] = this._world_dimensions._y - this._world_points[i + 1];
 
+		viewrect.expand(this._world_points[i + 5], this._world_points[i + 6]);	//expand the rect to take the size into account
 		this._world_points[i + 4] = viewrect.HitTest(this._world_points[i + 0], this._world_points[i + 1]);
+		viewrect.contract(this._world_points[i + 5], this._world_points[i + 6]);	//reset the rect.
 	}
 }
 
@@ -110,7 +122,7 @@ GameWorld.prototype.renderScaledView = function(_context, w, h)
 	_context.beginPath();
 	_context.strokeStyle = "rgb(255, 0, 0)";
 	var t_x = 0, t_y = 0;	//render the enemies
-	for (var i = 0; i < this._world_points.length; i += 5)
+	for (var i = 0; i < this._world_points.length; i += this._num_fields)
 	{
 		t_x = this._world_points[i + 0] * _scale_x;
 		t_y = this._world_points[i + 1] * _scale_y;
