@@ -10,7 +10,7 @@ GameWorld = function(_observer)
 	this._observer.registerObserver("resize", this.handleResize.bind(this));
 	this._observer.registerObserver("direction", this.handleDirChange.bind(this));
 	
-	this._world_dimensions = new Vector(192000, 108000);	//width and height of the actual world
+	this._world_dimensions = new Vector(19200, 10800);	//width and height of the actual world
 	this._current_dir = 0;
 	
 	this._world_points = new Array();	//x and y pairs
@@ -26,7 +26,7 @@ GameWorld.prototype.handleDirChange = function(_vars)
 GameWorld.prototype.addWorldPoint = function(x, y, dx, dy)
 {
 	this._world_points.push(x);//x
-	var idx = this._world_points.length;	//return the length at the point where x was inserted.
+	var idx = this._world_points.length - 1;	//return the index at the point where x was added.
 	this._world_points.push(y);//y
 	this._world_points.push(dx);
 	this._world_points.push(dy);
@@ -54,21 +54,21 @@ GameWorld.prototype.getDimensions = function()
 	return this._world_dimensions;
 }
 
-GameWorld.prototype.handleResize = function(w, h)
+GameWorld.prototype.handleResize = function(dims)
 {	//do nothing for now, we simply ignore the fact that the screen size changes
-	this._viewport._port_dimensions._x = w;
-	this._viewport._port_dimensions._y = h;
+	this._viewport._port_dimensions._x = dims[0];
+	this._viewport._port_dimensions._y = dims[1];
 }
 
 GameWorld.prototype.update = function()
 {//update the viewport - this is always moving.
-	if (this._direction == 2)	//up
+	if (this._current_dir == 2)	//up
 		this._viewport._port_location._y -= this._viewport_speed;
-	if (this._direction == 0)	//down
+	if (this._current_dir == 0)	//down
 		this._viewport._port_location._y += this._viewport_speed;
-	if (this._direction == 1)	//left
+	if (this._current_dir == 1)	//left
 		this._viewport._port_location._x -= this._viewport_speed;
-	if (this._direction == 3)	//right
+	if (this._current_dir == 3)	//right
 		this._viewport._port_location._x += this._viewport_speed;
 
 	if (this._viewport._port_location._x > this._world_dimensions._x)
@@ -82,7 +82,7 @@ GameWorld.prototype.update = function()
 
 	var viewrect = new HitRect(this._viewport._port_location._x, this._viewport._port_location._y,
 							   this._viewport._port_dimensions._x, this._viewport._port_dimensions._y);
-	for (var i = 0; i < this._world_points; i += 5)
+	for (var i = 0; i < this._world_points.length; i += 5)
 	{	//update all the points in the world with their deltas. Do rudimentary bounds checking.
 		this._world_points[i + 0] += this._world_points[i + 2];
 		this._world_points[i + 1] += this._world_points[i + 3];
@@ -102,19 +102,37 @@ GameWorld.prototype.update = function()
 
 GameWorld.prototype.renderScaledView = function(_context, w, h)
 {
-	_context.strokeStyle = "rgb(255, 255, 255)";
 	_context.lineCap = "round";
+
+	var _scale_x = (w / this._world_dimensions._x);
+	var _scale_y = (h / this._world_dimensions._y);
+
 	_context.beginPath();
-	var _scaled_x = (w / this._world_dimensions._x);
-	var _scaled_y = (h / this._world_dimensions._y);
-	var t_x = 0, t_y = 0;
+	_context.strokeStyle = "rgb(255, 0, 0)";
+	var t_x = 0, t_y = 0;	//render the enemies
 	for (var i = 0; i < this._world_points.length; i += 5)
 	{
-		t_x = this._world_points[i + 0] * _scaled_x;
-		t_y = this._world_points[i + 1] * _scaled_y;
-		
-		_context.moveTo(t_x, t_y);
-		_context.lineTo(t_x + 1, t_y + 1);
-		_context.stroke();
+		t_x = this._world_points[i + 0] * _scale_x;
+		t_y = this._world_points[i + 1] * _scale_y;
+		drawLine(_context, t_x, t_y, t_x + 1, t_y + 1);
 	}
+	
+	var vx = this._viewport._port_location._x * _scale_x;
+	var vy = this._viewport._port_location._y * _scale_y;
+	var vw = this._viewport._port_dimensions._x * _scale_x;
+	var vh = this._viewport._port_dimensions._y * _scale_y;
+	var px = vx + (vw / 2);
+	var py = vy + (vh / 2);
+
+	_context.beginPath();
+	_context.strokeStyle = "rgb(0, 0, 255)";
+	drawRect(_context, vx, vy, vw, vh);	//render the viewport bounds
+	
+	_context.beginPath();
+	_context.strokeStyle = "rgb(0, 255, 0)";
+	drawLine(_context, px, py, px + 1, py + 1);	//render the player
+	
+	_context.beginPath();
+	_context.strokeStyle = "rgb(192, 192, 192)";
+	drawRect(_context, 1, 1, w-2, h-2);	//render the scaled view bounds
 }

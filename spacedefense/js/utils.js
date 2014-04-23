@@ -99,6 +99,34 @@ Vector.prototype.divide = function(mod)
 	return _vec;
 }
 
+function rotateAroundPoint(x, y, radius, angle)
+{
+	var t_x = x - radius;
+	var t_y = y - radius;
+	var radians = angle * TO_RADIANS;
+	var ct = Math.cos(radians);
+	var st = Math.sin(radians);
+	var _rotated_X = (ct * (t_x - x) - st * (t_y - y)) + x;//(cos * (x - cx)) - (sin * (y - cy)) 
+	var _rotated_Y = (st * (t_x - x) + ct * (t_y - y)) + y;//(sin * (x - cx)) + (cos * (y - cy))
+	var P = new Vector(x, y);
+	var B = new Vector(_rotated_X, _rotated_Y);
+	var PB = P.subtract(B);
+	return PB;
+}
+
+function drawLine(_context, x, y, x2, y2)
+{
+	_context.moveTo(x, y);
+	_context.lineTo(x2, y2);
+	_context.stroke();
+}
+
+function drawRect(_context, x, y, w, h)
+{
+	_context.rect(x, y, w, h);
+	_context.stroke();
+}
+
 HitRect = function(x, y, w, h)
 {
 	this._x = x;

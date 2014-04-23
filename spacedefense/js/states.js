@@ -416,10 +416,9 @@ Radar = function(_broadcaster, _world)
 
 Radar.prototype.addWorldTransform = function(w, h)
 {
-	this._display_w = w / 3;//(w < 640 ? (w / 2) : (w / 4));
-	this._display_h = h / 3;//(h < 480 ? (h / 2) : (h / 4));
+	this._display_w = w / 4;//(w < 640 ? (w / 2) : (w / 4));
+	this._display_h = h / 4;//(h < 480 ? (h / 2) : (h / 4));
 
-	
 	this._canvas.width = this._display_w;
 	this._canvas.height = this._display_h;
 	this._canvas.clientWidth = this._display_w;
@@ -443,11 +442,15 @@ Enemy = function(name, world)
 	this._sprite.src = name;
 	this._world = world;
 	
-	var x = Math.random() * this._world.getDimensions._x;
-	var y = Math.random() * this._world.getDimensions._y;
-	var dx = (Math.random() * 10) - 5;
-	var dy = (Math.random() * 10) - 5;
-	this._idx = this._world.addWorldPoint(x, y, dx, dy);
+	var x = Math.random() * this._world.getDimensions()._x;
+	var y = Math.random() * this._world.getDimensions()._y;
+	
+	//let us assume the enemy sprite dimensions fit within the radius, then the radius would be something like 500px
+	var radius = 500;
+	var dir = (Math.random() * 300) + 60;	//somewhere inside of 360 degrees
+	var PB = rotateAroundPoint(x, y, radius, dir);
+	var _delta = PB.divide(200);	//random speed
+	this._idx = this._world.addWorldPoint(x, y, _delta._x, _delta._y);
 }
 
 Enemy.prototype.render = function(_context)
@@ -499,7 +502,7 @@ GameScreen.prototype.loadResources = function()
 	
 	var enemysprites = ["images/sprites/enemy_1.png", "images/sprites/enemy_2.png", "images/sprites/enemy_3.png"];
 	
-	for (var i = 0; i < 200; i++)
+	for (var i = 0; i < 120; i++)
 	{
 		var idx = Math.floor(Math.random() * enemysprites.length);
 		var enemy = new Enemy(enemysprites[idx], this._game_world);
