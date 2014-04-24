@@ -129,6 +129,11 @@ function drawRect(_context, x, y, w, h)
 
 HitRect = function(x, y, w, h)
 {
+	this.set(x, y, w, h);
+}
+
+HitRect.prototype.set = function(x, y, w, h)
+{
 	this._x = x;
 	this._y = y;
 	this._w = w;
@@ -159,6 +164,11 @@ HitRect.prototype.contract = function(dx, dy)
 	this.moveBottomRight(-(dx * 2), -(dy * 2));
 }
 
+HitRect.prototype.floor = function()
+{
+	this.set(Math.floor(this._x), Math.floor(this._y), Math.floor(this._w), Math.floor(this._h));
+}
+
 HitRect.prototype.Between = function (min, p, max)
 {
   var result = 0;
@@ -183,4 +193,10 @@ HitRect.prototype.HitTest = function(x, y)
 		if (this.Between(this._y, y, this._y + this._h))
 			return 1;
 	return 0;
+}
+
+HitRect.prototype.IntersectTest = function(b)
+ {
+     return (Math.abs(this._x - b._x) < (this._w + b._w) / 2) &&
+     (Math.abs(this._y - b._y) < (this._h + b._h) / 2);
 }

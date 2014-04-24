@@ -17,6 +17,15 @@ GameWorld = function(_observer)
 	this._viewport = new ViewPort(0, 0, 0, 0);
 	this._viewport_speed = 3;	//that is 3px per frame.
 	this._num_fields = 7;	//x, y, dx, dy, visible, w, h
+	this.player_rect = new HitRect(0, 0, 0, 0);
+	this._player_w = 0;
+	this._player_h = 0;
+}
+
+GameWorld.prototype.setPlayerDims = function(w, h)
+{
+	this._player_w = w;
+	this._player_h = h;
 }
 
 GameWorld.prototype.handleDirChange = function(_vars)
@@ -112,21 +121,54 @@ GameWorld.prototype.update = function()
 	}
 }
 
+GameWorld.prototype.HitTestPlayer = function()
+{
+	var _ret = [];
+	if (this._current_dir == 0 || this._current_dir == 2)
+	{
+		this.player_rect.set(((this._viewport._port_location._x + this._viewport._port_dimensions._x) / 2) - (this._player_w / 2),
+			((this._viewport._port_location._y + this._viewport._port_dimensions._y) / 2) - (this._player_h / 2), this._player_w, this._player_h);
+	}
+	if (this._current_dir == 1 || this._current_dir == 3)
+	{
+		this.player_rect.set(((this._viewport._port_location._x + this._viewport._port_dimensions._x) / 2) - (this._player_h / 2),
+			((this._viewport._port_location._y + this._viewport._port_dimensions._y) / 2) - (this._player_w / 2), this._player_h, this._player_w);
+	}
+
+	this.player_rect.contract(10, 10);	//shrink the hit box by 10 pixels to make the test slightly more accurate.
+	this.player_rect.floor();
+
+	var testRect = new HitRect(0, 0, 0, 0);
+	for (var i = 0; i < this._world_points.length; i += this._num_fields)
+	{
+		if (this._world_points[i + 4])	//visible
+		{	//detect broad scale collisions between these objects and the player
+			testRect.set(this._world_points[i + 0] - (this._world_points[i + 5]) / 2,  this._world_points[i + 1] - (this._world_points[i + 6]) / 2,
+			this._world_points[i + 5], this._world_points[i + 6]);
+			testRect.floor();
+			
+			if (testRect.IntersectTest(this.player_rect))
+				_ret.push(i);	//add the intersected sprite to the list we return
+		}
+		
+	}
+	return _ret;
+}
+
 GameWorld.prototype.renderScaledView = function(_context, w, h)
 {
-	_context.lineCap = "round";
-
 	var _scale_x = (w / this._world_dimensions._x);
 	var _scale_y = (h / this._world_dimensions._y);
 
-	_context.beginPath();
-	_context.strokeStyle = "rgb(255, 0, 0)";
+
+	_context.fillStyle = "rgb(255, 0, 0)";
 	var t_x = 0, t_y = 0;	//render the enemies
 	for (var i = 0; i < this._world_points.length; i += this._num_fields)
 	{
-		t_x = this._world_points[i + 0] * _scale_x;
-		t_y = this._world_points[i + 1] * _scale_y;
-		drawLine(_context, t_x, t_y, t_x + 1, t_y + 1);
+		t_x = Math.floor(this._world_points[i + 0] * _scale_x);
+		t_y = Math.floor(this._world_points[i + 1] * _scale_y);
+		_context.fillRect(t_x, t_y, 1, 1);
+		//drawLine(_context, t_x, t_y, t_x + 1, t_y + 1);
 	}
 	
 	var vx = this._viewport._port_location._x * _scale_x;
@@ -140,9 +182,10 @@ GameWorld.prototype.renderScaledView = function(_context, w, h)
 	_context.strokeStyle = "rgb(0, 0, 255)";
 	drawRect(_context, vx, vy, vw, vh);	//render the viewport bounds
 	
-	_context.beginPath();
-	_context.strokeStyle = "rgb(0, 255, 0)";
-	drawLine(_context, px, py, px + 1, py + 1);	//render the player
+	//_context.beginPath();
+	_context.fillStyle = "rgb(0, 255, 0)";
+	_context.fillRect(px, py, 1, 1);
+	//drawLine(_context, px, py, px + 1, py + 1);	//render the player
 	
 	_context.beginPath();
 	_context.strokeStyle = "rgb(192, 192, 192)";

@@ -20,6 +20,7 @@ ScreenHandler.prototype.render = function()
 	if (this._current_screen != 0)
 	{
 		this._game_world.update();
+		this._current_screen.update();
 		this._current_screen.render(this._canvas_handler._context);
 	}
 }

@@ -29,7 +29,7 @@ ProjectileManager.prototype.setOculus = function(x, y, w, h)
 	this._view_h = h;
 }
 
-ProjectileManager.prototype.update = function(_context, direction)
+ProjectileManager.prototype.update = function(direction)
 {
 	this._projectile_timer--;
 	if (this._projectile_timer == 0)
@@ -63,7 +63,9 @@ ProjectileManager.prototype.update = function(_context, direction)
 		}
 		this._projectile_timer = 6;
 	}
-
+}
+ProjectileManager.prototype.render = function(_context)
+{
 	for (var i = 0; i < this._num_projectiles; i += 6)
 	{
 		if (this._projectiles[i + 3] != 0)	//only update if it's alive

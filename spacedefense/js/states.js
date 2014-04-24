@@ -191,6 +191,11 @@ StartScreen.prototype.drawBackground = function(_context)
 	}
 }
 
+StartScreen.prototype.update = function()
+{
+
+}
+
 StartScreen.prototype.render = function(_context)
 {
 	this.drawBackground(_context);
@@ -251,18 +256,14 @@ StarField = function(numstars, z_index)
 StarField.prototype.render = function(_context)
 {
 	var starcol = (35 + (40 * this._z_index));
-	_context.strokeStyle = "rgb(" + starcol + ", " + starcol + ", " + starcol + ")";
-	_context.lineCap = "round";
-	_context.beginPath();
+	_context.fillStyle = "rgb(" + starcol + ", " + starcol + ", " + starcol + ")";
 
 	var x, y;
 	for (var i = 0; i < this._stars.length; i += 2)
 	{
-		x = this._stars[i + 0];
-		y = this._stars[i + 1];
-		_context.moveTo(x - 1, y - 1);
-		_context.lineTo(x + 1, y + 1);
-		_context.stroke();
+		x = Math.floor(this._stars[i + 0]);
+		y = Math.floor(this._stars[i + 1]);
+		_context.fillRect(x, y, 1, 1);
 	}
 }
 
@@ -319,6 +320,10 @@ Player = function()
 	this._projectile_man = new ProjectileManager('laser_1.png', (_limited_device ? 32 : 64));
 	this._sprite = new Image();
 	this._sprite.src = 'images/sprites/' + 'player_1.png';
+	
+	this._shield_max = 10;	//for starters, this will increase with power ups.
+	this._shield = this._sheild_max;
+	this._lives = this._sheild_max;	//for starters, changes during gameplay
 }
 
 Player.prototype.handleResize = function(w, h)
@@ -332,12 +337,28 @@ Player.prototype.handleResize = function(w, h)
 
 Player.prototype.render = function(_context, dir)
 {
-	this._projectile_man.update(_context, this._current_dir);
-	this._target_dir = (dir == 0 ? 2 : (dir == 2 ? 0 : (dir == 1 ? 3 : 1)));
-	this._target_dir *= 90;
+	this._projectile_man.render(_context);
 	if (IsImageOk(this._sprite))
 		drawRotatedImage(_context, this._sprite, this._x, this._y, this._current_dir);
 		
+	if (this._shield > 0)
+	{
+		//either render x sheilds, or render shield at brightness level
+		//draw a circle to represent the amount of remaining shield.
+		_context.strokeStyle = "rgb(0, " + ((100 + (155 / this._sheild_max) * this._sheild)) + ", 0)";
+		_context.beginPath();
+		_context.arc(this._x, this._y, 200, 0, Math.PI * 2, true); 
+		_context.closePath();
+		_context.stroke();
+	}
+}
+
+Player.prototype.update = function(dir)
+{
+	this._projectile_man.update(this._current_dir);
+	this._target_dir = (dir == 0 ? 2 : (dir == 2 ? 0 : (dir == 1 ? 3 : 1)));
+	this._target_dir *= 90;
+
 	var rotation_speed = 2;
 	if (this._current_dir > this._target_dir)	//now handle the rotation
 	{
@@ -380,7 +401,7 @@ GamePad = function(handler, broadcast)
 GamePad.prototype.render = function(_context)
 {
 	if (IsImageOk(this._sprite))
-		_context.drawImage(this._sprite, 0, this._vh - this._sprite.height, this._sprite.width, this._sprite.height);
+		_context.drawImage(this._sprite, 0, this._vh - this._sprite.height, this._sprite.width, this._sprite.height);this._shield_max = 10;	//for starters, this will increase with power ups.
 }
 
 GamePad.prototype.handleClick = function(_vars)
@@ -452,6 +473,10 @@ Enemy = function(name, world)
 	this._sprite = new Image();
 	this._sprite.onload = this.updatePointDims.bind(this);
 	this._sprite.src = name;
+	
+	this._shield_max = 10;	//for starters, this will increase with power ups.
+	this._shield = this._sheild_max;
+	this._lives = this._sheild_max;	//for starters, changes during gameplay
 }
 
 Enemy.prototype.updatePointDims = function()
@@ -468,6 +493,41 @@ Enemy.prototype.render = function(_context)
 	{
 		var vp = this._world.getViewPoint(this._idx);
 		_context.drawImage(this._sprite, vp[0], vp[1], this._sprite.width, this._sprite.height);
+/*
+		if (this._shield > 0)
+		{
+			//either render x sheilds, or render shield at brightness level
+			//draw a circle to represent the amount of remaining shield.
+			_context.strokeStyle = "rgb(0, " + ((100 + (155 / this._sheild_max) * this._sheild)) + ", 0)";
+			_context.beginPath();
+			_context.arc(this._x, this._y, 200, 0, Math.PI * 2, true); 
+			_context.closePath();
+			_context.stroke();
+		}
+*/
+	}
+}
+
+//These functions are (sensibly) grouped together because they handle a similar task.
+Enemy.prototype.handleCollision = function()
+{
+	//the enemy was hit by something ... do something about it.
+	this._sheild--;
+	if (this._sheild < 0)
+	{
+		this._lives--;
+		this._shield = this._sheild_max;
+	}
+}
+
+Player.prototype.handleCollision = function()
+{
+	//the player was hit by something ... do something about it
+	this._sheild--;
+	if (this._sheild < 0)
+	{
+		this._lives--;
+		this._shield = this._sheild_max;
 	}
 }
 
@@ -505,6 +565,7 @@ GameScreen.prototype.loadResources = function()
 	if (_mobile_device)	//show touchpad for mobile devices.
 		this._game_controls = new GamePad(this._handler, this._broadcaster);
 	this._player = new Player();
+	this._game_world.setPlayerDims(this._player._w, this._player._h);
 	this._broadcaster.broadcast("direction", [this._direction, 0]);
 	
 	this._enemies = new Array();
@@ -548,28 +609,54 @@ GameScreen.prototype.handleResize = function(vars)
 	this._radar.addWorldTransform(this._w, this._h);
 }
 
-GameScreen.prototype.render = function(_context)
+GameScreen.prototype.update = function()
 {
-	_context.clearRect(0, 0, this._w, this._h)	//not required since we are filling the canvas;
-	
 	for (var i = 0; i < this._stars.length; i++)
 	{
 		this._stars[i].move(this._direction);
+	}
+	this._player.update(this._direction);
+	var player_hit_rects = this._game_world.HitTestPlayer();
+	
+	if (player_hit_rects.length)
+	{
+		//set the player to "exploding, or shield subtract"
+		//set the enemies to "exploding, or shield subtract"
+		for (var idx = 0; idx < player_hit_rects.length; idx++)
+		{
+			for (var i = 0; i < this._enemies.length; i++)
+			{
+				if (this._enemies[i]._idx == player_hit_rects[idx])
+				{
+					this._enemies[i].handleCollision();
+				}
+			}
+		}
+		this._player.handleCollision();
+	}
+}
+
+GameScreen.prototype.render = function(_context)
+{
+	_context.clearRect(0, 0, this._w, this._h)	//not required since we are filling the canvas;
+
+	for (var i = 0; i < this._stars.length; i++)
+	{
 		this._stars[i].render(_context);
 	}
-	
-	this._player.render(_context, this._direction);
-	
+
+	this._player.render(_context);
+
 	for (var i = 0; i < this._enemies.length; i++)
 	{
 		this._enemies[i].render(_context);
 	}
-	
+
 	if (this._game_controls != 0)
 		this._game_controls.render(_context);
-	
+
 	this._radar.render(_context);
-	
+
 	if (_debug_mobile)
 	{	//now we render debug info.
 		_context.fillStyle = "#ff0000";
