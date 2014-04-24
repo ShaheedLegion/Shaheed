@@ -21,15 +21,9 @@
 </div>
 
 <div class="bodycontent">
-
-<div class="g-plusone" data-size="small" data-annotation="inline" data-width="200"></div>
-<script type="text/javascript">
-  (function() {
-    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-    po.src = 'https://apis.google.com/js/platform.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-  })();
-</script>
+<?php
+include "social_snippets.php";
+?>
 
 	<h1>Who is Shaheed Abdol?</h1>
 	<h2>Meet the Christian</h2>
@@ -49,23 +43,10 @@
 <p>Shaheed was always involved in the church, at first he was a choral singer, later progressing to a musician in the church band. His spiritual life took a nosedive when he busied himself with athletics and acting activities, which consumed most of his time. His teens were filled with turmoil, but he always had a guardian angel watching over him.</p>
 
 <p>He found his spiritual side again in late 2012 when he and his soon-to-be-wife converted during a church ceremony at the Christ Our King church. The church was graceful enough to grant them a free wedding, with members of the congregation providing everything they would need to tie the knot.</p>
-	
-<hr/>
-    <div id="disqus_thread"></div>
-    <script type="text/javascript">
-        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-        var disqus_shortname = 'shaheedabdol'; // required: replace example with your forum shortname
 
-        /* * * DON'T EDIT BELOW THIS LINE * * */
-        (function() {
-            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-    
+<?php
+include "comment_snippets.php";
+?>	
 </div>
 <body>
 </html>

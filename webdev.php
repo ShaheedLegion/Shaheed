@@ -21,15 +21,9 @@
 </div>
 
 <div class="bodycontent">
-
-<div class="g-plusone" data-size="small" data-annotation="inline" data-width="200"></div>
-<script type="text/javascript">
-  (function() {
-    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-    po.src = 'https://apis.google.com/js/platform.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-  })();
-</script>
+<?php
+include "social_snippets.php";
+?>
 
 	<h1>Who is Shaheed Abdol?</h1>
 	<h2>Meet the web developer</h2>
@@ -38,7 +32,7 @@
 	</p>
 
 	<div class="portrait">
-		<img alt="Shaheed Abdol" src="images\webdev.jpg"/>
+		<img alt="Shaheed Abdol" src="images/webdev.jpg"/>
 	</div>
 	<hr/>
 
@@ -55,26 +49,13 @@
 
 <p>You can check out some of his travels at the <a class="bl" href="http://inspirationaltravels.co.nr/">Inspirational Travels</a> which documents some of his travels with his wife.</p>
 
-<p>An earlier project is the <a class="bl" href="http://www.chrstourking.org.za">Christ Our King</a> website, which is still in development.</p>
+<p>An earlier project is the <a class="bl" href="http://www.christourking.org.za">Christ Our King</a> website, which is still in development.</p>
 
 <p>You could also check out his personal blog over at <a class="bl" href="http://www.codingsucksiloveit.blogspot.com">Coding Sucks I Love It!</a> where he rants and raves about what it's like to code... You will find links to his Google+ profile there, and links to his CodeProject and StackOverflow profiles on his Google+ page.</p>
 	
-<hr/>
-    <div id="disqus_thread"></div>
-    <script type="text/javascript">
-        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-        var disqus_shortname = 'shaheedabdol'; // required: replace example with your forum shortname
-
-        /* * * DON'T EDIT BELOW THIS LINE * * */
-        (function() {
-            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-    
+<?php
+include "comment_snippets.php";
+?>
 </div>
 <body>
 </html>

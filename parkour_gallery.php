@@ -23,15 +23,9 @@
 </div>
 
 <div id="wrapper" class="bodycontent">
-
-<div class="g-plusone" data-size="small" data-annotation="inline" data-width="200"></div>
-<script type="text/javascript">
-  (function() {
-    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-    po.src = 'https://apis.google.com/js/platform.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-  })();
-</script>
+<?php
+include "social_snippets.php";
+?>
 
 	<div class="slider-wrapper theme-default">
 		<div id="slider" class="nivoSlider">

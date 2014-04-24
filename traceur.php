@@ -21,15 +21,9 @@
 </div>
 
 <div class="bodycontent">
-
-<div class="g-plusone" data-size="small" data-annotation="inline" data-width="200"></div>
-<script type="text/javascript">
-  (function() {
-    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-    po.src = 'https://apis.google.com/js/platform.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-  })();
-</script>
+<?php
+include "social_snippets.php";
+?>
 
 	<h1>Who is Shaheed Abdol?</h1>
 	<h2>Meet the Traceur</h2>
@@ -41,7 +35,7 @@
 	I remember the first time I discovered Parkour, it was entirely by accident - I was chasing cats across the <i>Rooi plein</i> and a buddy of mine told me that it looked similar to a video he'd seen on Youtube, he later showed me a video of David Belle doing a short Parkour run, and I've been hooked ever since.
 	</p>
 	<div class="portrait">
-		<img alt="Shaheed Abdol" src="images\traceur.jpg"/>
+		<img alt="Shaheed Abdol" src="images/traceur.jpg"/>
 	</div>
 
 	<hr/>	
@@ -49,25 +43,12 @@
 <h3>2004-2013</h3>
 <p>Shaheed has since stopped practising Parkour, but will soon get back into the diving and rolling when his life isn't so busy anymore, we've included a bunch of pics to keep you happy.</p>
 <p class="quote">
-<a href="parkour_gallery.html" class="bl">Go to Parkour Gallery.</a>
+<a href="parkour_gallery.php" class="bl">Go to Parkour Gallery.</a>
 </p>
 	
-<hr/>
-    <div id="disqus_thread"></div>
-    <script type="text/javascript">
-        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-        var disqus_shortname = 'shaheedabdol'; // required: replace example with your forum shortname
-
-        /* * * DON'T EDIT BELOW THIS LINE * * */
-        (function() {
-            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-    
+<?php
+include "comment_snippets.php";
+?>
 </div>
 <body>
 </html>

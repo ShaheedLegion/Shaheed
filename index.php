@@ -23,15 +23,9 @@
 
 
 <div class="bodycontent">
-
-<div class="g-plusone" data-size="small" data-annotation="inline" data-width="200"></div>
-<script type="text/javascript">
-  (function() {
-    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-    po.src = 'https://apis.google.com/js/platform.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-  })();
-</script>
+<?php
+include "social_snippets.php";
+?>
 
 	<h1>Who is Shaheed Abdol?</h1>
 	<h2>Meet the man</h2>
@@ -39,7 +33,7 @@
 	Shaheed Abdol is just another guy, born in 1986, who wanted to make something better of his life... He studied hard, played hard, worked hard and spends each day striving to outperform himself.
 	</p>
 	<div class="portrait">
-		<img alt="Shaheed Abdol" src="images\shaheed.jpg"/>
+		<img alt="Shaheed Abdol" src="images/shaheed.jpg"/>
 	</div>
 	<hr/>	
 	<h2>The early years...</h2>
@@ -74,23 +68,11 @@
 	<p>He tried his hand at many things, but finally settled on woodwork as a hobby. He liked constructing things, and found that wood was a great medium to bring function into form without much hassle.</p>
 	
 	<p class="quote">I finally found that woodwork gave me the most satisfaction, honing a block of wood into something aesthetic or functional always gave me great joy. I loved building boxes of all kinds, cabinets, speaker enclosures and chests all gave me great joy.</p>
-		
-<hr/>
-    <div id="disqus_thread"></div>
-    <script type="text/javascript">
-        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-        var disqus_shortname = 'shaheedabdol'; // required: replace example with your forum shortname
+	
+<?php
+include "comment_snippets.php";
+?>
 
-        /* * * DON'T EDIT BELOW THIS LINE * * */
-        (function() {
-            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-    
 </div>
 <body>
 </html>

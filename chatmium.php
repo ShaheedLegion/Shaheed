@@ -21,15 +21,9 @@
 </div>
 
 <div class="bodycontent">
-
-<div class="g-plusone" data-size="small" data-annotation="inline" data-width="200"></div>
-<script type="text/javascript">
-  (function() {
-    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-    po.src = 'https://apis.google.com/js/platform.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-  })();
-</script>
+<?php
+include "social_snippets.php";
+?>
 
 	<h1>Chat to Shaheed Abdol?</h1>
 	<h2>Welcome from Chatmium</h2>
@@ -41,7 +35,7 @@
 	If you head over to the <a href="https://chrome.google.com/webstore/detail/chatmium-chat-to-friends/boooppebmgbdpeilgjcablcoephkhedd?hl=en">Chatmium page on the Chrome Web Store</a> you will be able to download the widget and chat to people from all over the world. So, please spread the word, we could do with a few more friends.
 	</p>
 	<div class="portrait">
-		<img alt="Shaheed Abdol" src="images\chatmium.png"/>
+		<img alt="Shaheed Abdol" src="images/chatmium.png"/>
 	</div>
 	<hr/>	
 
@@ -61,22 +55,9 @@
 	If you want to contribute, send an email to Shaheed[at]ShaheedAbdol[dot]co[dot]za with the word "Chatmium" somewhere in the subject line and I'll get back to you with planned features and source code.
 	</p>
 		
-<hr/>
-    <div id="disqus_thread"></div>
-    <script type="text/javascript">
-        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-        var disqus_shortname = 'shaheedabdol'; // required: replace example with your forum shortname
-
-        /* * * DON'T EDIT BELOW THIS LINE * * */
-        (function() {
-            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-    
+<?php
+include "comment_snippets.php";
+?>	
 </div>
 <body>
 </html>
