@@ -347,7 +347,6 @@ Player.prototype.render = function(_context, dir)
 	if (this._shield > 0)
 	{
 		_context.strokeStyle = "rgb(0, " + ((100 + (155 / this._shield_max) * this._shield)) + ", 0)";
-		//_context.fillStyle = "rgba(0, 0, 0, 0)";
 		_context.beginPath();
 		_context.arc(this._x, this._y, 60, 0, Math.PI * 2, true); 
 		_context.closePath();
@@ -359,7 +358,7 @@ Player.prototype.render = function(_context, dir)
 		var shield_bar_y = (this._view_h / 4) + shield_bar_h;	//move it slightly away from the mini-map
 		var current_shield_w = (shield_bar_w / this._shield_max) * this._shield;
 		var current_lives_w = (shield_bar_w / this._shield_max) * this._lives;
-		//_context.save();
+
 		_context.strokeStyle = "#00FF00";
 		_context.fillStyle = "#00FF00";
 		fillRect(_context, 0, shield_bar_y, current_shield_w, shield_bar_h);
@@ -369,8 +368,6 @@ Player.prototype.render = function(_context, dir)
 		_context.fillStyle = "#0000FF";
 		fillRect(_context, 0, shield_bar_y + shield_bar_h, current_lives_w, shield_bar_h);
 		drawRect(_context, 0, shield_bar_y + shield_bar_h, shield_bar_w, shield_bar_h);
-		//_context.restore();
-		
 	}
 }
 
@@ -688,17 +685,6 @@ GameScreen.prototype.update = function()
 	
 	if (player_hit_rects.length)
 	{
-		//check if we are already colliding with this enemy
-		//for (var idx = 0; idx < player_hit_rects.length; idx++)
-		//{
-		//	for (var i = 0; i < this._player._hit_rects.length; i++)
-		//	{
-		//		if (player_hit_rects[idx] == this._player._hit_rects[i])	//player has hit this enemy before
-		//			player_hit_rects[idx] == -1;	//we have already subtracted from the shield for this enemy.
-		//	}
-		//}
-		//set the player to "exploding, or shield subtract"
-		//set the enemies to "exploding, or shield subtract"
 		for (var idx = 0; idx < player_hit_rects.length; idx++)
 		{
 			for (var i = 0; i < this._enemies.length; i++)
@@ -713,16 +699,7 @@ GameScreen.prototype.update = function()
 				}
 			}
 		}
-		//for (var idx = 0; idx < player_hit_rects.length; idx++)
-		//{
-		//this._exploding
-		//this._player.handleCollision();
-		//}
-		//this._player._hit_rects = player_hit_rects;
 	}
-	//else
-	//	this._player._hit_rects = player_hit_rects;
-	//	this._player._hit_rects = player_hit_rects;
 }
 
 GameScreen.prototype.render = function(_context)
@@ -736,7 +713,7 @@ GameScreen.prototype.render = function(_context)
 
 	this._player.render(_context);
 	_context.strokeStyle = "#00FF00";
-	drawRect(_context, this._game_world.player_rect._x, this._game_world.player_rect._y, this._game_world.player_rect._w, this._game_world.player_rect._h);
+	//drawRect(_context, this._game_world.player_rect._x, this._game_world.player_rect._y, this._game_world.player_rect._w, this._game_world.player_rect._h);
 
 	for (var i = 0; i < this._enemies.length; i++)
 	{
