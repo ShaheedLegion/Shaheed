@@ -705,13 +705,19 @@ GameScreen.prototype.update = function()
 			{
 				if (this._enemies[i]._idx == player_hit_rects[idx])
 				{
-					this._enemies[i].handleCollision();
-					var ep = this._game_world.getViewPoint(this._enemies[i]._idx);
-					console.log("ex[" + ep[0] + "] ey[" + ep[1] + "] ew[" + this._enemies[i]._sprite.width + "] eh[" + this._enemies[i]._sprite.height + "]");
+					if (!this._enemies[i]._exploding)
+						this._player.handleCollision();
+						this._enemies[i].handleCollision();
+					//var ep = this._game_world.getViewPoint(this._enemies[i]._idx);
+					//console.log("ex[" + ep[0] + "] ey[" + ep[1] + "] ew[" + this._enemies[i]._sprite.width + "] eh[" + this._enemies[i]._sprite.height + "]");
 				}
 			}
 		}
-		this._player.handleCollision();
+		//for (var idx = 0; idx < player_hit_rects.length; idx++)
+		//{
+		//this._exploding
+		//this._player.handleCollision();
+		//}
 		//this._player._hit_rects = player_hit_rects;
 	}
 	//else
