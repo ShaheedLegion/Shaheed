@@ -322,8 +322,11 @@ Player = function()
 	this._sprite.src = 'images/sprites/' + 'player_1.png';
 	
 	this._shield_max = 10;	//for starters, this will increase with power ups.
-	this._shield = this._sheild_max;
-	this._lives = this._sheild_max;	//for starters, changes during gameplay
+	this._shield = this._shield_max;
+	this._lives = this._shield_max;	//for starters, changes during gameplay
+	this._hit_rects = [];	//set to array so that we can immediately run hit testing.
+	this._explosion = new Explosion();
+	this._exploding = 0;
 }
 
 Player.prototype.handleResize = function(w, h)
@@ -343,13 +346,30 @@ Player.prototype.render = function(_context, dir)
 		
 	if (this._shield > 0)
 	{
-		//either render x sheilds, or render shield at brightness level
-		//draw a circle to represent the amount of remaining shield.
-		_context.strokeStyle = "rgb(0, " + ((100 + (155 / this._sheild_max) * this._sheild)) + ", 0)";
+		_context.strokeStyle = "rgb(0, " + ((100 + (155 / this._shield_max) * this._shield)) + ", 0)";
+		//_context.fillStyle = "rgba(0, 0, 0, 0)";
 		_context.beginPath();
-		_context.arc(this._x, this._y, 200, 0, Math.PI * 2, true); 
+		_context.arc(this._x, this._y, 60, 0, Math.PI * 2, true); 
 		_context.closePath();
 		_context.stroke();
+		
+		//Now we draw the player ships left, and the shield bar.
+		var shield_bar_w = this._view_w / 4;
+		var shield_bar_h = 40;	//40 pixels should be enough.
+		var shield_bar_y = (this._view_h / 4) + shield_bar_h;	//move it slightly away from the mini-map
+		var current_shield_w = (shield_bar_w / this._shield_max) * this._shield;
+		var current_lives_w = (shield_bar_w / this._shield_max) * this._lives;
+		//_context.save();
+		_context.strokeStyle = "#00FF00";
+		_context.fillStyle = "#00FF00";
+		fillRect(_context, 0, shield_bar_y, current_shield_w, shield_bar_h);
+		drawRect(_context, 0, shield_bar_y, shield_bar_w, shield_bar_h);
+
+		_context.strokeStyle = "#0000FF";
+		_context.fillStyle = "#0000FF";
+		fillRect(_context, 0, shield_bar_y + shield_bar_h, current_lives_w, shield_bar_h);
+		drawRect(_context, 0, shield_bar_y + shield_bar_h, shield_bar_w, shield_bar_h);
+		//_context.restore();
 	}
 }
 
@@ -457,6 +477,42 @@ Radar.prototype.render = function(_context)
 	_context.drawImage(this._canvas, 0, 0, this._display_w, this._display_h);	//for now we will render the context at the top-left.
 }
 
+Explosion = function()
+{
+	//load up the sprite and the animation here ... set some defaults then get ready to render!!!!
+	this._visible = 0;
+	this._px = 0;
+	this._py = 0;
+	
+	this._sprite = new Image();
+	this._sprite.src = "images/explosion.png";
+	this._sprite.onload = this.loaded.bind(this);
+	this._current_frame = 0;
+	this._numframes = 0;
+}
+Explosion.prototype.loaded = function()
+{
+	this._numframes = (this._sprite.width / this._sprite.height);
+}
+Explosion.prototype.visible = function() {return this._visible;}
+Explosion.prototype.setvisible = function(vec)
+{
+	this._visible = 1;
+	this._px = vec[0];
+	this._py = vec[1];
+}
+Explosion.prototype.render = function(_context)
+{
+	if (this.visible() && IsImageOk(this._sprite))
+	{
+		var _current_x = (this._current_frame * this._sprite._height);
+		_context.drawImage(this._sprite, _current_x, 0, this._sprite.height, this._sprite.height, this._px, this._py, this._sprite._height, this._sprite._height);
+		this._current_frame++;
+		if (this._current_frame >= this._num_frames)
+			this._visible = false;
+	}
+}
+
 Enemy = function(name, world)
 {
 	this._world = world;
@@ -477,6 +533,8 @@ Enemy = function(name, world)
 	this._shield_max = 10;	//for starters, this will increase with power ups.
 	this._shield = this._sheild_max;
 	this._lives = this._sheild_max;	//for starters, changes during gameplay
+	this._explosion = new Explosion();
+	this._exploding = 0;
 }
 
 Enemy.prototype.updatePointDims = function()
@@ -492,19 +550,23 @@ Enemy.prototype.render = function(_context)
 	if (this._world.pointInViewport(this._idx))
 	{
 		var vp = this._world.getViewPoint(this._idx);
-		_context.drawImage(this._sprite, vp[0], vp[1], this._sprite.width, this._sprite.height);
-/*
-		if (this._shield > 0)
+		if (this._explosion.visible())
 		{
-			//either render x sheilds, or render shield at brightness level
-			//draw a circle to represent the amount of remaining shield.
-			_context.strokeStyle = "rgb(0, " + ((100 + (155 / this._sheild_max) * this._sheild)) + ", 0)";
-			_context.beginPath();
-			_context.arc(this._x, this._y, 200, 0, Math.PI * 2, true); 
-			_context.closePath();
-			_context.stroke();
+			this._explosion.render(_context);
 		}
-*/
+		else
+		{
+			_context.drawImage(this._sprite, vp[0], vp[1], this._sprite.width, this._sprite.height);
+
+			if (this._shield > 0)
+			{
+				_context.strokeStyle = "rgb(0, " + ((100 + (155 / this._shield_max) * this._shield)) + ", 0)";
+				_context.beginPath();
+				_context.arc(this._x, this._y, 96, 0, Math.PI * 2, true); 
+				_context.closePath();
+				_context.stroke();
+			}
+		}
 	}
 }
 
@@ -512,22 +574,27 @@ Enemy.prototype.render = function(_context)
 Enemy.prototype.handleCollision = function()
 {
 	//the enemy was hit by something ... do something about it.
-	this._sheild--;
-	if (this._sheild < 0)
+	if (this._exploding)
+		return;
+	this._shield--;
+	if (this._shield < 0)
 	{
-		this._lives--;
-		this._shield = this._sheild_max;
+		//instantiate explosion...
+		this._explosion.setvisible(this._world.getViewPoint(this._idx));
+		this._exploding = 1;
 	}
 }
 
 Player.prototype.handleCollision = function()
 {
 	//the player was hit by something ... do something about it
-	this._sheild--;
-	if (this._sheild < 0)
+	if (this._exploding)	//don't handle collisions with explosion animations
+		return;
+	this._shield--;
+	if (this._shield < 0)
 	{
 		this._lives--;
-		this._shield = this._sheild_max;
+		this._shield = this._shield_max;
 	}
 }
 
@@ -620,6 +687,15 @@ GameScreen.prototype.update = function()
 	
 	if (player_hit_rects.length)
 	{
+		//check if we are already colliding with this enemy
+		for (var i = 0; i < this._player._hit_rects.length; i++)
+		{
+			for (var idx = 0; idx < player_hit_rects.length; idx++)
+			{
+				if (player_hit_rects[idx] == this._player._hit_rects[i])	//player has hit this enemy before
+					player_hit_rects[idx] == -1;	//we have already subtracted from the shield for this enemy.
+			}
+		}
 		//set the player to "exploding, or shield subtract"
 		//set the enemies to "exploding, or shield subtract"
 		for (var idx = 0; idx < player_hit_rects.length; idx++)
@@ -634,6 +710,7 @@ GameScreen.prototype.update = function()
 		}
 		this._player.handleCollision();
 	}
+	this._player._hit_rects = player_hit_rects;
 }
 
 GameScreen.prototype.render = function(_context)

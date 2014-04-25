@@ -16,7 +16,7 @@ GameWorld = function(_observer)
 	this._world_points = new Array();	//x and y pairs
 	this._viewport = new ViewPort(0, 0, 0, 0);
 	this._viewport_speed = 3;	//that is 3px per frame.
-	this._num_fields = 7;	//x, y, dx, dy, visible, w, h
+	this._num_fields = 8;	//x, y, dx, dy, visible, w, h
 	this.player_rect = new HitRect(0, 0, 0, 0);
 	this._player_w = 0;
 	this._player_h = 0;
@@ -43,6 +43,7 @@ GameWorld.prototype.addWorldPoint = function(x, y, dx, dy)
 	this._world_points.push(0);	//point in viewport, updated every frame.
 	this._world_points.push(1);	//point width
 	this._world_points.push(1);	//point height
+	this._world_points.push(idx);	//now we have the "id" of the point
 	return idx;
 }
 
@@ -126,13 +127,13 @@ GameWorld.prototype.HitTestPlayer = function()
 	var _ret = [];
 	if (this._current_dir == 0 || this._current_dir == 2)
 	{
-		this.player_rect.set(((this._viewport._port_location._x + this._viewport._port_dimensions._x) / 2) - (this._player_w / 2),
-			((this._viewport._port_location._y + this._viewport._port_dimensions._y) / 2) - (this._player_h / 2), this._player_w, this._player_h);
+		this.player_rect.set((this._viewport._port_location._x + (this._viewport._port_dimensions._x / 2)) - (this._player_w / 2),
+			(this._viewport._port_location._y + (this._viewport._port_dimensions._y / 2)) - (this._player_h / 2), this._player_w, this._player_h);
 	}
 	if (this._current_dir == 1 || this._current_dir == 3)
 	{
-		this.player_rect.set(((this._viewport._port_location._x + this._viewport._port_dimensions._x) / 2) - (this._player_h / 2),
-			((this._viewport._port_location._y + this._viewport._port_dimensions._y) / 2) - (this._player_w / 2), this._player_h, this._player_w);
+		this.player_rect.set((this._viewport._port_location._x + (this._viewport._port_dimensions._x / 2)) - (this._player_h / 2),
+			(this._viewport._port_location._y + (this._viewport._port_dimensions._y / 2)) - (this._player_w / 2), this._player_h, this._player_w);
 	}
 
 	this.player_rect.contract(10, 10);	//shrink the hit box by 10 pixels to make the test slightly more accurate.
@@ -148,10 +149,17 @@ GameWorld.prototype.HitTestPlayer = function()
 			testRect.floor();
 			
 			if (testRect.IntersectTest(this.player_rect))
-				_ret.push(i);	//add the intersected sprite to the list we return
+				_ret.push(this._world_points[i + 7]);	//add the intersected sprite to the list we return
 		}
 		
 	}
+	/*
+	{	//simple debugging test ...
+		var hr1 = new HitRect(0, 0, 40, 40);
+		var hr2 = new HitRect(10, 10, 20, 20);
+		console.log("Testing dummy intersection [" + hr1.IntersectTest(hr2) + "] testing the other way around[" + hr2.IntersectTest(hr1) + "]");
+	}
+	*/
 	return _ret;
 }
 

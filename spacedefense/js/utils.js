@@ -126,7 +126,13 @@ function drawRect(_context, x, y, w, h)
 	_context.rect(x, y, w, h);
 	_context.stroke();
 }
-
+function fillRect(_context, x, y, w, h)
+{
+	_context.beginPath();
+	_context.rect(x, y, w, h);
+	_context.closePath();
+	_context.fill();
+}
 HitRect = function(x, y, w, h)
 {
 	this.set(x, y, w, h);
