@@ -312,7 +312,7 @@ Player = function()
 	this._x = 0;
 	this._y = 0;
 	this._w = 112;
-	this._h = 75;
+	this._h = 112;
 	this._view_w = 0;
 	this._view_h = 0;
 	this._target_dir = 0;
@@ -333,8 +333,8 @@ Player.prototype.handleResize = function(w, h)
 {
 	this._view_w = w;
 	this._view_h = h;
-	this._x = (w / 2) - (this._w / 2);
-	this._y = (h / 2) - (this._h / 2);
+	this._x = (w / 2);
+	this._y = (h / 2);
 	this._projectile_man.setOculus(this._x, this._y, w, h);
 }
 
@@ -370,6 +370,7 @@ Player.prototype.render = function(_context, dir)
 		fillRect(_context, 0, shield_bar_y + shield_bar_h, current_lives_w, shield_bar_h);
 		drawRect(_context, 0, shield_bar_y + shield_bar_h, shield_bar_w, shield_bar_h);
 		//_context.restore();
+		
 	}
 }
 
@@ -489,6 +490,8 @@ Explosion = function()
 	this._sprite.onload = this.loaded.bind(this);
 	this._current_frame = 0;
 	this._numframes = 0;
+	this._frame_delay_timer = 10;
+	this._frame_delay = this._frame_delay_timer;
 }
 Explosion.prototype.loaded = function()
 {
@@ -500,15 +503,23 @@ Explosion.prototype.setvisible = function(vec)
 	this._visible = 1;
 	this._px = vec[0];
 	this._py = vec[1];
+
 }
 Explosion.prototype.render = function(_context)
 {
 	if (this.visible() && IsImageOk(this._sprite))
 	{
-		var _current_x = (this._current_frame * this._sprite._height);
-		_context.drawImage(this._sprite, _current_x, 0, this._sprite.height, this._sprite.height, this._px, this._py, this._sprite._height, this._sprite._height);
-		this._current_frame++;
-		if (this._current_frame >= this._num_frames)
+		//_context.drawImage(this._sprite, 0, 0);
+		var _current_x = (this._current_frame * this._sprite.height);
+		_context.drawImage(this._sprite, _current_x, 0, this._sprite.height, this._sprite.height, this._px, this._py, this._sprite.height, this._sprite.height);
+		
+		this._frame_delay--;
+		if (this._frame_delay <= 0)
+		{
+			this._current_frame++;
+			this._frame_delay = this._frame_delay_timer;
+		}
+		if (this._current_frame >= this._numframes)
 			this._visible = false;
 	}
 }
@@ -530,9 +541,6 @@ Enemy = function(name, world)
 	this._sprite.onload = this.updatePointDims.bind(this);
 	this._sprite.src = name;
 	
-	this._shield_max = 10;	//for starters, this will increase with power ups.
-	this._shield = this._sheild_max;
-	this._lives = this._sheild_max;	//for starters, changes during gameplay
 	this._explosion = new Explosion();
 	this._exploding = 0;
 }
@@ -554,18 +562,9 @@ Enemy.prototype.render = function(_context)
 		{
 			this._explosion.render(_context);
 		}
-		else
+		else if (!this._exploding)
 		{
 			_context.drawImage(this._sprite, vp[0], vp[1], this._sprite.width, this._sprite.height);
-
-			if (this._shield > 0)
-			{
-				_context.strokeStyle = "rgb(0, " + ((100 + (155 / this._shield_max) * this._shield)) + ", 0)";
-				_context.beginPath();
-				_context.arc(this._x, this._y, 96, 0, Math.PI * 2, true); 
-				_context.closePath();
-				_context.stroke();
-			}
 		}
 	}
 }
@@ -576,25 +575,27 @@ Enemy.prototype.handleCollision = function()
 	//the enemy was hit by something ... do something about it.
 	if (this._exploding)
 		return;
-	this._shield--;
-	if (this._shield < 0)
-	{
-		//instantiate explosion...
-		this._explosion.setvisible(this._world.getViewPoint(this._idx));
-		this._exploding = 1;
-	}
+
+	//instantiate explosion...
+	this._explosion.setvisible(this._world.getViewPoint(this._idx));
+	this._exploding = 1;
 }
 
 Player.prototype.handleCollision = function()
 {
 	//the player was hit by something ... do something about it
-	if (this._exploding)	//don't handle collisions with explosion animations
+	if (this._explosion.visible())	//don't handle collisions with explosion animations
 		return;
 	this._shield--;
 	if (this._shield < 0)
 	{
 		this._lives--;
-		this._shield = this._shield_max;
+		if (this._lives == 0)
+		{
+			this._explosion.setvisible([this._x, this._y]);
+		}
+		else
+			this._shield = this._shield_max;
 	}
 }
 
@@ -688,14 +689,14 @@ GameScreen.prototype.update = function()
 	if (player_hit_rects.length)
 	{
 		//check if we are already colliding with this enemy
-		for (var i = 0; i < this._player._hit_rects.length; i++)
-		{
-			for (var idx = 0; idx < player_hit_rects.length; idx++)
-			{
-				if (player_hit_rects[idx] == this._player._hit_rects[i])	//player has hit this enemy before
-					player_hit_rects[idx] == -1;	//we have already subtracted from the shield for this enemy.
-			}
-		}
+		//for (var idx = 0; idx < player_hit_rects.length; idx++)
+		//{
+		//	for (var i = 0; i < this._player._hit_rects.length; i++)
+		//	{
+		//		if (player_hit_rects[idx] == this._player._hit_rects[i])	//player has hit this enemy before
+		//			player_hit_rects[idx] == -1;	//we have already subtracted from the shield for this enemy.
+		//	}
+		//}
 		//set the player to "exploding, or shield subtract"
 		//set the enemies to "exploding, or shield subtract"
 		for (var idx = 0; idx < player_hit_rects.length; idx++)
@@ -705,12 +706,17 @@ GameScreen.prototype.update = function()
 				if (this._enemies[i]._idx == player_hit_rects[idx])
 				{
 					this._enemies[i].handleCollision();
+					var ep = this._game_world.getViewPoint(this._enemies[i]._idx);
+					console.log("ex[" + ep[0] + "] ey[" + ep[1] + "] ew[" + this._enemies[i]._sprite.width + "] eh[" + this._enemies[i]._sprite.height + "]");
 				}
 			}
 		}
 		this._player.handleCollision();
+		//this._player._hit_rects = player_hit_rects;
 	}
-	this._player._hit_rects = player_hit_rects;
+	//else
+	//	this._player._hit_rects = player_hit_rects;
+	//	this._player._hit_rects = player_hit_rects;
 }
 
 GameScreen.prototype.render = function(_context)
@@ -723,6 +729,8 @@ GameScreen.prototype.render = function(_context)
 	}
 
 	this._player.render(_context);
+	_context.strokeStyle = "#00FF00";
+	drawRect(_context, this._game_world.player_rect._x, this._game_world.player_rect._y, this._game_world.player_rect._w, this._game_world.player_rect._h);
 
 	for (var i = 0; i < this._enemies.length; i++)
 	{

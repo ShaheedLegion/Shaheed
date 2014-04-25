@@ -10,7 +10,7 @@ GameWorld = function(_observer)
 	this._observer.registerObserver("resize", this.handleResize.bind(this));
 	this._observer.registerObserver("direction", this.handleDirChange.bind(this));
 	
-	this._world_dimensions = new Vector(19200, 10800);	//width and height of the actual world
+	this._world_dimensions = new Vector(9600, 5400);	//width and height of the actual world
 	this._current_dir = 0;
 	
 	this._world_points = new Array();	//x and y pairs
@@ -125,18 +125,18 @@ GameWorld.prototype.update = function()
 GameWorld.prototype.HitTestPlayer = function()
 {
 	var _ret = [];
-	if (this._current_dir == 0 || this._current_dir == 2)
-	{
-		this.player_rect.set((this._viewport._port_location._x + (this._viewport._port_dimensions._x / 2)) - (this._player_w / 2),
-			(this._viewport._port_location._y + (this._viewport._port_dimensions._y / 2)) - (this._player_h / 2), this._player_w, this._player_h);
-	}
-	if (this._current_dir == 1 || this._current_dir == 3)
-	{
-		this.player_rect.set((this._viewport._port_location._x + (this._viewport._port_dimensions._x / 2)) - (this._player_h / 2),
-			(this._viewport._port_location._y + (this._viewport._port_dimensions._y / 2)) - (this._player_w / 2), this._player_h, this._player_w);
-	}
+	//if (this._current_dir == 0 || this._current_dir == 2)
+	//{
+		this.player_rect.set((this._viewport._port_dimensions._x / 2) - (this._player_w / 2),
+			(this._viewport._port_dimensions._y / 2) - (this._player_h / 2), this._player_w, this._player_h);
+	//}
+	//if (this._current_dir == 1 || this._current_dir == 3)
+	//{
+	//	this.player_rect.set((this._viewport._port_location._x + (this._viewport._port_dimensions._x / 2)) - (this._player_w / 2),
+	//		(this._viewport._port_location._y + (this._viewport._port_dimensions._y / 2)) - (this._player_h / 2), this._player_w, this._player_h);
+	//}
 
-	this.player_rect.contract(10, 10);	//shrink the hit box by 10 pixels to make the test slightly more accurate.
+	//this.player_rect.contract(10, 10);	//shrink the hit box by 10 pixels to make the test slightly more accurate.
 	this.player_rect.floor();
 
 	var testRect = new HitRect(0, 0, 0, 0);
@@ -144,8 +144,10 @@ GameWorld.prototype.HitTestPlayer = function()
 	{
 		if (this._world_points[i + 4])	//visible
 		{	//detect broad scale collisions between these objects and the player
-			testRect.set(this._world_points[i + 0] - (this._world_points[i + 5]) / 2,  this._world_points[i + 1] - (this._world_points[i + 6]) / 2,
-			this._world_points[i + 5], this._world_points[i + 6]);
+			var vp = this.getViewPoint(i);
+			//testRect.set(this._world_points[i + 0] - ((this._world_points[i + 5]) / 2),  this._world_points[i + 1] - ((this._world_points[i + 6]) / 2),
+			//this._world_points[i + 5], this._world_points[i + 6]);
+			testRect.set(vp[0],  vp[1],	this._world_points[i + 5], this._world_points[i + 6]);
 			testRect.floor();
 			
 			if (testRect.IntersectTest(this.player_rect))

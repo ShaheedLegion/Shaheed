@@ -203,6 +203,23 @@ HitRect.prototype.HitTest = function(x, y)
 
 HitRect.prototype.IntersectTest = function(b)
  {
-     return (Math.abs(this._x - b._x) < (this._w + b._w) / 2) &&
-     (Math.abs(this._y - b._y) < (this._h + b._h) / 2);
+	var cx1 = this._x + (this._w / 2);
+	var cy1 = this._y + (this._h / 2);
+	var cx2 = b._x + (b._w / 2);
+	var cy2 = b._y + (b._h / 2);
+    return CircleIntersect(this._w / 2, cx1, cy1, b._w / 2, cx2, cy2);
+}
+
+/*
+values { r0, x0, y0, r1, x1, y1 }
+x and y represent the centers of the circles.
+true if circles is intersected
+Check if circle is intersect to another circle
+check using mathematical relation: ABS(R0-R1) <= SQRT((x0-x1)^2+(y0-y1)^2) <= (R0+R1)
+*/
+function CircleIntersect(r0, x0, y0, r1, x1, y1)
+{
+	var intersect1 = (Math.abs(r0 - r1) <= Math.sqrt(Math.pow((x0 - x1), 2) + Math.pow((y0 - y1), 2)));
+	var intersect2 = (Math.sqrt(Math.pow((x0 - x1), 2) + Math.pow((y0 - y1), 2)) <= (r0 + r1));
+	return (intersect1 && intersect2);
 }
