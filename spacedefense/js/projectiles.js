@@ -4,6 +4,8 @@ ProjectileManager = function(imgname, numprojectiles)
 	this._y = 0;
 	this._view_w = 0;
 	this._view_h = 0;
+	this._pw = 16;	//make sure to set this in a callback once the image loads
+	this._ph = 16;
 	this._oculus = new Array();
 	this._oculus.push(0);
 	this._oculus.push(0);
@@ -11,6 +13,7 @@ ProjectileManager = function(imgname, numprojectiles)
 	this._projectile_speed = 25;
 	this._projectile_timer = 50;	//we will fire one projectile every 10 frames (3 projectiles per second)
 	this._sprite = new Image();
+	this._sprite.onload = this.loaded.bind(this);
 	this._sprite.src = 'images/sprites/' + imgname;
 	this._num_projectiles = numprojectiles;
 	
@@ -18,7 +21,11 @@ ProjectileManager = function(imgname, numprojectiles)
 	for (var i = 0; i < numprojectiles * 6; i++)	//x, y, angle, alive
 		this._projectiles.push(0);	//push dummy value into array to get the correct number of variables to describe each projectile
 }
-
+ProjectileManager.prototype.loaded = function()
+{
+	this._pw = this._sprite.width;
+	this._ph = this._sprite.height;
+}
 ProjectileManager.prototype.setOculus = function(x, y, w, h)
 {
 	this._x = x;
@@ -38,8 +45,8 @@ ProjectileManager.prototype.update = function(direction)
 		{
 			if (this._projectiles[i + 3] != 1)	//we have found a dead projectile, fire it.
 			{
-				this._projectiles[i + 0] = this._x - 8;
-				this._projectiles[i + 1] = this._y - 8;
+				this._projectiles[i + 0] = this._x - (this._pw / 2);
+				this._projectiles[i + 1] = this._y - (this._ph / 2);
 				this._projectiles[i + 2] = direction;
 				this._projectiles[i + 3] = 1;
 
@@ -77,7 +84,7 @@ ProjectileManager.prototype.render = function(_context)
 				draw = 0;
 
 			if (draw)
-				_context.drawImage(this._sprite, this._projectiles[i + 0], this._projectiles[i + 1], 16, 16);
+				_context.drawImage(this._sprite, this._projectiles[i + 0], this._projectiles[i + 1], this._pw, this._ph);
 			else
 				this._projectiles[i + 3] = 0;
 
@@ -85,4 +92,31 @@ ProjectileManager.prototype.render = function(_context)
 			this._projectiles[i + 1] += this._projectiles[i + 5];
 		}
 	}
+}
+
+ProjectileManager.prototype.HitTestEnemies = function(_world, enemies)
+{
+	var ret = [];
+	var projectileRect = new HitRect(0, 0, 0, 0);
+	var enemyRect = new HitRect(0, 0, 0, 0);
+	var vp = 0;
+	for (var i = 0; i < enemies.length; i++)
+	{
+		var idx = enemies[i]._idx;
+		if (_world.pointInViewport(idx))	//if the point is visible on the viewport
+		{
+			vp = _world.getViewPoint(idx);
+			enemyRect.set(vp[0], vp[1], enemies[i]._sprite.width, enemies[i]._sprite.height);
+			for (var j = 0; j < this._projectiles.length; j++)
+			{
+				projectileRect.set(this._projectiles[j + 0], this._projectiles[j + 1], this._pw, this._ph);
+				if (enemyRect.IntersectTest(projectileRect))
+				{
+					ret.push(idx);	//as well as handle collision for this projectile ... set visible to false?
+					this._projectiles[j + 3] = 0;	//mark as not visible / dead
+				}
+			}
+		}
+	}
+	return ret;
 }

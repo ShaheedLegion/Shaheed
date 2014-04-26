@@ -344,7 +344,7 @@ Player.prototype.render = function(_context, dir)
 	if (IsImageOk(this._sprite))
 		drawRotatedImage(_context, this._sprite, this._x, this._y, this._current_dir);
 		
-	if (this._shield > 0)
+	if (this._lives > 0)
 	{
 		_context.strokeStyle = "rgb(0, " + ((100 + (155 / this._shield_max) * this._shield)) + ", 0)";
 		_context.beginPath();
@@ -353,9 +353,9 @@ Player.prototype.render = function(_context, dir)
 		_context.stroke();
 		
 		//Now we draw the player ships left, and the shield bar.
-		var shield_bar_w = this._view_w / 4;
+		var shield_bar_w = (this._view_w / 4) -  1;
 		var shield_bar_h = 40;	//40 pixels should be enough.
-		var shield_bar_y = (this._view_h / 4) + shield_bar_h;	//move it slightly away from the mini-map
+		var shield_bar_y = (this._view_h / 4) + 1;	//move it slightly away from the mini-map
 		var current_shield_w = (shield_bar_w / this._shield_max) * this._shield;
 		var current_lives_w = (shield_bar_w / this._shield_max) * this._lives;
 
@@ -696,6 +696,21 @@ GameScreen.prototype.update = function()
 						this._enemies[i].handleCollision();
 					//var ep = this._game_world.getViewPoint(this._enemies[i]._idx);
 					//console.log("ex[" + ep[0] + "] ey[" + ep[1] + "] ew[" + this._enemies[i]._sprite.width + "] eh[" + this._enemies[i]._sprite.height + "]");
+				}
+			}
+		}
+	}
+	
+	var enemy_hit_rects = this._player._projectile_man.HitTestEnemies(this._game_world, this._enemies);
+	if (enemy_hit_rects.length)
+	{
+		for (var idx = 0; idx < enemy_hit_rects.length; idx++)
+		{
+			for (var i = 0; i < this._enemies.length; i++)
+			{
+				if (this._enemies[i]._idx == enemy_hit_rects[idx])
+				{
+					this._enemies[i].handleCollision();
 				}
 			}
 		}
