@@ -102,18 +102,21 @@ ProjectileManager.prototype.HitTestEnemies = function(_world, enemies)
 	var vp = [];
 	for (var i = 0; i < enemies.length; i++)
 	{
-		var idx = enemies[i]._idx;
-		if (_world.pointInViewport(idx))	//if the point is visible on the viewport
-		{
-			_world.getViewPointInto(idx, vp);
-			enemyRect.set(vp[0], vp[1], enemies[i]._sprite.width, enemies[i]._sprite.height);
-			for (var j = 0; j < this._projectiles.length; j += 6)
+		if (!enemies[i]._exploding)
+		{	//do not handle collisions if they are exploding already.
+			var idx = enemies[i]._idx;
+			if (_world.pointInViewport(idx))	//if the point is visible on the viewport
 			{
-				projectileRect.set(this._projectiles[j + 0], this._projectiles[j + 1], this._pw, this._ph);
-				if (enemyRect.IntersectTest(projectileRect))
+				_world.getViewPointInto(idx, vp);
+				enemyRect.set(vp[0], vp[1], enemies[i]._sprite.width, enemies[i]._sprite.height);
+				for (var j = 0; j < this._projectiles.length; j += 6)
 				{
-					ret.push(idx);	//as well as handle collision for this projectile ... set visible to false?
-					this._projectiles[j + 3] = 0;	//mark as not visible / dead
+					projectileRect.set(this._projectiles[j + 0], this._projectiles[j + 1], this._pw, this._ph);
+					if (enemyRect.IntersectTest(projectileRect))
+					{
+						ret.push(idx);	//as well as handle collision for this projectile ... set visible to false?
+						this._projectiles[j + 3] = 0;	//mark as not visible / dead
+					}
 				}
 			}
 		}

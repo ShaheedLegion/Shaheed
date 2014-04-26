@@ -16,7 +16,7 @@ GameWorld = function(_observer)
 	this._world_points = new Array();	//x and y pairs
 	this._viewport = new ViewPort(0, 0, 0, 0);
 	this._viewport_speed = 6;	//that is (x)px per frame.
-	this._num_fields = 8;	//x, y, dx, dy, visible, w, h
+	this._num_fields = 9;	//x, y, dx, dy, visible, w, h, id, alive
 	this.player_rect = new HitRect(0, 0, 0, 0);
 	this._player_w = 0;
 	this._player_h = 0;
@@ -44,6 +44,7 @@ GameWorld.prototype.addWorldPoint = function(x, y, dx, dy)
 	this._world_points.push(1);	//point width
 	this._world_points.push(1);	//point height
 	this._world_points.push(idx);	//now we have the "id" of the point
+	this._world_points.push(1);	//alive - default is true for all points
 	return idx;
 }
 
@@ -56,7 +57,10 @@ GameWorld.prototype.pointInViewport = function(idx)
 {	//the point in viewport calculation is updated each frame.
 	return this._world_points[idx + 4];
 }
-
+GameWorld.prototype.setAlive = function(idx, alive)
+{
+	this._world_points[idx + 8] = alive;
+}
 GameWorld.prototype.getViewPoint = function(idx)
 {	//get point translated to viewpoint origin.
 	return [this._world_points[idx + 0] - this._viewport._port_location._x, this._world_points[idx + 1] - this._viewport._port_location._y];
@@ -162,9 +166,12 @@ GameWorld.prototype.renderScaledView = function(_context, w, h)
 	var t_x = 0, t_y = 0;	//render the enemies
 	for (var i = 0; i < this._world_points.length; i += this._num_fields)
 	{
-		t_x = Math.floor(this._world_points[i + 0] * _scale_x);
-		t_y = Math.floor(this._world_points[i + 1] * _scale_y);
-		_context.fillRect(t_x, t_y, 1, 1);
+		if (this._world_points[i + 8])
+		{
+			t_x = Math.floor(this._world_points[i + 0] * _scale_x);
+			t_y = Math.floor(this._world_points[i + 1] * _scale_y);
+			_context.fillRect(t_x, t_y, 1, 1);
+		}
 	}
 	
 	var vx = this._viewport._port_location._x * _scale_x;

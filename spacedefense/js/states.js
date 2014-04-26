@@ -348,7 +348,7 @@ Player.prototype.render = function(_context, dir)
 	{
 		_context.strokeStyle = "rgb(0, " + ((100 + (155 / this._shield_max) * this._shield)) + ", 0)";
 		_context.beginPath();
-		_context.arc(this._x, this._y, 60, 0, Math.PI * 2, true); 
+		_context.arc(this._x, this._y, 70, 0, Math.PI * 2, true); 
 		_context.closePath();
 		_context.stroke();
 		
@@ -576,6 +576,7 @@ Enemy.prototype.handleCollision = function()
 	//instantiate explosion...
 	this._explosion.setvisible(this._world.getViewPoint(this._idx));
 	this._exploding = 1;
+	this._world.setAlive(this._idx, 0);
 }
 
 Player.prototype.handleCollision = function()
