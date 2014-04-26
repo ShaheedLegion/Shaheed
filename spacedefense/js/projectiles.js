@@ -99,15 +99,15 @@ ProjectileManager.prototype.HitTestEnemies = function(_world, enemies)
 	var ret = [];
 	var projectileRect = new HitRect(0, 0, 0, 0);
 	var enemyRect = new HitRect(0, 0, 0, 0);
-	var vp = 0;
+	var vp = [];
 	for (var i = 0; i < enemies.length; i++)
 	{
 		var idx = enemies[i]._idx;
 		if (_world.pointInViewport(idx))	//if the point is visible on the viewport
 		{
-			vp = _world.getViewPoint(idx);
+			_world.getViewPointInto(idx, vp);
 			enemyRect.set(vp[0], vp[1], enemies[i]._sprite.width, enemies[i]._sprite.height);
-			for (var j = 0; j < this._projectiles.length; j++)
+			for (var j = 0; j < this._projectiles.length; j += 6)
 			{
 				projectileRect.set(this._projectiles[j + 0], this._projectiles[j + 1], this._pw, this._ph);
 				if (enemyRect.IntersectTest(projectileRect))

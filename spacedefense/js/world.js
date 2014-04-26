@@ -61,7 +61,11 @@ GameWorld.prototype.getViewPoint = function(idx)
 {	//get point translated to viewpoint origin.
 	return [this._world_points[idx + 0] - this._viewport._port_location._x, this._world_points[idx + 1] - this._viewport._port_location._y];
 }
-
+GameWorld.prototype.getViewPointInto = function(idx, vp)
+{
+	vp[0] = this._world_points[idx + 0] - this._viewport._port_location._x;
+	vp[1] = this._world_points[idx + 1] - this._viewport._port_location._y;
+}
 GameWorld.prototype.setPointDims = function(idx, w, h)
 {
 	this._world_points[idx + 5] = w;
