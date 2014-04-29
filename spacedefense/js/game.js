@@ -2,6 +2,7 @@
 var _broadcaster;
 var _screens;
 var _canvas;
+var _font_r;
 
 AudioDesc = function(name, repeat, endedcb)
 {
@@ -35,7 +36,8 @@ function initialize()
 {
 	_broadcaster = new Broadcaster();
 	_world = new GameWorld(_broadcaster);
-	_screens = new ScreenHandler(_broadcaster, _world);
+	_font_r = new FontRenderer();
+	_screens = new ScreenHandler(_broadcaster, _world, _font_r);
 	_canvas = new CanvasHandler('myCanvas', _broadcaster);
 	
 	

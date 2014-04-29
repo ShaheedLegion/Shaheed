@@ -21,6 +21,7 @@
 	<script src="js/canvas.js"></script>
 	<script src="js/world.js"></script>
 	<script src="js/projectiles.js"></script>
+	<script src="js/font.js"></script>
 	<script src="js/states.js"></script>
 	<script src="js/screens.js"></script>
 	<script src="js/game.js"></script>

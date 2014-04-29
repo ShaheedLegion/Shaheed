@@ -1,5 +1,5 @@
 
-StartScreen = function(_handler, _broadcaster, _world)
+StartScreen = function(_handler, _broadcaster, _world, _font)
 {
 	this._handler = _handler;
 	this._broadcaster = _broadcaster;
@@ -9,6 +9,7 @@ StartScreen = function(_handler, _broadcaster, _world)
 	this._sprite_hover.src = "images/button_play_hover.png";
 	this._bg_sprite = new Image();
 	this._bg_sprite.src = "images/start_bg.png";
+	this._font_r = _font;
 	
 	this._w = 0;
 	this._h = 0;
@@ -317,6 +318,9 @@ Player = function()
 	this._view_h = 0;
 	this._target_dir = 0;
 	this._current_dir = 0;
+	this._score = 0;
+	this._score_increment = 10;
+	
 	this._projectile_man = new ProjectileManager('laser_1.png', (_limited_device ? 32 : 64));
 	this._sprite = new Image();
 	this._sprite.src = 'images/sprites/' + 'player_1.png';
@@ -338,7 +342,7 @@ Player.prototype.handleResize = function(w, h)
 	this._projectile_man.setOculus(this._x, this._y, w, h);
 }
 
-Player.prototype.render = function(_context, dir)
+Player.prototype.render = function(_context, _font)
 {
 	this._projectile_man.render(_context);
 	if (IsImageOk(this._sprite))
@@ -369,6 +373,8 @@ Player.prototype.render = function(_context, dir)
 		fillRect(_context, 0, shield_bar_y + shield_bar_h, current_lives_w, shield_bar_h);
 		drawRect(_context, 0, shield_bar_y + shield_bar_h, shield_bar_w, shield_bar_h);
 	}
+	
+	_font.renderText(_context, "SCORE:" + this._score, 0, shield_bar_y + (shield_bar_h * 2));
 }
 
 Player.prototype.update = function(dir)
@@ -396,6 +402,11 @@ Player.prototype.update = function(dir)
 		this._current_dir %= 360;
 	if (this._current_dir < 0)
 		this._current_dir = 360 + this._current_dir;
+}
+
+Player.prototype.updateScore = function()
+{	//increment the player score...
+	this._score += this._score_increment;
 }
 
 GamePad = function(handler, broadcast)
@@ -571,12 +582,13 @@ Enemy.prototype.handleCollision = function()
 {
 	//the enemy was hit by something ... do something about it.
 	if (this._exploding)
-		return;
+		return true;
 
 	//instantiate explosion...
 	this._explosion.setvisible(this._world.getViewPoint(this._idx));
 	this._exploding = 1;
 	this._world.setAlive(this._idx, 0);
+	return false;
 }
 
 Player.prototype.handleCollision = function()
@@ -597,7 +609,7 @@ Player.prototype.handleCollision = function()
 	}
 }
 
-GameScreen = function(_handler, _broadcaster, _world)
+GameScreen = function(_handler, _broadcaster, _world, _font)
 {
 	this._handler = _handler;
 	this._broadcaster = _broadcaster;
@@ -609,6 +621,7 @@ GameScreen = function(_handler, _broadcaster, _world)
 	this._direction = 2;
 	this._game_controls = 0;
 	this._radar = new Radar(_broadcaster, _world);
+	this._font_r = _font;
 
 	this._broadcaster.registerObserver('click', this.handleClick.bind(this));
 	this._broadcaster.registerObserver('resize', this.handleResize.bind(this));
@@ -711,7 +724,8 @@ GameScreen.prototype.update = function()
 			{
 				if (this._enemies[i]._idx == enemy_hit_rects[idx])
 				{
-					this._enemies[i].handleCollision();
+					if (this._enemies[i].handleCollision())
+						this._player.updateScore();
 				}
 			}
 		}
@@ -727,7 +741,7 @@ GameScreen.prototype.render = function(_context)
 		this._stars[i].render(_context);
 	}
 
-	this._player.render(_context);
+	this._player.render(_context, this._font_r);
 	_context.strokeStyle = "#00FF00";
 	//drawRect(_context, this._game_world.player_rect._x, this._game_world.player_rect._y, this._game_world.player_rect._w, this._game_world.player_rect._h);
 
