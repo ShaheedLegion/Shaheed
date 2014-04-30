@@ -7,8 +7,8 @@ StartScreen = function(_handler, _broadcaster, _world, _font)
 	this._sprite_hover = new Image();
 	this._sprite.src = "images/button_play.png";
 	this._sprite_hover.src = "images/button_play_hover.png";
-	this._bg_sprite = new Image();
-	this._bg_sprite.src = "images/start_bg.png";
+	//this._bg_sprite = new Image();
+	//this._bg_sprite.src = "images/start_bg.png";
 	this._font_r = _font;
 	
 	this._w = 0;
@@ -163,8 +163,8 @@ StartScreen.prototype.drawBackground = function(_context)
 	var _p1 = this.checkBackground(0);
 	var _p2 = this.checkBackground(6);
 	
-	if (IsImageOk(this._bg_sprite))
-		_context.drawImage(this._bg_sprite,0, 0, this._w, this._h);
+	//if (IsImageOk(this._bg_sprite))
+	//	_context.drawImage(this._bg_sprite,0, 0, this._w, this._h);
 	
 	if (_p1)	//draw the first set of points...
 	{
@@ -211,10 +211,15 @@ StartScreen.prototype.render = function(_context)
 	}
 	
 	this._font_r.setBounds(this._w, this._h);
-	this._font_r.renderText(_context, "Welcome to", -1, 0);
-	this._font_r.renderText(_context, "SPACEDEFENSE", -1, 40);
-	this._font_r.renderText(_context, "Keys: W,A,S,D", -1, 80);
-	this._font_r.renderText(_context, "By Shaheed Abdol", -1, 120);
+	var start_point = (this._h / 2) - (this._font_r._letter_height * 4);
+	this._font_r.renderTextScaled(_context, "Welcome to", -1, start_point, 0.75);
+	
+	start_point += (this._font_r._letter_height);
+	this._font_r.renderText(_context, "SPACEDEFENSE", -1, start_point);
+	start_point += (this._font_r._letter_height);
+	this._font_r.renderText(_context, "Keys: W,A,S,D", -1, start_point);
+	start_point += (this._font_r._letter_height);
+	this._font_r.renderTextScaled(_context, "By Shaheed Abdol", -1, start_point, 0.75);
 }
 
 StartScreen.prototype.handleClick = function(vars)

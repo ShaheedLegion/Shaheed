@@ -6,8 +6,9 @@ FontRenderer = function()
 	this.loaded = false;
 	this._storage_length = 256;	//arbitrary string length limitation, probably won't need more storage.
 	this._storage = new Array(this._storage_length);
-	this._letter_width = 45;	//22 pixels per letter
-	this._letter_height = 44;	//24 pixels per letter
+	this._letter_width = 45;	//45 pixels per letter
+	this._letter_height = 44;	//44 pixels per letter
+	this._letter_w_padding = 8;	//padding between letters
 	this._w = 0;
 	this._h = 0;
 	
@@ -18,6 +19,7 @@ FontRenderer = function()
 	'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '!', ';', '%', ':', '?', '*', '(', ')', '_', '+', '-', '=', '.', ',', '/', '|',
 	'"', '\'', '@', '#', '$', '^', '&', '{', '}', '[', ']'
 	];
+	this._offset_letters = [63, 65, 70, 74, 75, 4, 24];
 }
 
 FontRenderer.prototype.loadedFont = function()
@@ -48,6 +50,18 @@ FontRenderer.prototype.findIndices = function(text)
 	return length;
 }
 
+FontRenderer.prototype.getLetterYOffset = function(idx)
+{
+	if (idx == 2 || idx == 14)
+		return 2;
+	if (idx == 0 || idx == 4 || idx == 12 || idx == 18 || idx == 65)
+		return 3;
+	for (var i = 0; i < this._offset_letters.length; i++)
+		if (this._offset_letters[i] == idx)
+			return 10;
+	return 0;
+}
+
 FontRenderer.prototype.renderLetter = function(_context, idx, x, y, scale)
 {	//render letter in given position at the given scale.
 	if (idx == -1)
@@ -55,7 +69,8 @@ FontRenderer.prototype.renderLetter = function(_context, idx, x, y, scale)
 
 	var sp_x = (idx * this._letter_width);
 	var sp_y = 0;//((idx / 31) > 1) ? ((idx / 31) * 54) : 0;
-	_context.drawImage(this._font_sprite, sp_x, sp_y, this._letter_width, this._letter_height, x, y, this._letter_width * scale, this._letter_height * scale);
+	var offset = this.getLetterYOffset(idx);
+	_context.drawImage(this._font_sprite, sp_x, sp_y, this._letter_width, this._letter_height, x, y + (offset * scale), this._letter_width * scale, this._letter_height * scale);
 }
 
 FontRenderer.prototype.renderText = function(_context, text, x, y)
@@ -75,10 +90,10 @@ FontRenderer.prototype.renderTextScaled = function(_context, text, x, y, scale)
 		return;
 
 	var length = this.findIndices(text);
-	var current_x = (x == -1 ? ((this._w / 2) - (((length * this._letter_width) * scale) / 2)) : x);
+	var current_x = (x == -1 ? (this._w / 2) - ((length * (this._letter_width - this._letter_w_padding) * scale) / 2) : x);
 	for (var i = 0; i < length; i++)
 	{
 		this.renderLetter(_context, this._storage[i], current_x, y, scale);
-		current_x += (this._letter_width * scale);
+		current_x += ((this._letter_width * scale) - (this._letter_w_padding * scale));
 	}
 }
