@@ -136,7 +136,7 @@ GameWorld.prototype.HitTestPlayer = function()
 	this.player_rect.set((this._viewport._port_dimensions._x / 2) - (this._player_w / 2),
 		(this._viewport._port_dimensions._y / 2) - (this._player_h / 2), this._player_w, this._player_h);
 
-	this.player_rect.contract(10, 10);	//shrink the hit box by 10 pixels to make the test slightly more accurate.
+	//this.player_rect.contract(10, 10);	//shrink the hit box by 10 pixels to make the test slightly more accurate.
 	this.player_rect.floor();
 
 	var testRect = new HitRect(0, 0, 0, 0);

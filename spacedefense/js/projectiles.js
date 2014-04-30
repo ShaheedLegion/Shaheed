@@ -116,6 +116,7 @@ ProjectileManager.prototype.HitTestEnemies = function(_world, enemies)
 					{
 						ret.push(idx);	//as well as handle collision for this projectile ... set visible to false?
 						this._projectiles[j + 3] = 0;	//mark as not visible / dead
+						break;	//only one projectile can hit an enemy at a time.
 					}
 				}
 			}

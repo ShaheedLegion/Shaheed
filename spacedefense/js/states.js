@@ -7,8 +7,6 @@ StartScreen = function(_handler, _broadcaster, _world, _font)
 	this._sprite_hover = new Image();
 	this._sprite.src = "images/button_play.png";
 	this._sprite_hover.src = "images/button_play_hover.png";
-	//this._bg_sprite = new Image();
-	//this._bg_sprite.src = "images/start_bg.png";
 	this._font_r = _font;
 	
 	this._w = 0;
@@ -137,7 +135,7 @@ StartScreen.prototype.drawBackground = function(_context)
 				cdData[idx] = x/2.6;	//as = 2.6
 				cdData[idx + 1] = this.runners[0];
 				cdData[idx + 2] = this.runners[2];
-				cdData[idx + 3] = 155;
+				cdData[idx + 3] = 255;
 
 				this.t1 += 5;
 				this.t2 += 3;
@@ -162,9 +160,6 @@ StartScreen.prototype.drawBackground = function(_context)
 	}
 	var _p1 = this.checkBackground(0);
 	var _p2 = this.checkBackground(6);
-	
-	//if (IsImageOk(this._bg_sprite))
-	//	_context.drawImage(this._bg_sprite,0, 0, this._w, this._h);
 	
 	if (_p1)	//draw the first set of points...
 	{
@@ -319,7 +314,7 @@ StarField.prototype.move = function(direction)
 	}
 }
 
-Player = function()
+Player = function(enemies)
 {	//the player .. which will hold the sprites which control the player.
 	this._x = 0;
 	this._y = 0;
@@ -331,11 +326,12 @@ Player = function()
 	this._current_dir = 0;
 	this._score = 0;
 	this._score_increment = 10;
-	
+	this._num_enemies = enemies;
+
 	this._projectile_man = new ProjectileManager('laser_1.png', (_limited_device ? 32 : 64));
 	this._sprite = new Image();
 	this._sprite.src = 'images/sprites/' + 'player_1.png';
-	
+
 	this._shield_max = 10;	//for starters, this will increase with power ups.
 	this._shield = this._shield_max;
 	this._lives = this._shield_max;	//for starters, changes during gameplay
@@ -386,6 +382,7 @@ Player.prototype.render = function(_context, _font)
 	}
 	
 	_font.renderTextScaled(_context, "SCORE:" + this._score, 0, shield_bar_y + (shield_bar_h * 2), 0.5);
+	_font.renderTextScaled(_context, "ENEMIES:" + this._num_enemies, 0, shield_bar_y + (shield_bar_h * 3), 0.5);
 }
 
 Player.prototype.update = function(dir)
@@ -418,6 +415,11 @@ Player.prototype.update = function(dir)
 Player.prototype.updateScore = function()
 {	//increment the player score...
 	this._score += this._score_increment;
+}
+
+Player.prototype.setEnemies = function(enemies)
+{
+	this._num_enemies = enemies;
 }
 
 GamePad = function(handler, broadcast)
@@ -593,13 +595,13 @@ Enemy.prototype.handleCollision = function()
 {
 	//the enemy was hit by something ... do something about it.
 	if (this._exploding)
-		return true;
+		return false;
 
 	//instantiate explosion...
 	this._explosion.setvisible(this._world.getViewPoint(this._idx));
 	this._exploding = 1;
 	this._world.setAlive(this._idx, 0);
-	return false;
+	return true;
 }
 
 Player.prototype.handleCollision = function()
@@ -654,7 +656,7 @@ GameScreen.prototype.loadResources = function()
 	}
 	if (_mobile_device)	//show touchpad for mobile devices.
 		this._game_controls = new GamePad(this._handler, this._broadcaster);
-	this._player = new Player();
+	this._player = new Player(120);
 	this._game_world.setPlayerDims(this._player._w, this._player._h);
 	this._broadcaster.broadcast("direction", [this._direction, 0]);
 	
@@ -741,6 +743,14 @@ GameScreen.prototype.update = function()
 			}
 		}
 	}
+	
+	var total_enemies = 0;
+	for(var i = 0; i < this._enemies.length; i++)
+	{
+		if (!this._enemies[i]._exploding)
+			total_enemies++;
+	}
+	this._player.setEnemies(total_enemies);
 }
 
 GameScreen.prototype.render = function(_context)
