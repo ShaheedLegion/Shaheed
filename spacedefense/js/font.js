@@ -8,6 +8,8 @@ FontRenderer = function()
 	this._storage = new Array(this._storage_length);
 	this._letter_width = 45;	//22 pixels per letter
 	this._letter_height = 44;	//24 pixels per letter
+	this._w = 0;
+	this._h = 0;
 	
 	this._representation = 
 	[
@@ -61,13 +63,19 @@ FontRenderer.prototype.renderText = function(_context, text, x, y)
 	this.renderTextScaled(_context, text, x, y, 1);
 }
 
+FontRenderer.prototype.setBounds = function(w, h)
+{
+	this._w = w;
+	this._h = h;
+}
+
 FontRenderer.prototype.renderTextScaled = function(_context, text, x, y, scale)
 {
 	if (!this.loaded)
 		return;
 
 	var length = this.findIndices(text);
-	var current_x = x;
+	var current_x = (x == -1 ? ((this._w / 2) - (((length * this._letter_width) * scale) / 2)) : x);
 	for (var i = 0; i < length; i++)
 	{
 		this.renderLetter(_context, this._storage[i], current_x, y, scale);

@@ -209,6 +209,12 @@ StartScreen.prototype.render = function(_context)
 		else
 			_context.drawImage(this._sprite, Math.floor(x), Math.floor(y), this._sprite.width, this._sprite.height);
 	}
+	
+	this._font_r.setBounds(this._w, this._h);
+	this._font_r.renderText(_context, "Welcome to", -1, 0);
+	this._font_r.renderText(_context, "SPACEDEFENSE", -1, 40);
+	this._font_r.renderText(_context, "Keys: W,A,S,D", -1, 80);
+	this._font_r.renderText(_context, "By Shaheed Abdol", -1, 120);
 }
 
 StartScreen.prototype.handleClick = function(vars)
@@ -374,7 +380,7 @@ Player.prototype.render = function(_context, _font)
 		drawRect(_context, 0, shield_bar_y + shield_bar_h, shield_bar_w, shield_bar_h);
 	}
 	
-	_font.renderText(_context, "SCORE:" + this._score, 0, shield_bar_y + (shield_bar_h * 2));
+	_font.renderTextScaled(_context, "SCORE:" + this._score, 0, shield_bar_y + (shield_bar_h * 2), 0.5);
 }
 
 Player.prototype.update = function(dir)
