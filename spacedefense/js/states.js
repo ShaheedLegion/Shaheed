@@ -451,6 +451,28 @@ GameScreen.prototype.render = function(_context)
 	this._player.render(_context, this._font_r);
 	this._radar.render(_context);
 
+	//Now we draw the player ships left, and the shield bar.
+	var shield_bar_w = this._radar.getRadarWidth();
+	var shield_bar_h = 40;	//40 pixels should be enough.
+	var shield_bar_y = this._radar.getRadarHeight() + 1;	//move it slightly away from the mini-map
+	var current_shield_w = (shield_bar_w / this._player._shield_max) * this._player._shield;
+	var current_lives_w = (shield_bar_w / this._player._shield_max) * this._player._lives;
+
+	_context.strokeStyle = "#00FF00";
+	_context.fillStyle = "#00FF00";
+	fillRect(_context, 0, shield_bar_y, current_shield_w, shield_bar_h);
+	drawRect(_context, 0, shield_bar_y, shield_bar_w, shield_bar_h);
+	this._font_r.renderTextScaledCentered(_context, "SHIELD", shield_bar_w, shield_bar_y + 10, 0.5);
+
+	_context.strokeStyle = "#0000FF";
+	_context.fillStyle = "#0000FF";
+	fillRect(_context, 0, shield_bar_y + shield_bar_h, current_lives_w, shield_bar_h);
+	drawRect(_context, 0, shield_bar_y + shield_bar_h, shield_bar_w, shield_bar_h);
+	this._font_r.renderTextScaledCentered(_context, "LIVES", shield_bar_w, shield_bar_y + shield_bar_h + 10, 0.5);
+	
+	this._font_r.renderTextScaled(_context, "SCORE:" + this._player._score, 0, shield_bar_y + (shield_bar_h * 2) + 10, 0.5);
+	this._font_r.renderTextScaled(_context, "ENEMIES:" + this._player._num_enemies, 0, shield_bar_y + (shield_bar_h * 3), 0.5);
+
 	if (_debug_mobile)
 	{	//now we render debug info.
 		_context.fillStyle = "#ff0000";

@@ -192,3 +192,43 @@ GameWorld.prototype.renderScaledView = function(_context, w, h)
 	_context.strokeStyle = "rgb(192, 192, 192)";
 	drawRect(_context, 1, 1, w-2, h-2);	//render the scaled view bounds
 }
+
+GameWorld.prototype.renderScaledViewClipped = function(_context, x, y, w, h)
+{
+	_context.save();
+	_context.beginPath();
+    _context.rect(x, y, w, h);
+    _context.clip();
+
+	var _scale_x = (w / this._world_dimensions._x);
+	var _scale_y = (h / this._world_dimensions._y);
+
+
+	_context.fillStyle = "rgb(255, 0, 0)";
+	var t_x = 0, t_y = 0;	//render the enemies
+	for (var i = 0; i < this._world_points.length; i += this._num_fields)
+	{
+		if (this._world_points[i + 8])
+		{
+			t_x = Math.floor(this._world_points[i + 0] * _scale_x) + x;
+			t_y = Math.floor(this._world_points[i + 1] * _scale_y) + y;
+			_context.fillRect(t_x, t_y, 1, 1);
+		}
+	}
+	
+	var vx = (this._viewport._port_location._x * _scale_x) + x;
+	var vy = (this._viewport._port_location._y * _scale_y) + y;
+	var vw = (this._viewport._port_dimensions._x * _scale_x) + x;
+	var vh = (this._viewport._port_dimensions._y * _scale_y) + y;
+	var px = vx + (vw / 2);
+	var py = vy + (vh / 2);
+
+	_context.beginPath();
+	_context.strokeStyle = "rgb(0, 0, 255)";
+	drawRect(_context, vx, vy, vw, vh);	//render the viewport bounds
+	
+	_context.fillStyle = "rgb(0, 255, 0)";
+	_context.fillRect(px, py, 1, 1);
+	
+	_context.restore();
+}

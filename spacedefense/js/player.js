@@ -47,29 +47,7 @@ Player.prototype.render = function(_context, _font)
 		_context.arc(this._x, this._y, 70, 0, Math.PI * 2, true); 
 		_context.closePath();
 		_context.stroke();
-		
-		//Now we draw the player ships left, and the shield bar.
-		var shield_bar_w = (this._view_w / 4) -  1;
-		var shield_bar_h = 40;	//40 pixels should be enough.
-		var shield_bar_y = (this._view_h / 4) + 1;	//move it slightly away from the mini-map
-		var current_shield_w = (shield_bar_w / this._shield_max) * this._shield;
-		var current_lives_w = (shield_bar_w / this._shield_max) * this._lives;
-
-		_context.strokeStyle = "#00FF00";
-		_context.fillStyle = "#00FF00";
-		fillRect(_context, 0, shield_bar_y, current_shield_w, shield_bar_h);
-		drawRect(_context, 0, shield_bar_y, shield_bar_w, shield_bar_h);
-		_font.renderTextScaledCentered(_context, "SHIELD", shield_bar_w, shield_bar_y + 10, 0.5);
-
-		_context.strokeStyle = "#0000FF";
-		_context.fillStyle = "#0000FF";
-		fillRect(_context, 0, shield_bar_y + shield_bar_h, current_lives_w, shield_bar_h);
-		drawRect(_context, 0, shield_bar_y + shield_bar_h, shield_bar_w, shield_bar_h);
-		_font.renderTextScaledCentered(_context, "LIVES", shield_bar_w, shield_bar_y + shield_bar_h + 10, 0.5);
 	}
-	
-	_font.renderTextScaled(_context, "SCORE:" + this._score, 0, shield_bar_y + (shield_bar_h * 2) + 10, 0.5);
-	_font.renderTextScaled(_context, "ENEMIES:" + this._num_enemies, 0, shield_bar_y + (shield_bar_h * 3), 0.5);
 }
 
 Player.prototype.update = function(dir)
