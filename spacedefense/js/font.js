@@ -97,3 +97,16 @@ FontRenderer.prototype.renderTextScaled = function(_context, text, x, y, scale)
 		current_x += ((this._letter_width * scale) - (this._letter_w_padding * scale));
 	}
 }
+FontRenderer.prototype.renderTextScaledCentered = function(_context, text, w, y, scale)
+{
+	if (!this.loaded)
+		return;
+
+	var length = this.findIndices(text);
+	var current_x = (w / 2) - ((length * (this._letter_width - this._letter_w_padding) * scale) / 2);
+	for (var i = 0; i < length; i++)
+	{
+		this.renderLetter(_context, this._storage[i], current_x, y, scale);
+		current_x += ((this._letter_width * scale) - (this._letter_w_padding * scale));
+	}
+}

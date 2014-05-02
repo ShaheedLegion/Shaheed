@@ -22,6 +22,11 @@
 	<script src="js/world.js"></script>
 	<script src="js/projectiles.js"></script>
 	<script src="js/font.js"></script>
+	<script src="js/stars.js"></script>
+	<script src="js/explosion.js"></script>
+	<script src="js/enemy.js"></script>
+	<script src="js/player.js"></script>
+	<script src="js/radar.js"></script>
 	<script src="js/states.js"></script>
 	<script src="js/screens.js"></script>
 	<script src="js/game.js"></script>
