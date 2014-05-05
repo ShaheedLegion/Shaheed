@@ -344,6 +344,14 @@ GameScreen.prototype.loadResources = function()
 		var enemy = new Enemy(enemysprites[idx], this._game_world);
 		this._enemies.push(enemy);
 	}
+	
+	this._shield_bar = new Image();
+	this._lives_bar = new Image();
+	this._indicator = new Image();
+	
+	this._shield_bar.src = "images/shield_bar.png";
+	this._lives_bar.src = "images/lives_bar.png";
+	this._indicator.src = "images/indicator.png";
 }
 
 GameScreen.prototype.handleClick = function(vars)
@@ -436,10 +444,6 @@ GameScreen.prototype.render = function(_context)
 		this._stars[i].render(_context);
 	}
 
-
-	//_context.strokeStyle = "#00FF00";
-	//drawRect(_context, this._game_world.player_rect._x, this._game_world.player_rect._y, this._game_world.player_rect._w, this._game_world.player_rect._h);
-
 	for (var i = 0; i < this._enemies.length; i++)
 	{
 		this._enemies[i].render(_context);
@@ -458,21 +462,22 @@ GameScreen.prototype.render = function(_context)
 	var current_shield_w = (shield_bar_w / this._player._shield_max) * this._player._shield;
 	var current_lives_w = (shield_bar_w / this._player._shield_max) * this._player._lives;
 
-	_context.strokeStyle = "#00FF00";
-	_context.fillStyle = "#00FF00";
-	fillRect(_context, 0, shield_bar_y, current_shield_w, shield_bar_h);
-	drawRect(_context, 0, shield_bar_y, shield_bar_w, shield_bar_h);
-	this._font_r.renderTextScaledCentered(_context, "SHIELD", shield_bar_w, shield_bar_y + 10, 0.5);
+	_context.drawImage(this._shield_bar, 0, shield_bar_y, this._shield_bar.width, this._shield_bar.height);
+	for (var i = 0; i < this._player._shield; i++)
+		_context.drawImage(this._indicator, 5 + (i * (this._indicator.width + 0)), shield_bar_y + 4, this._indicator.width, this._indicator.height);
+	
+	this._font_r.renderTextScaledCentered(_context, "SHIELD", shield_bar_w, shield_bar_y + 2, 0.75);
 
-	_context.strokeStyle = "#0000FF";
-	_context.fillStyle = "#0000FF";
-	fillRect(_context, 0, shield_bar_y + shield_bar_h, current_lives_w, shield_bar_h);
-	drawRect(_context, 0, shield_bar_y + shield_bar_h, shield_bar_w, shield_bar_h);
-	this._font_r.renderTextScaledCentered(_context, "LIVES", shield_bar_w, shield_bar_y + shield_bar_h + 10, 0.5);
+	_context.drawImage(this._lives_bar, 0, shield_bar_y + shield_bar_h, this._lives_bar.width, this._lives_bar.height);
+	for (var i = 0; i < this._player._lives; i++)
+		_context.drawImage(this._indicator, 5 + (i * (this._indicator.width + 0)), shield_bar_y + shield_bar_h + 4, this._indicator.width, this._indicator.height);
+	
+	this._font_r.renderTextScaledCentered(_context, "LIVES", shield_bar_w, shield_bar_y + shield_bar_h + 2, 0.75);
 	
 	this._font_r.renderTextScaled(_context, "SCORE:" + this._player._score, 0, shield_bar_y + (shield_bar_h * 2) + 10, 0.5);
 	this._font_r.renderTextScaled(_context, "ENEMIES:" + this._player._num_enemies, 0, shield_bar_y + (shield_bar_h * 3), 0.5);
 
+/*
 	if (_debug_mobile)
 	{	//now we render debug info.
 		_context.fillStyle = "#ff0000";
@@ -480,4 +485,5 @@ GameScreen.prototype.render = function(_context)
 		_context.fillText("Ship direction[" + this._player._current_dir + "] target[" + this._player._target_dir + "]", 10, 20);
 		_context.fillText("Browser[" + navigator.userAgent + "]", 10, 40);
 	}
+*/
 }

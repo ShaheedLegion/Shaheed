@@ -71,6 +71,49 @@ ProjectileManager.prototype.update = function(direction)
 		this._projectile_timer = 6;
 	}
 }
+ProjectileManager.prototype.setOculusLocation = function(x, y, w, h)
+{
+	this._x = x + (w / 2);
+	this._y = y + (h / 2);
+	this._oculus[0] = x;
+	this._oculus[1] = y + this._radius;
+}
+ProjectileManager.prototype.updateToPoint = function(direction, x, y, w, h)
+{
+	this.setOculusLocation(x, y, w, h);
+	this._projectile_timer--;
+	if (this._projectile_timer == 0)
+	{	//time to fire a new projectile
+		for (var i = 0; i < this._num_projectiles; i += 6)
+		{
+			if (this._projectiles[i + 3] != 1)	//we have found a dead projectile, fire it.
+			{
+				this._projectiles[i + 0] = this._x - (this._pw / 2);
+				this._projectiles[i + 1] = this._y - (this._ph / 2);
+				this._projectiles[i + 2] = direction;
+				this._projectiles[i + 3] = 1;
+
+				var radians = direction * TO_RADIANS;
+				var ct = Math.cos(radians);
+				var st = Math.sin(radians);
+
+				var _rotated_X = (ct * (this._oculus[0] - this._x) - st * (this._oculus[1] - this._y)) + this._x;//(cos * (x - cx)) - (sin * (y - cy)) 
+				var _rotated_Y = (st * (this._oculus[0] - this._x) + ct * (this._oculus[1] - this._y)) + this._y;//(sin * (x - cx)) + (cos * (y - cy))
+				
+				var P = new Vector(this._x, this._y);
+				var B = new Vector(_rotated_X, _rotated_Y);
+				var PB = P.subtract(B);
+				var _delta = PB.divide(this._projectile_speed);
+				
+				this._projectiles[i + 4] = _delta._x;
+				this._projectiles[i + 5] = _delta._y;
+
+				break;
+			}
+		}
+		this._projectile_timer = 6;
+	}
+}
 ProjectileManager.prototype.render = function(_context)
 {
 	for (var i = 0; i < this._num_projectiles; i += 6)
@@ -93,7 +136,32 @@ ProjectileManager.prototype.render = function(_context)
 		}
 	}
 }
+ProjectileManager.prototype.renderWithinViewPort = function(_context)
+{
+	var hr = new HitRect(0, 0, 0, 0);
+	for (var i = 0; i < this._num_projectiles; i += 6)
+	{
+		if (this._projectiles[i + 3] != 0)	//only update if it's alive
+		{	//now move the projectile along its path.
+			var draw = 1;
+			hr.set(this._x - (this._view_w / 2), this._y - (this._view_h / 2), this._view_w, this._view_h);
+			if (!hr.HitTest(this._projectiles[i + 0], this._projectiles[i + 1]))
+				draw = 0;
+			//if ((this._projectiles[i + 0] < 0) || (this._projectiles[i + 0] > this._view_w))
+			//	draw = 0;
+			//if ((this._projectiles[i + 1] < 0) || (this._projectiles[i + 1] > this._view_h))
+			//	draw = 0;
 
+			if (draw)
+				_context.drawImage(this._sprite, this._projectiles[i + 0], this._projectiles[i + 1], this._pw, this._ph);
+			else
+				this._projectiles[i + 3] = 0;
+
+			this._projectiles[i + 0] += this._projectiles[i + 4];;
+			this._projectiles[i + 1] += this._projectiles[i + 5];
+		}
+	}
+}
 ProjectileManager.prototype.HitTestEnemies = function(_world, enemies)
 {
 	var ret = [];

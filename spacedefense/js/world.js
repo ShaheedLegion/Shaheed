@@ -81,7 +81,10 @@ GameWorld.prototype.getDimensions = function()
 {
 	return this._world_dimensions;
 }
-
+GameWorld.prototype.getViewPort = function()
+{
+	return this._viewport;
+}
 GameWorld.prototype.handleResize = function(dims)
 {	//do nothing for now, we simply ignore the fact that the screen size changes
 	this._viewport._port_dimensions._x = dims[0];

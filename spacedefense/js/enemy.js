@@ -17,21 +17,34 @@ Enemy = function(name, world)
 	
 	this._explosion = new Explosion();
 	this._exploding = 0;
+	
+	this._projectile_man = new ProjectileManager('laser_2.png', 32);
+	this._projectile_man.setOculus(x, y, this._world.getViewPort()._port_dimensions._x, this._world.getViewPort()._port_dimensions._y);
+	this._projectile_angle = 0;
 }
 
 Enemy.prototype.updatePointDims = function()
 {
 	var w = this._sprite.width;
 	var h = this._sprite.height;
-	
+
 	this._world.setPointDims(this._idx, w, h);	//this is used in the point-in-view calculation
 }
 
 Enemy.prototype.render = function(_context)
 {
-	if (this._world.pointInViewport(this._idx))
+	if (!this._exploding)
 	{
 		var vp = this._world.getViewPoint(this._idx);
+		this._projectile_man.updateToPoint(this._projectile_angle, vp[0], vp[1], this._sprite.width, this._sprite.height);	//figure out difference in angle between us and player here
+		this._projectile_angle++;
+		if (this._projectile_angle > 360)
+			this._projectile_angle = this._projectile_angle % 360;
+	}
+	if (this._world.pointInViewport(this._idx))
+	{
+		this._projectile_man.renderWithinViewPort(_context);
+
 		if (this._explosion.visible())
 		{
 			this._explosion.render(_context);
