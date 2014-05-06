@@ -214,7 +214,7 @@ StartScreen.prototype.render = function(_context)
 	start_point += (this._font_r._letter_height);
 	this._font_r.renderText(_context, "Keys: W,A,S,D", -1, start_point);
 	start_point += (this._font_r._letter_height);
-	this._font_r.renderText(_context, "Keys: Up,Left,Down,Right Arrow keys", -1, start_point);
+	this._font_r.renderText(_context, "Or arrow keys", -1, start_point);
 	start_point += (this._font_r._letter_height);
 	this._font_r.renderTextScaled(_context, "By Shaheed Abdol", -1, start_point, 0.75);
 }

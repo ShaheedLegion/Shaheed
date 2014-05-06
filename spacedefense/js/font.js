@@ -8,7 +8,7 @@ FontRenderer = function()
 	this._storage = new Array(this._storage_length);
 	this._letter_width = 45;	//45 pixels per letter
 	this._letter_height = 44;	//44 pixels per letter
-	this._letter_w_padding = 8;	//padding between letters
+	this._letter_w_padding = 14;	//padding between letters
 	this._w = 0;
 	this._h = 0;
 	
@@ -19,7 +19,7 @@ FontRenderer = function()
 	'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '!', ';', '%', ':', '?', '*', '(', ')', '_', '+', '-', '=', '.', ',', '/', '|',
 	'"', '\'', '@', '#', '$', '^', '&', '{', '}', '[', ']'
 	];
-	this._offset_letters = [63, 65, 70, 74, 75, 4, 24];
+	this._offset_letters = [63, 65, 70, 74, 75, 4, 24, 6, 16];
 }
 
 FontRenderer.prototype.loadedFont = function()

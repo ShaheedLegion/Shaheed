@@ -144,7 +144,7 @@ ProjectileManager.prototype.renderWithinViewPort = function(_context)
 		if (this._projectiles[i + 3] != 0)	//only update if it's alive
 		{	//now move the projectile along its path.
 			var draw = 1;
-			hr.set(this._x - (this._view_w / 2), this._y - (this._view_h / 2), this._view_w, this._view_h);
+			hr.set(this._x - (this._view_w), this._y - (this._view_h), this._view_w * 2, this._view_h * 2);
 			if (!hr.HitTest(this._projectiles[i + 0], this._projectiles[i + 1]))
 				draw = 0;
 
@@ -203,12 +203,15 @@ ProjectileManager.prototype.HitTestPlayer = function(_world, player)
 
 		for (var j = 0; j < this._projectiles.length; j += 6)
 		{
-			projectileRect.set(this._projectiles[j + 0], this._projectiles[j + 1], this._pw, this._ph);
-			if (playerRect.IntersectTest(projectileRect))
-			{
-				ret.push(idx);	//as well as handle collision for this projectile ... set visible to false?
-				this._projectiles[j + 3] = 0;	//mark as not visible / dead
-				break;	//only one projectile can hit an enemy at a time.
+			//projectileRect.set(this._projectiles[j + 0], this._projectiles[j + 1], this._pw, this._ph);
+			if (this._projectiles[j + 3])
+			{	//only hit test visible projectiles
+				if (playerRect.HitTest(this._projectiles[j + 0], this._projectiles[j + 1]))
+				{
+					ret.push(j);	//as well as handle collision for this projectile ... set visible to false?
+					this._projectiles[j + 3] = 0;	//mark as not visible / dead
+					break;	//only one projectile can hit an enemy at a time.
+				}
 			}
 		}
 	}

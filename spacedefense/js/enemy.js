@@ -31,18 +31,21 @@ Enemy.prototype.updatePointDims = function()
 	this._world.setPointDims(this._idx, w, h);	//this is used in the point-in-view calculation
 }
 
-Enemy.prototype.render = function(_context)
+Enemy.prototype.render = function(_context, px, py)
 {
+/*
 	if (!this._exploding)
 	{
-		var vp = this._world.getViewPoint(this._idx);
-		this._projectile_man.updateToPoint(this._projectile_angle, vp[0], vp[1], this._sprite.width, this._sprite.height);	//figure out difference in angle between us and player here
 		this._projectile_angle++;
 		if (this._projectile_angle > 360)
 			this._projectile_angle = this._projectile_angle % 360;
 	}
+*/
 	if (this._world.pointInViewport(this._idx))
 	{
+		var vp = this._world.getViewPoint(this._idx);
+		var degrees = Math.atan((px-vp[0])/(py-vp[1]))*180/Math.PI;
+		this._projectile_man.updateToPoint(degrees, vp[0], vp[1], this._sprite.width, this._sprite.height);	//figure out difference in angle between us and player here
 		this._projectile_man.renderWithinViewPort(_context);
 
 		if (this._explosion.visible())
