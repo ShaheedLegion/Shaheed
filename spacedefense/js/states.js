@@ -214,6 +214,8 @@ StartScreen.prototype.render = function(_context)
 	start_point += (this._font_r._letter_height);
 	this._font_r.renderText(_context, "Keys: W,A,S,D", -1, start_point);
 	start_point += (this._font_r._letter_height);
+	this._font_r.renderText(_context, "Keys: Up,Left,Down,Right Arrow keys", -1, start_point);
+	start_point += (this._font_r._letter_height);
 	this._font_r.renderTextScaled(_context, "By Shaheed Abdol", -1, start_point, 0.75);
 }
 
@@ -361,13 +363,13 @@ GameScreen.prototype.handleClick = function(vars)
 
 GameScreen.prototype.handleKey = function(vars)
 {
-	if (vars[0] == 87)	//w
+	if (vars[0] == 87 || vars[0] == 38)	//w, up arrow
 		this._direction = 2;
-	if (vars[0] == 83)	//s
+	if (vars[0] == 83 || vars[0] == 40)	//s, down arrow
 		this._direction = 0;
-	if (vars[0] == 65)	//a
+	if (vars[0] == 65 || vars[0] == 37)	//a, left arrow
 		this._direction = 1;
-	if (vars[0] == 68)	//d
+	if (vars[0] == 68 || vars[0] == 39)	//d, right arrow
 		this._direction = 3;
 		
 	this._broadcaster.broadcast("direction", [this._direction, 0]);
@@ -407,6 +409,16 @@ GameScreen.prototype.update = function()
 					//console.log("ex[" + ep[0] + "] ey[" + ep[1] + "] ew[" + this._enemies[i]._sprite.width + "] eh[" + this._enemies[i]._sprite.height + "]");
 				}
 			}
+		}
+	}
+	
+	for (var i = 0; i < this._enemies.length; i++)
+	{	//for now we don't do a test to eliminate possible hit testing, we just run it all and see what happens.
+		var enemy_player_hits = this._enemies[i]._projectile_man.HitTestPlayer(this._game_world, this._player);
+		if (enemy_player_hits.length)
+		{	//break out early, in the best case scenario we hit test maybe O^n-1 times.
+			this._player.handleCollision();	//can only explode once per collision.
+			break;
 		}
 	}
 	

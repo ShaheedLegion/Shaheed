@@ -147,10 +147,6 @@ ProjectileManager.prototype.renderWithinViewPort = function(_context)
 			hr.set(this._x - (this._view_w / 2), this._y - (this._view_h / 2), this._view_w, this._view_h);
 			if (!hr.HitTest(this._projectiles[i + 0], this._projectiles[i + 1]))
 				draw = 0;
-			//if ((this._projectiles[i + 0] < 0) || (this._projectiles[i + 0] > this._view_w))
-			//	draw = 0;
-			//if ((this._projectiles[i + 1] < 0) || (this._projectiles[i + 1] > this._view_h))
-			//	draw = 0;
 
 			if (draw)
 				_context.drawImage(this._sprite, this._projectiles[i + 0], this._projectiles[i + 1], this._pw, this._ph);
@@ -187,6 +183,32 @@ ProjectileManager.prototype.HitTestEnemies = function(_world, enemies)
 						break;	//only one projectile can hit an enemy at a time.
 					}
 				}
+			}
+		}
+	}
+	return ret;
+}
+ProjectileManager.prototype.HitTestPlayer = function(_world, player)
+{
+	var ret = [];
+	var projectileRect = new HitRect(0, 0, 0, 0);
+	var playerRect = new HitRect(0, 0, 0, 0);
+	var vp = [];
+	if (!player._exploding)
+	{	//do not handle collisions if they are exploding already.
+		var vp = _world.getViewPort();
+		var px = (vp._port_location._x + (vp._port_dimensions._x / 2)) - (player._sprite.width / 2);
+		var py = (vp._port_location._y + (vp._port_dimensions._y / 2)) - (player._sprite.height / 2);
+		playerRect.set(px, py, player._sprite.width, player._sprite.height);
+
+		for (var j = 0; j < this._projectiles.length; j += 6)
+		{
+			projectileRect.set(this._projectiles[j + 0], this._projectiles[j + 1], this._pw, this._ph);
+			if (playerRect.IntersectTest(projectileRect))
+			{
+				ret.push(idx);	//as well as handle collision for this projectile ... set visible to false?
+				this._projectiles[j + 3] = 0;	//mark as not visible / dead
+				break;	//only one projectile can hit an enemy at a time.
 			}
 		}
 	}
