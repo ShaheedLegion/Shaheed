@@ -14,14 +14,14 @@ Enemy = function(name, world)
 	this._sprite = new Image();
 	this._sprite.onload = this.updatePointDims.bind(this);
 	this._sprite.src = name;
-	
 	this._explosion = new Explosion();
-	this._exploding = 0;
-	
+
 	this._projectile_man = new ProjectileManager('laser_2.png', 32);
 	this._projectile_man.setOculus(x, y, this._world.getViewPort()._port_dimensions._x, this._world.getViewPort()._port_dimensions._y);
-	this._projectile_angle = 0;
 }
+
+Enemy.prototype._exploding = 0;
+Enemy.prototype._projectile_angle = 0;
 
 Enemy.prototype.updatePointDims = function()
 {
@@ -41,9 +41,10 @@ Enemy.prototype.render = function(_context, px, py)
 			this._projectile_angle = this._projectile_angle % 360;
 	}
 */
-	if (this._world.pointInViewport(this._idx))
+	var world = this._world;
+	if (world.pointInViewport(this._idx))
 	{
-		var vp = this._world.getViewPoint(this._idx);
+		var vp = world.getViewPoint(this._idx);
 		var degrees = Math.atan((px-vp[0])/(py-vp[1]))*180/Math.PI;
 		this._projectile_man.updateToPoint(degrees, vp[0], vp[1], this._sprite.width, this._sprite.height);	//figure out difference in angle between us and player here
 		this._projectile_man.renderWithinViewPort(_context);

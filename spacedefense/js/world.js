@@ -11,16 +11,16 @@ GameWorld = function(_observer)
 	this._observer.registerObserver("direction", this.handleDirChange.bind(this));
 	
 	this._world_dimensions = new Vector(9600, 5400);	//width and height of the actual world
-	this._current_dir = 0;
-	
 	this._world_points = new Array();	//x and y pairs
 	this._viewport = new ViewPort(0, 0, 0, 0);
-	this._viewport_speed = 6;	//that is (x)px per frame.
-	this._num_fields = 9;	//x, y, dx, dy, visible, w, h, id, alive
 	this.player_rect = new HitRect(0, 0, 0, 0);
-	this._player_w = 0;
-	this._player_h = 0;
 }
+
+GameWorld.prototype._current_dir = 0;
+GameWorld.prototype._viewport_speed = 6;	//that is (x)px per frame.
+GameWorld.prototype._num_fields = 9;	//x, y, dx, dy, visible, w, h, id, alive
+GameWorld.prototype._player_w = 0;
+GameWorld.prototype._player_h = 0;
 
 GameWorld.prototype.setPlayerDims = function(w, h)
 {
@@ -113,7 +113,8 @@ GameWorld.prototype.update = function()
 
 	var viewrect = new HitRect(this._viewport._port_location._x, this._viewport._port_location._y,
 							   this._viewport._port_dimensions._x, this._viewport._port_dimensions._y);
-	for (var i = 0; i < this._world_points.length; i += this._num_fields)
+	var len = this._world_points.length;
+	for (var i = 0; i < len; i += this._num_fields)
 	{	//update all the points in the world with their deltas. Do rudimentary bounds checking.
 		this._world_points[i + 0] += this._world_points[i + 2];
 		this._world_points[i + 1] += this._world_points[i + 3];
@@ -143,7 +144,8 @@ GameWorld.prototype.HitTestPlayer = function()
 	this.player_rect.floor();
 
 	var testRect = new HitRect(0, 0, 0, 0);
-	for (var i = 0; i < this._world_points.length; i += this._num_fields)
+	var len = this._world_points.length;
+	for (var i = 0; i < len; i += this._num_fields)
 	{
 		if (this._world_points[i + 4])	//visible
 		{	//detect broad scale collisions between these objects and the player
@@ -164,10 +166,10 @@ GameWorld.prototype.renderScaledView = function(_context, w, h)
 	var _scale_x = (w / this._world_dimensions._x);
 	var _scale_y = (h / this._world_dimensions._y);
 
-
 	_context.fillStyle = "rgb(255, 0, 0)";
 	var t_x = 0, t_y = 0;	//render the enemies
-	for (var i = 0; i < this._world_points.length; i += this._num_fields)
+	var len = this._world_points.length;
+	for (var i = 0; i < len; i += this._num_fields)
 	{
 		if (this._world_points[i + 8])
 		{
@@ -209,7 +211,9 @@ GameWorld.prototype.renderScaledViewClipped = function(_context, x, y, w, h)
 
 	_context.fillStyle = "rgb(255, 0, 0)";
 	var t_x = 0, t_y = 0;	//render the enemies
-	for (var i = 0; i < this._world_points.length; i += this._num_fields)
+	
+	var len = this._world_points.length
+	for (var i = 0; i < len; i += this._num_fields)
 	{
 		if (this._world_points[i + 8])
 		{

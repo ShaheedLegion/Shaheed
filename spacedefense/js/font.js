@@ -3,15 +3,8 @@ FontRenderer = function()
 	this._font_sprite = new Image();
 	this._font_sprite.onload = this.loadedFont.bind(this);
 	this._font_sprite.src = "images/font.png";
-	this.loaded = false;
-	this._storage_length = 256;	//arbitrary string length limitation, probably won't need more storage.
 	this._storage = new Array(this._storage_length);
-	this._letter_width = 45;	//45 pixels per letter
-	this._letter_height = 44;	//44 pixels per letter
-	this._letter_w_padding = 14;	//padding between letters
-	this._w = 0;
-	this._h = 0;
-	
+
 	this._representation = 
 	[
 	'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
@@ -22,6 +15,14 @@ FontRenderer = function()
 	this._offset_letters = [63, 65, 70, 74, 75, 4, 24, 6, 16];
 }
 
+FontRenderer.prototype.loaded = false;
+FontRenderer.prototype._storage_length = 256;	//arbitrary string length limitation, probably won't need more storage.
+FontRenderer.prototype._letter_width = 45;	//45 pixels per letter
+FontRenderer.prototype._letter_height = 44;	//44 pixels per letter
+FontRenderer.prototype._letter_w_padding = 14;	//padding between letters
+FontRenderer.prototype._w = 0;
+FontRenderer.prototype._h = 0;
+
 FontRenderer.prototype.loadedFont = function()
 {
 	this.loaded = true;
@@ -30,7 +31,8 @@ FontRenderer.prototype.loadedFont = function()
 FontRenderer.prototype.findStringIndex = function(_char)
 {
 	//do something fancy to find the char...
-	for (var i = 0; i < this._representation.length; i++)
+	var len = this._representation.length;
+	for (var i = 0; i < len; i++)
 	{
 		if (this._representation[i] == _char)
 			return i;
@@ -56,7 +58,9 @@ FontRenderer.prototype.getLetterYOffset = function(idx)
 		return 2;
 	if (idx == 0 || idx == 4 || idx == 12 || idx == 18 || idx == 65)
 		return 3;
-	for (var i = 0; i < this._offset_letters.length; i++)
+	
+	var len = this._offset_letters.length;
+	for (var i = 0; i < len; i++)
 		if (this._offset_letters[i] == idx)
 			return 10;
 	return 0;

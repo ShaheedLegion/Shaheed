@@ -7,16 +7,16 @@ CanvasHandler = function(id, broadcaster)
 	document.addEventListener("keydown", this.handleKey.bind(this), false);
 	window.onresize = this.handleResize.bind(this);
 	
-	this.click_x = 0;
-	this.click_y = 0;
-	this.move_x = 0;
-	this.move_y = 0;
-	
 	this.broadcaster = broadcaster;
 	this.broadcaster.broadcast('canvas', [this, 0]);
 	this.broadcaster.broadcast('resize', [this._canvas.clientWidth, this._canvas.clientHeight]);
 	this.handleResize();
 }
+
+CanvasHandler.prototype.click_x = 0;
+CanvasHandler.prototype.click_y = 0;
+CanvasHandler.prototype.move_x = 0;
+CanvasHandler.prototype.move_y = 0;
 
 CanvasHandler.prototype.handleClick = function(_event)
 {

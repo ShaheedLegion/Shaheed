@@ -9,18 +9,15 @@ StartScreen = function(_handler, _broadcaster, _world, _font)
 	this._sprite_hover.src = "images/button_play_hover.png";
 	this._font_r = _font;
 	
-	this._w = 0;
-	this._h = 0;
-	this._hover = 0;
-
 	this._broadcaster.registerObserver('click', this.handleClick.bind(this));
 	this._broadcaster.registerObserver('move', this.handleMove.bind(this));
 	this._broadcaster.registerObserver('resize', this.handleResize.bind(this));
 	
 	this._data_points = new Array();	//set up the data points for the background effect.
 	for (var i = 0; i < 12; i++)
-		this._data_points.push(-1);// dammit opera...
+		this._data_points.push(-1);
 
+/*
 	if (!("createImageData" in CanvasRenderingContext2D.prototype))
 	{
 		CanvasRenderingContext2D.prototype.createImageData = function(sw,sh) { return this.getImageData(0,0,sw,sh);}
@@ -51,6 +48,7 @@ StartScreen = function(_handler, _broadcaster, _world, _font)
 			rad = (i * 0.703125) * 0.0174532;
 			this.aSin[i] = Math.sin(rad) * 1024;
 		}
+
 		this.runners = new Array();
 		this.runners.push(100);
 		this.runners.push(1);
@@ -58,9 +56,14 @@ StartScreen = function(_handler, _broadcaster, _world, _font)
 		this.runners.push(-1);
 		this.runners.push(200);
 		this.runners.push(-1);
-	}
+	}*/
 }
 
+StartScreen.prototype._w = 0;
+StartScreen.prototype._h = 0;
+StartScreen.prototype._hover = 0;
+
+/*
 StartScreen.prototype.updateRunners = function(runner_offset)
 {
 	if (this.runners[1 + runner_offset] > 0) this.runners[0 + runner_offset] += 1;
@@ -68,7 +71,7 @@ StartScreen.prototype.updateRunners = function(runner_offset)
 	if (this.runners[0 + runner_offset] > 250) this.runners[1 + runner_offset] = -1;
 	if (this.runners[0 + runner_offset] < 5) this.runners[1 + runner_offset] = 1;
 }
-
+*/
 StartScreen.prototype.checkBackground = function(offset)
 {
 	if (this._data_points[0 + offset] == -1)	//not set yet
@@ -112,6 +115,7 @@ StartScreen.prototype.checkBackground = function(offset)
 
 StartScreen.prototype.drawBackground = function(_context)
 {
+/*
 	if (_limited_device == 0)
 	{
 		var cdData = this.cd.data, i = 160, j, x, idx;    
@@ -158,6 +162,7 @@ StartScreen.prototype.drawBackground = function(_context)
 		//render buffer onto canvas
 		_context.drawImage(this.buffer,0, 0, this._w, this._h);
 	}
+*/
 	var _p1 = this.checkBackground(0);
 	var _p2 = this.checkBackground(6);
 	
@@ -257,8 +262,7 @@ GamePad = function(handler, broadcast)
 	this._broadcaster.registerObserver('click', this.handleClick.bind(this));
 	this._broadcaster.registerObserver('touch', this.handleClick.bind(this));
 	this._broadcaster.registerObserver('resize', this.handleResize.bind(this));
-	this._vw = 0;
-	this._vh = 0;
+
 	this._sprite = new Image();
 	this._sprite.src = "images/dpad.png";
 	this._rects = new Array();
@@ -267,6 +271,9 @@ GamePad = function(handler, broadcast)
 	this._rects.push(new HitRect(0,0, 0, 0));
 	this._rects.push(new HitRect(0,0, 0, 0));
 }
+
+GamePad.prototype._vw = 0;
+GamePad.prototype._vh = 0;
 
 GamePad.prototype.render = function(_context)
 {
@@ -304,11 +311,6 @@ GameScreen = function(_handler, _broadcaster, _world, _font)
 	this._broadcaster = _broadcaster;
 	this._game_world = _world;
 	this._stars = new Array();
-	this._w = 0;
-	this._h = 0;
-	this._player = 0;
-	this._direction = 2;
-	this._game_controls = 0;
 	this._radar = new Radar(_broadcaster, _world);
 	this._font_r = _font;
 
@@ -317,6 +319,12 @@ GameScreen = function(_handler, _broadcaster, _world, _font)
 	this._broadcaster.registerObserver('keydown', this.handleKey.bind(this));
 	this.loadResources();
 }
+
+GameScreen.prototype._w = 0;
+GameScreen.prototype._h = 0;
+GameScreen.prototype._player = 0;
+GameScreen.prototype._direction = 2;
+GameScreen.prototype._game_controls = 0;
 
 GameScreen.prototype.loadResources = function()
 {	//load all the required resources here ...
@@ -379,7 +387,8 @@ GameScreen.prototype.handleResize = function(vars)
 {
 	this._w = vars[0];
 	this._h = vars[1];
-	for (var i = 0; i < this._stars.length; i++)
+	var stars = this._stars.length
+	for (var i = 0; i < stars; i++)
 		this._stars[i].handleResize(this._w, this._h);
 	this._player.handleResize(this._w, this._h);
 	this._radar.addWorldTransform(this._w, this._h);
@@ -387,18 +396,20 @@ GameScreen.prototype.handleResize = function(vars)
 
 GameScreen.prototype.update = function()
 {
-	for (var i = 0; i < this._stars.length; i++)
+	var stars = this._stars.length;
+	var enemylen = this._enemies.length;
+	for (var i = 0; i < stars; i++)
 	{
 		this._stars[i].move(this._direction);
 	}
 	this._player.update(this._direction);
 	var player_hit_rects = this._game_world.HitTestPlayer();
-	
-	if (player_hit_rects.length)
+	var play_hit_len = player_hit_rects.length;
+	if (play_hit_len)
 	{
-		for (var idx = 0; idx < player_hit_rects.length; idx++)
+		for (var idx = 0; idx < play_hit_len; idx++)
 		{
-			for (var i = 0; i < this._enemies.length; i++)
+			for (var i = 0; i < enemylen; i++)
 			{
 				if (this._enemies[i]._idx == player_hit_rects[idx])
 				{
@@ -412,7 +423,7 @@ GameScreen.prototype.update = function()
 		}
 	}
 	
-	for (var i = 0; i < this._enemies.length; i++)
+	for (var i = 0; i < enemylen; i++)
 	{	//for now we don't do a test to eliminate possible hit testing, we just run it all and see what happens.
 		var enemy_player_hits = this._enemies[i]._projectile_man.HitTestPlayer(this._game_world, this._player);
 		if (enemy_player_hits.length)
@@ -423,11 +434,12 @@ GameScreen.prototype.update = function()
 	}
 	
 	var enemy_hit_rects = this._player._projectile_man.HitTestEnemies(this._game_world, this._enemies);
-	if (enemy_hit_rects.length)
+	var enemy_hit_length = enemy_hit_rects.length
+	if (enemy_hit_length)
 	{
-		for (var idx = 0; idx < enemy_hit_rects.length; idx++)
+		for (var idx = 0; idx < enemy_hit_length; idx++)
 		{
-			for (var i = 0; i < this._enemies.length; i++)
+			for (var i = 0; i < enemylen; i++)
 			{
 				if (this._enemies[i]._idx == enemy_hit_rects[idx])
 				{
@@ -439,7 +451,7 @@ GameScreen.prototype.update = function()
 	}
 	
 	var total_enemies = 0;
-	for(var i = 0; i < this._enemies.length; i++)
+	for(var i = 0; i < enemylen; i++)
 	{
 		if (!this._enemies[i]._exploding)
 			total_enemies++;
@@ -451,12 +463,14 @@ GameScreen.prototype.render = function(_context)
 {
 	_context.clearRect(0, 0, this._w, this._h)	//not required since we are filling the canvas;
 
-	for (var i = 0; i < this._stars.length; i++)
+	var stars = this._stars.length;
+	for (var i = 0; i < stars; i++)
 	{
 		this._stars[i].render(_context);
 	}
 
-	for (var i = 0; i < this._enemies.length; i++)
+	var enemies = this._enemies.length;
+	for (var i = 0; i < enemies; i++)
 	{
 		this._enemies[i].render(_context);
 	}
@@ -475,17 +489,20 @@ GameScreen.prototype.render = function(_context)
 	var current_lives_w = (shield_bar_w / this._player._shield_max) * this._player._lives;
 
 	_context.drawImage(this._shield_bar, 0, shield_bar_y, this._shield_bar.width, this._shield_bar.height);
-	for (var i = 0; i < this._player._shield; i++)
+	
+	var shield = this._player._shield
+	for (var i = 0; i < shield; i++)
 		_context.drawImage(this._indicator, 5 + (i * (this._indicator.width + 0)), shield_bar_y + 4, this._indicator.width, this._indicator.height);
 	
 	this._font_r.renderTextScaledCentered(_context, "SHIELD", shield_bar_w, shield_bar_y + 2, 0.75);
 
 	_context.drawImage(this._lives_bar, 0, shield_bar_y + shield_bar_h, this._lives_bar.width, this._lives_bar.height);
-	for (var i = 0; i < this._player._lives; i++)
+
+	var lives = this._player._lives;
+	for (var i = 0; i < lives; i++)
 		_context.drawImage(this._indicator, 5 + (i * (this._indicator.width + 0)), shield_bar_y + shield_bar_h + 4, this._indicator.width, this._indicator.height);
 	
 	this._font_r.renderTextScaledCentered(_context, "LIVES", shield_bar_w, shield_bar_y + shield_bar_h + 2, 0.75);
-	
 	this._font_r.renderTextScaled(_context, "SCORE:" + this._player._score, 0, shield_bar_y + (shield_bar_h * 2) + 10, 0.5);
 	this._font_r.renderTextScaled(_context, "ENEMIES:" + this._player._num_enemies, 0, shield_bar_y + (shield_bar_h * 3), 0.5);
 

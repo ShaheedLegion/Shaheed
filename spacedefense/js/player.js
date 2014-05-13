@@ -1,29 +1,30 @@
 Player = function(enemies)
 {	//the player .. which will hold the sprites which control the player.
-	this._x = 0;
-	this._y = 0;
-	this._w = 112;
-	this._h = 112;
-	this._view_w = 0;
-	this._view_h = 0;
-	this._target_dir = 0;
-	this._current_dir = 0;
-	this._score = 0;
-	this._score_increment = 10;
 	this._num_enemies = enemies;
-	this._level = 0;
 
 	this._projectile_man = new ProjectileManager('laser_1.png', (_limited_device ? 32 : 64));
 	this._sprite = new Image();
 	this._sprite.src = 'images/sprites/' + 'player_1.png';
 
-	this._shield_max = 10;	//for starters, this will increase with power ups.
 	this._shield = this._shield_max;
 	this._lives = this._shield_max;	//for starters, changes during gameplay
 	this._hit_rects = [];	//set to array so that we can immediately run hit testing.
 	this._explosion = new Explosion();
-	this._exploding = 0;
 }
+
+Player.prototype._x = 0;
+Player.prototype._y = 0;
+Player.prototype._w = 112;
+Player.prototype._h = 112;
+Player.prototype._view_w = 0;
+Player.prototype._view_h = 0;
+Player.prototype._target_dir = 0;
+Player.prototype._current_dir = 0;
+Player.prototype._score = 0;
+Player.prototype._score_increment = 10;
+Player.prototype._level = 0;
+Player.prototype._shield_max = 10;	//for starters, this will increase with power ups.
+Player.prototype._exploding = 0;
 
 Player.prototype.handleResize = function(w, h)
 {

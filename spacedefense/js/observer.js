@@ -8,7 +8,8 @@ ObserverList = function(func)
 
 ObserverList.prototype.broadcast = function(vars)
 {
-	for (var i = 0; i < this.callbacks.length; i++)
+	var len = this.callbacks.length;
+	for (var i = 0; i < len; i++)
 		this.callbacks[i](vars);
 }
 
@@ -32,7 +33,8 @@ Broadcaster.prototype.registerObserver = function(funcname, callback)
 
 Broadcaster.prototype.getObserver = function(funcname)
 {
-	for (var i = 0; i < this.observers.length; i++)
+	var len = this.observers.length;
+	for (var i = 0; i < len; i++)
 	{
 		if (this.observers[i]._function == funcname)
 			return this.observers[i];

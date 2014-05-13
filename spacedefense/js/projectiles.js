@@ -1,17 +1,8 @@
 ProjectileManager = function(imgname, numprojectiles)
 {
-	this._x = 0;
-	this._y = 0;
-	this._view_w = 0;
-	this._view_h = 0;
-	this._pw = 16;	//make sure to set this in a callback once the image loads
-	this._ph = 16;
 	this._oculus = new Array();
 	this._oculus.push(0);
 	this._oculus.push(0);
-	this._radius = 200;
-	this._projectile_speed = 25;
-	this._projectile_timer = 50;	//we will fire one projectile every 10 frames (3 projectiles per second)
 	this._sprite = new Image();
 	this._sprite.onload = this.loaded.bind(this);
 	this._sprite.src = 'images/sprites/' + imgname;
@@ -21,6 +12,17 @@ ProjectileManager = function(imgname, numprojectiles)
 	for (var i = 0; i < numprojectiles * 6; i++)	//x, y, angle, alive
 		this._projectiles.push(0);	//push dummy value into array to get the correct number of variables to describe each projectile
 }
+
+ProjectileManager.prototype._x = 0;
+ProjectileManager.prototype._y = 0;
+ProjectileManager.prototype._view_w = 0;
+ProjectileManager.prototype._view_h = 0;
+ProjectileManager.prototype._pw = 16;	//make sure to set this in a callback once the image loads
+ProjectileManager.prototype._ph = 16;
+ProjectileManager.prototype._radius = 200;
+ProjectileManager.prototype._projectile_speed = 25;
+ProjectileManager.prototype._projectile_timer = 50;	//we will fire one projectile every 10 frames (3 projectiles per second)
+
 ProjectileManager.prototype.loaded = function()
 {
 	this._pw = this._sprite.width;
@@ -41,7 +43,8 @@ ProjectileManager.prototype.update = function(direction)
 	this._projectile_timer--;
 	if (this._projectile_timer == 0)
 	{	//time to fire a new projectile
-		for (var i = 0; i < this._num_projectiles; i += 6)
+		var projectiles = this._num_projectiles;
+		for (var i = 0; i < projectiles; i += 6)
 		{
 			if (this._projectiles[i + 3] != 1)	//we have found a dead projectile, fire it.
 			{
@@ -84,7 +87,8 @@ ProjectileManager.prototype.updateToPoint = function(direction, x, y, w, h)
 	this._projectile_timer--;
 	if (this._projectile_timer == 0)
 	{	//time to fire a new projectile
-		for (var i = 0; i < this._num_projectiles; i += 6)
+		var projectiles = this._num_projectiles;
+		for (var i = 0; i < projectiles; i += 6)
 		{
 			if (this._projectiles[i + 3] != 1)	//we have found a dead projectile, fire it.
 			{
@@ -116,7 +120,8 @@ ProjectileManager.prototype.updateToPoint = function(direction, x, y, w, h)
 }
 ProjectileManager.prototype.render = function(_context)
 {
-	for (var i = 0; i < this._num_projectiles; i += 6)
+	var projectiles = this._num_projectiles;
+	for (var i = 0; i < projectiles; i += 6)
 	{
 		if (this._projectiles[i + 3] != 0)	//only update if it's alive
 		{	//now move the projectile along its path.
@@ -139,7 +144,8 @@ ProjectileManager.prototype.render = function(_context)
 ProjectileManager.prototype.renderWithinViewPort = function(_context)
 {
 	var hr = new HitRect(0, 0, 0, 0);
-	for (var i = 0; i < this._num_projectiles; i += 6)
+	var projectiles = this._num_projectiles;
+	for (var i = 0; i < projectiles; i += 6)
 	{
 		if (this._projectiles[i + 3] != 0)	//only update if it's alive
 		{	//now move the projectile along its path.
@@ -164,7 +170,9 @@ ProjectileManager.prototype.HitTestEnemies = function(_world, enemies)
 	var projectileRect = new HitRect(0, 0, 0, 0);
 	var enemyRect = new HitRect(0, 0, 0, 0);
 	var vp = [];
-	for (var i = 0; i < enemies.length; i++)
+	var enemylen = enemies.length;
+	var projectiles = this._projectiles.length;
+	for (var i = 0; i < enemylen; i++)
 	{
 		if (!enemies[i]._exploding)
 		{	//do not handle collisions if they are exploding already.
@@ -173,7 +181,7 @@ ProjectileManager.prototype.HitTestEnemies = function(_world, enemies)
 			{
 				_world.getViewPointInto(idx, vp);
 				enemyRect.set(vp[0], vp[1], enemies[i]._sprite.width, enemies[i]._sprite.height);
-				for (var j = 0; j < this._projectiles.length; j += 6)
+				for (var j = 0; j < projectiles; j += 6)
 				{
 					projectileRect.set(this._projectiles[j + 0], this._projectiles[j + 1], this._pw, this._ph);
 					if (enemyRect.IntersectTest(projectileRect))
@@ -201,7 +209,8 @@ ProjectileManager.prototype.HitTestPlayer = function(_world, player)
 		var py = (vp._port_location._y + (vp._port_dimensions._y / 2)) - (player._sprite.height / 2);
 		playerRect.set(px, py, player._sprite.width, player._sprite.height);
 
-		for (var j = 0; j < this._projectiles.length; j += 6)
+		var projectile = this._projectiles.length;
+		for (var j = 0; j < projectile; j += 6)
 		{
 			//projectileRect.set(this._projectiles[j + 0], this._projectiles[j + 1], this._pw, this._ph);
 			if (this._projectiles[j + 3])
