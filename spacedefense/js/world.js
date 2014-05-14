@@ -1,3 +1,16 @@
+WorldPoint = function(x, y, dx, dy, idx)
+{
+	this.x = x;//x
+	this.y = y;//y
+	this.dx = dx;
+	this.dy = dy;
+	this.in_vp = 0;	//point in viewport, updated every frame.
+	this.w = 1;	//point width
+	this.h = 1;	//point height
+	this.idx = idx;	//now we have the "id" of the point
+	this.alive = 1;	//alive - default is true for all points
+}
+
 ViewPort = function(x, y, w, h)
 {
 	this._port_location = new Vector(x, y);
@@ -35,48 +48,54 @@ GameWorld.prototype.handleDirChange = function(_vars)
 
 GameWorld.prototype.addWorldPoint = function(x, y, dx, dy)
 {
-	this._world_points.push(x);//x
+	var pt = new WorldPoint(x, y, dx, dy, -1);
+	this._world_points.push(pt);	//alive - default is true for all points
 	var idx = this._world_points.length - 1;	//return the index at the point where x was added.
-	this._world_points.push(y);//y
-	this._world_points.push(dx);
-	this._world_points.push(dy);
-	this._world_points.push(0);	//point in viewport, updated every frame.
-	this._world_points.push(1);	//point width
-	this._world_points.push(1);	//point height
-	this._world_points.push(idx);	//now we have the "id" of the point
-	this._world_points.push(1);	//alive - default is true for all points
+	this._world_points[idx].idx = idx;
+
 	return idx;
 }
-
+/*
 GameWorld.prototype.getWorldPoint = function(idx)
 {	//return the point only - not the deltas
-	return [this._world_points[idx], this._world_points[idx + 1]];
+	return this._world_points[idx];
 }
-
+*/
 GameWorld.prototype.pointInViewport = function(idx)
 {	//the point in viewport calculation is updated each frame.
-	return this._world_points[idx + 4];
+	return this._world_points[idx].in_vp;
 }
 GameWorld.prototype.setAlive = function(idx, alive)
 {
-	this._world_points[idx + 8] = alive;
+	this._world_points[idx].alive = alive;
 }
 GameWorld.prototype.getViewPoint = function(idx)
 {	//get point translated to viewpoint origin.
-	return [this._world_points[idx + 0] - this._viewport._port_location._x, this._world_points[idx + 1] - this._viewport._port_location._y];
+	var point = this._world_points[idx];
+	return [point.x - this._viewport._port_location._x, point.y - this._viewport._port_location._y];
 }
 GameWorld.prototype.getViewPointInto = function(idx, vp)
 {
-	vp[0] = this._world_points[idx + 0] - this._viewport._port_location._x;
-	vp[1] = this._world_points[idx + 1] - this._viewport._port_location._y;
+	var point = this._world_points[idx];
+	vp[0] = point.x - this._viewport._port_location._x;
+	vp[1] = point.y - this._viewport._port_location._y;
+}
+GameWorld.prototype.returnPoint = function(idx)
+{
+	return this._world_points[idx];
+}
+GameWorld.prototype.calculateViewPointInto = function(point, vp)
+{
+	vp[0] = point.x - this._viewport._port_location._x;
+	vp[1] = point.y - this._viewport._port_location._y;
 }
 GameWorld.prototype.setPointDims = function(idx, w, h)
 {
-	this._world_points[idx + 5] = w;
-	this._world_points[idx + 6] = h;
+	var point = this._world_points[idx];
+	point.w = w;	//this might not be the fastest way...
+	point.h = h;
+	this._world_points[idx] = point;
 }
-
-
 GameWorld.prototype.getDimensions = function()
 {
 	return this._world_dimensions;
@@ -114,23 +133,28 @@ GameWorld.prototype.update = function()
 	var viewrect = new HitRect(this._viewport._port_location._x, this._viewport._port_location._y,
 							   this._viewport._port_dimensions._x, this._viewport._port_dimensions._y);
 	var len = this._world_points.length;
-	for (var i = 0; i < len; i += this._num_fields)
+	
+	var point;
+	for (var i = 0; i < len; i ++)
 	{	//update all the points in the world with their deltas. Do rudimentary bounds checking.
-		this._world_points[i + 0] += this._world_points[i + 2];
-		this._world_points[i + 1] += this._world_points[i + 3];
+		point = this._world_points[i];
+		point.x += point.dx;
+		point.y += point.dy;
 		
-		if (this._world_points[i + 0] > this._world_dimensions._x)
-			this._world_points[i + 0] %= this._world_dimensions._x;
-		if (this._world_points[i + 0] < 0)
-			this._world_points[i + 0] = this._world_dimensions._x - this._world_points[i + 0];
-		if (this._world_points[i + 1] > this._world_dimensions._y)
-			this._world_points[i + 1] %= this._world_dimensions._y;
-		if (this._world_points[i + 1] < 0)
-			this._world_points[i + 1] = this._world_dimensions._y - this._world_points[i + 1];
+		if (point.x > this._world_dimensions._x)
+			point.x %= this._world_dimensions._x;
+		if (point.x < 0)
+			point.x = this._world_dimensions._x - point.x;
+		if (point.y > this._world_dimensions._y)
+			point.y %= this._world_dimensions._y;
+		if (point.y < 0)
+			point.y = this._world_dimensions._y - point.y;
 
-		viewrect.expand(this._world_points[i + 5], this._world_points[i + 6]);	//expand the rect to take the size into account
-		this._world_points[i + 4] = viewrect.HitTest(this._world_points[i + 0], this._world_points[i + 1]);
-		viewrect.contract(this._world_points[i + 5], this._world_points[i + 6]);	//reset the rect.
+		viewrect.expand(point.w, point.h);	//expand the rect to take the size into account
+		point.in_vp = viewrect.HitTest(point.x, point.y);
+		viewrect.contract(point.w, point.h);	//reset the rect.
+		
+		this._world_points[i] = point;	//there has to be a better way to do this.
 	}
 }
 
@@ -145,18 +169,22 @@ GameWorld.prototype.HitTestPlayer = function()
 
 	var testRect = new HitRect(0, 0, 0, 0);
 	var len = this._world_points.length;
-	for (var i = 0; i < len; i += this._num_fields)
+	
+	var point;
+	var vp = [];
+
+	for (var i = 0; i < len; i ++)
 	{
-		if (this._world_points[i + 4])	//visible
+		point = this._world_points[i];
+		if (point.in_vp)	//visible
 		{	//detect broad scale collisions between these objects and the player
-			var vp = this.getViewPoint(i);
-			testRect.set(vp[0],  vp[1],	this._world_points[i + 5], this._world_points[i + 6]);
+			this.calculateViewPointInto(point, vp);
+			testRect.set(vp[0],  vp[1],	point.w, point.h);
 			testRect.floor();
 			
 			if (testRect.IntersectTest(this.player_rect))
-				_ret.push(this._world_points[i + 7]);	//add the intersected sprite to the list we return
+				_ret.push(point.idx);	//add the intersected sprite to the list we return
 		}
-		
 	}
 	return _ret;
 }
@@ -169,12 +197,15 @@ GameWorld.prototype.renderScaledView = function(_context, w, h)
 	_context.fillStyle = "rgb(255, 0, 0)";
 	var t_x = 0, t_y = 0;	//render the enemies
 	var len = this._world_points.length;
-	for (var i = 0; i < len; i += this._num_fields)
+	
+	var point;
+	for (var i = 0; i < len; i++)
 	{
-		if (this._world_points[i + 8])
+		point = this._world_points[i];
+		if (point.alive)
 		{
-			t_x = Math.floor(this._world_points[i + 0] * _scale_x);
-			t_y = Math.floor(this._world_points[i + 1] * _scale_y);
+			t_x = Math.floor(point.x * _scale_x);
+			t_y = Math.floor(point.y * _scale_y);
 			_context.fillRect(t_x, t_y, 1, 1);
 		}
 	}
@@ -212,13 +243,15 @@ GameWorld.prototype.renderScaledViewClipped = function(_context, x, y, w, h)
 	_context.fillStyle = "rgb(255, 0, 0)";
 	var t_x = 0, t_y = 0;	//render the enemies
 	
-	var len = this._world_points.length
-	for (var i = 0; i < len; i += this._num_fields)
+	var len = this._world_points.length;
+	var point;
+	for (var i = 0; i < len; i++)
 	{
-		if (this._world_points[i + 8])
+		point = this._world_points[i];
+		if (point.alive)
 		{
-			t_x = Math.floor(this._world_points[i + 0] * _scale_x) + x;
-			t_y = Math.floor(this._world_points[i + 1] * _scale_y) + y;
+			t_x = Math.floor(point.x * _scale_x) + x;
+			t_y = Math.floor(point.y * _scale_y) + y;
 			_context.fillRect(t_x, t_y, 1, 1);
 		}
 	}

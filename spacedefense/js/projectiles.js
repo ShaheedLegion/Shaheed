@@ -172,14 +172,17 @@ ProjectileManager.prototype.HitTestEnemies = function(_world, enemies)
 	var vp = [];
 	var enemylen = enemies.length;
 	var projectiles = this._projectiles.length;
+	
+	var point;
 	for (var i = 0; i < enemylen; i++)
 	{
 		if (!enemies[i]._exploding)
 		{	//do not handle collisions if they are exploding already.
 			var idx = enemies[i]._idx;
-			if (_world.pointInViewport(idx))	//if the point is visible on the viewport
+			point = _world.returnPoint(idx);
+			if (point.in_vp)	//if the point is visible on the viewport
 			{
-				_world.getViewPointInto(idx, vp);
+				_world.calculateViewPointInto(point, vp);
 				enemyRect.set(vp[0], vp[1], enemies[i]._sprite.width, enemies[i]._sprite.height);
 				for (var j = 0; j < projectiles; j += 6)
 				{
