@@ -2,30 +2,16 @@
 <html>
 <head>
 	<title>Shaheed Abdol - meet the man</title>
-	<meta name="description" content="Shaheed Abdol, Shaheed Abdol - Programmer, Personal Website for Shaheed Abdol"/>
+	<meta name="description" content="Shaheed Abdol - personal website"/>
 	<link rel="stylesheet" href="css/main.css" type="text/css" media="all" />
 
 	<script src="js/jquery-latest.min.js" type="text/javascript"></script>
-	<script src="js/navigation.js" type="text/javascript"></script>
+
 <head>
 
 <body>
 
-<div class="menubar" id="menubar">
-<object data="menu.html" class="menudata"></object>
-	<a href="#" id="toggle" class="menubutton">
-		<div class="menubutton" id="menubtn" data-role="button">
-		<div class="centermenu"><p>Menu</p></div>
-		</div>
-	</a>
-</div>
-
-
-
-<div class="bodycontent">
-<?php
-include "social_snippets.php";
-?>
+<div class="body-content">
 
 	<h1>Who is Shaheed Abdol?</h1>
 	<h2>Meet the man</h2>
@@ -68,11 +54,10 @@ include "social_snippets.php";
 	<p>He tried his hand at many things, but finally settled on woodwork as a hobby. He liked constructing things, and found that wood was a great medium to bring function into form without much hassle.</p>
 	
 	<p class="quote">I finally found that woodwork gave me the most satisfaction, honing a block of wood into something aesthetic or functional always gave me great joy. I loved building boxes of all kinds, cabinets, speaker enclosures and chests all gave me great joy.</p>
-	
-<?php
-include "comment_snippets.php";
-?>
 
 </div>
+<?php
+include "menu_snippets.php";
+?>
 <body>
 </html>
